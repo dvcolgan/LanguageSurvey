@@ -3,6 +3,9 @@
 import sys
 import pygame
 from pygame import *
+import socket
+import sys
+import cPickle
 
 BOARD_OFFSET_X = 16
 BOARD_OFFSET_Y = 16
@@ -40,44 +43,60 @@ def align_to_grid(coords):
 
 load_images()
 
-dragging_piece = None
+dragging_piece = '.'
 dragging_offset = ()
+dragging_start = ()
 board = [
-[images['red1'], images['red2'], images['red3'], images['red3'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue1'], images['blue2'], images['blue3'], images['blue3']],
-[images['red4'], images['red4'], images['red4'], images['red5'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue4'], images['blue4'], images['blue4'], images['blue5']],
-[images['red5'], images['red5'], images['red5'], images['red6'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue5'], images['blue5'], images['blue5'], images['blue6']],
-[images['red6'], images['red6'], images['red6'], images['red7'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue6'], images['blue6'], images['blue6'], images['blue7']],
-[images['red7'], images['red7'], images['red7'], images['red8'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue7'], images['blue7'], images['blue7'], images['blue8']],
-[images['red8'], images['red8'], images['red8'], images['red8'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue8'], images['blue8'], images['blue8'], images['blue8']],
-[images['red9'], images['red9'], images['red9'], images['red9'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue9'], images['blue9'], images['blue9'], images['blue9']],
-[images['red9'], images['red9'], images['red9'], images['red9'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blue9'], images['blue9'], images['blue9'], images['blue9']],
-[images['reds'], images['redb'], images['redb'], images['redb'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blues'], images['blueb'], images['blueb'], images['blueb']],
-[images['redb'], images['redb'], images['redb'], images['redf'], None,  None, None, None, None, None, None, None, None, None, None,  None, images['blueb'], images['blueb'], images['blueb'], images['bluef']]
+['red1', 'red2', 'red3', 'red3', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue1', 'blue2', 'blue3', 'blue3'],
+['red4', 'red4', 'red4', 'red5', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue4', 'blue4', 'blue4', 'blue5'],
+['red5', 'red5', 'red5', 'red6', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue5', 'blue5', 'blue5', 'blue6'],
+['red6', 'red6', 'red6', 'red7', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue6', 'blue6', 'blue6', 'blue7'],
+['red7', 'red7', 'red7', 'red8', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue7', 'blue7', 'blue7', 'blue8'],
+['red8', 'red8', 'red8', 'red8', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue8', 'blue8', 'blue8', 'blue8'],
+['red9', 'red9', 'red9', 'red9', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue9', 'blue9', 'blue9', 'blue9'],
+['red9', 'red9', 'red9', 'red9', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blue9', 'blue9', 'blue9', 'blue9'],
+['reds', 'redb', 'redb', 'redb', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blues', 'blueb', 'blueb', 'blueb'],
+['redb', 'redb', 'redb', 'redf', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', 'blueb', 'blueb', 'blueb', 'bluef']
 ]
 
 
 clock = pygame.time.Clock()
 
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(('localhost', 9999))
+board = cPickle.loads(sock.recv(10000))
+sock.setblocking(0)
+
 while 1:
     for event in pygame.event.get():
         if event.type == QUIT:
+            sock.close()
             sys.exit()
         elif event.type == KEYDOWN and event.key == K_ESCAPE:
+            sock.close()
             sys.exit()
         elif event.type == MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             x, y = screen_to_grid(mouse_pos)
             hover_piece = board[y][x]
-            board[y][x] = None
-            if hover_piece != None:
+            board[y][x] = '.'
+            if hover_piece != '.':
                 dragging_piece = hover_piece
                 dragging_offset = (mouse_pos[0] - (x*TILE_SIZE+BOARD_OFFSET_X+PIECE_OFFSET), mouse_pos[1] - (y*TILE_SIZE+BOARD_OFFSET_Y+PIECE_OFFSET))
+                dragging_start = (x, y)
         elif event.type == MOUSEBUTTONUP:
             x, y = pygame.mouse.get_pos()
-            if dragging_piece != None:
+            if dragging_piece != '.':
                 gridx, gridy = screen_to_grid((x, y))
                 board[gridy][gridx] = dragging_piece
-                dragging_piece = None
+                dragging_piece = '.'
+                sock.send('move:'+cPickle.dumps((dragging_start,(gridx, gridy))))
+
+    try:
+        board = cPickle.loads(sock.recv(100000))
+        print 'got new board state'
+    except Exception, e:
+        pass
 
 
     screen.blit(images['board'], (BOARD_OFFSET_X, BOARD_OFFSET_Y))
@@ -85,16 +104,16 @@ while 1:
     x, y = BOARD_OFFSET_X, BOARD_OFFSET_Y
     for row in board:
         for piece in row:
-            if piece != None:
-                screen.blit(piece, (x+PIECE_OFFSET,y+PIECE_OFFSET))
+            if piece != '.':
+                screen.blit(images[piece], (x+PIECE_OFFSET,y+PIECE_OFFSET))
             x+=TILE_SIZE
         x = BOARD_OFFSET_X
         y+=TILE_SIZE
 
 
     screen.blit(images['crosshairs'], align_to_grid(pygame.mouse.get_pos()))
-    if dragging_piece != None:
+    if dragging_piece != '.':
         mouse_pos = pygame.mouse.get_pos()
-        screen.blit(dragging_piece, (mouse_pos[0] - dragging_offset[0], mouse_pos[1] - dragging_offset[1]))
+        screen.blit(images[dragging_piece], (mouse_pos[0] - dragging_offset[0], mouse_pos[1] - dragging_offset[1]))
     pygame.display.flip()
     clock.tick(30)

@@ -1,13 +1,17 @@
-import socket 
-
-host = 'localhost' 
-port = 50000 
-size = 1024 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-s.connect((host,port)) 
-s.send(board) 
-data = s.recv(size) 
-s.close() 
-print 'Received:\n', data
+import socket
+import sys
+import cPickle
 
 
+
+HOST, PORT = "localhost", 10000
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((HOST, PORT))
+while 1:
+    sock.send("move\n")
+    board = cPickle.loads(sock.recv(100000))
+    print board
+
+
+sock.close()
