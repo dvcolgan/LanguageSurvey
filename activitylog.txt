@@ -1,0 +1,5 @@
+Friday September 03, 2010
+12:00 - 3:30 with a few breaks
+Read chapters 1-3 of the book Pro Git to make sure I understand how Git works.  These three chapters are all I will really need for this project, and they covered the basic operations, branching and merging, and rebasing.  I feel much better about using Git now.
+
+

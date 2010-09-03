@@ -1,0 +1,9 @@
+remove file from staging area but do not delete the file:
+git rm --cached readme.txt
+
+fetch to get changes but not merge, pull to fetch and merge
+
+branches are just pointers to commit objects
+fast forward means you merged a branch with something that had no changes, so no conflicts happened
+
+rebasing is cleaning up the merge history so that it looks like there was only a linear tree of commits
