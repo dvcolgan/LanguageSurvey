@@ -1,5 +1,17 @@
+Got the Git repository set up
+Did some exploring in Emacs, got it installed, installed AucTex
+Found the LaTeX FAQ
+Tried several times to sign up for IEEE membership but it says "Error Message" (very helpful)
+
 Friday September 03, 2010
-12:00 - 3:30 with a few breaks
+12:00 - 3:30PM with a few breaks
 Read chapters 1-3 of the book Pro Git to make sure I understand how Git works.  These three chapters are all I will really need for this project, and they covered the basic operations, branching and merging, and rebasing.  I feel much better about using Git now.
 
+Sunday September 05, 2010
+8:30 - 10:00 PM
+Tried to start planning out the overall architecture, read UML distilled chapters 1-2.
+
+Monday September 06, 2010
+8:15 - 9:30 AM
+Read UML distilled chapters 3-4 and paper about CRC cards: http://c2.com/doc/oopsla89/paper.html
 

@@ -1,0 +1,31 @@
+which classes should know about which classes, and how?
+should there be one class that knows about all of them and coordinates then?
+should they all be global?
+should every class contain other classes they use?
+
+
+Modules:
+
+GameState
+active_player
+current_roll
+set_aside
+
+
+GA
+
+
+Player
+get_move(state)
+
+HumanGUIPlayer
+HumanCommandLinePlayer
+AIPlayer(filename)
+
+
+Game
+start_game(num_players
+
+
+UI
+

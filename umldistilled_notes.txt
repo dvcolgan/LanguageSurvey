@@ -1,0 +1,57 @@
+Object Management Group (OMG) - best acronym ever
+can be used as sketch, blueprint, or programming language
+
+"Others believe that language-independent design is an oxymoron, with a strong emphasis on the moron."
+"Question: What is the difference between a methodologist and a terrorist? Answer: You can negotiate with a terrorist."
+
+Defines a notation and a meta-model
+This book is snarky - "Grady and Jim toproclaimed that "the methods war is over—we won," basically declaring that they were going to achieve standardization "the Microsoft way." A number of other methodologists suggested forming an Anti-Booch Coalition."
+"The highlight of the party was the first public display of Jim Rumbaugh’s singing; we all hope it’s also the last."
+
+There are multiple diagram types that are all considered UML
+Not everyone follows the standards, and is open to multiple interpretations
+Any information can be left out of a UML diagram and nothing should be inferred from this.
+
+Book recommendation for begginer OO design:
+http://www.amazon.com/Applying-UML-Patterns-Introduction-Object-Oriented/dp/0131489062
+http://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445/ref=ntt_at_ep_dpi_1
+
+The difference between waterfall and iterative development is that waterfall breaks up time based on activity - requirements analysis, design, coding, and testing, while iterative breaks the development up into that whole sequence for different parts of the system.
+
+Use unit testing in this project?
+
+Refactoring Book:
+http://www.amazon.com/Refactoring-Improving-Design-Existing-Code/dp/0201485672/ref=sr_1_1?s=books&ie=UTF8&qid=1283736896&sr=1-1
+
+Read a design patterns book?
+
+Review projects at the end and ask
+What things to keep, what were problems, and what changes to try
+
+"One of the most important things to document is the design alternatives you didn’t take and why you didn’t do them. That’s often the most forgotten but most useful piece of external documentation you can provide."
+
+"If someone were to come up to you in a dark alley and say, “Psst, wanna see a UML diagram?” that diagram would probably be a class diagram. The majority of UML diagrams I see are class diagrams."
+
++ is public, - is private
+multiplicity - [1] [0..1] [*]
+
+clients of an object should not be able to tell what is a property and what is a computed value to preserve encapsulation
+
+do not have classes that are simply getters and setters - move the data to the object that is accessing the data
+
+try to make methods that change the observable state of the object void and queries that do not change the state to be value returning
+
+when using inheritance, any code that uses a superclass should also be able to use any subclasses without knowing it
+
+presentation should depend on the domain, but domain should not depend on the presentation
+
+design by contract - caller does checking and callee makes assertions for pre and post conditions
+subclasses can weaken but not strengthen pre-conditions
+subclasses can strengthen but not weaken post-conditions
+
+decentralized control
+should have lots of little objects that allow for polymorphism
+"put data and the behavior that uses it together in one place"
+
+CRC cards
+http://c2.com/doc/oopsla89/paper.html
