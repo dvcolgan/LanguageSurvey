@@ -1,0 +1,5 @@
+\mbox{} = do not allow the contents to be broken up by line breaks
+to do a tilde, do $\sim$
+\ldots for ellipsis
+you have to compile multiple times for a table of contents and bibtex because it has to find things
+on page 55 sec 2.11.5

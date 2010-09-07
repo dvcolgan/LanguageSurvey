@@ -15,3 +15,6 @@ Monday September 06, 2010
 8:15 - 9:30 AM
 Read UML distilled chapters 3-4 and paper about CRC cards: http://c2.com/doc/oopsla89/paper.html
 
+Monday September 06, 2010
+4:15 - 5:15 PM
+Read A Not So Short Introduction to Latex
