@@ -19,6 +19,9 @@ class Dice(object):
 
     def roll(self):
         self.remaining = [random.randint(1,6) for die in self.remaining]
+        print self.remaining
+        if self.dice_combination_value(self.remaining) == 0:
+            raise GotFarkleException()
 
     def is_valid_set_aside(self, dice_values):
         for die_value in dice_values:
@@ -26,7 +29,7 @@ class Dice(object):
             for die in self.remaining:
                 if die == die_value:
                     found = True
-            if found == False:
+            if not found:
                 return False
         return True
 
@@ -135,9 +138,14 @@ class Dice(object):
             self.set_aside = []
 
 
+class GotFarkleException(Exception):
+    pass
+
 class InvalidSetAsideException(Exception):
     pass
 
+class CantRollException(Exception):
+    pass
 
 class Player(object):
     def take_turn(self, dice):
@@ -146,30 +154,32 @@ class Player(object):
 class HumanPlayer(Player):
     def take_turn(self, dice, scores):
         while True:
-            dice.roll()
-            print "Scores:\n"
+            print "\n"*64
+            print "\n\nScores:\n"
             for i, score in enumerate(scores):
                 print "Player {0}: {1}".format(i, score)
 
-            remaining = ' '.join([str(die) for die in dice.get_remaining()])
-            set_aside = ' '.join([str(die) for die in dice.get_set_aside()])
-            print "\n\nSet Aside:\n", set_aside
             print "Turn score: ", dice.get_score()
-            print "\nYou roll the dice:\n", remaining
-            choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces, or enter nothing to stop.\n")
-            if choices != '':
+
+            print "\nYou roll the dice:"
+            dice.roll()
+            print ' '.join([str(die) for die in dice.get_remaining()])
+
+            print "\nSet Aside:"
+            print ' '.join([str(die) for die in dice.get_set_aside()])
+
+            while True:
+                choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces, or enter nothing to stop.\n")
+
+                if choices == '':
+                    return dice
+
                 try:
                     dice.move_to_set_aside([int(choice) for choice in choices.split()])
-                    print "\n"*64
-                except InvalidSetAsideException as e:
-                    print "\n"*64
+                    break
+                except Exception as e:
                     print "That set aside is not valid."
-            else:
-                return dice
 
-
-    def clear_screen(self):
-        print "\n"*64
 
 
 
@@ -205,7 +215,7 @@ def main():
     farkle = Farkle()
     farkle.add_player(HumanPlayer())
     winner = farkle.play()
-    print "The winner is player " + winner + "!"
+    print "The winner is player " + str(winner) + "!"
 
 if __name__ == "__main__":
     main()
