@@ -40,8 +40,17 @@ Saturday September 11, 2010
 8:00 - 8:30 PM
 Continued reading about Forth.
 
-Tuesday September 14, 2010 05:07:14 PM
+Tuesday September 14, 2010
 9:00 - 10:00 AM
 6:00 - 7:00 PM
 Python Coding
 
+Wednesday September 15, 2010
+2:00 - 3:30 PM
+Very productive code review with Dr. Nurkkala.
+
+Thursday September 16, 2010
+8:30 - 9:40 AM
+Literature search
+11:30 AM - 12:45 PM
+Got pretty far in implementing Dr. Nurkkala's suggestions.  Working on finishing up the human interface.

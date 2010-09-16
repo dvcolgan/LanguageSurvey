@@ -7,25 +7,31 @@ class Dice(object):
         self.set_aside = []
         self.remaining = [0, 0, 0, 0, 0, 0]
 
-
-#add default parameter to return as string
     def get_score(self):
         return self.score
 
-    def get_set_aside(self):
-        return tuple(self.set_aside)
+    def get_set_aside(self, as_str=False):
+        if as_str:
+            return Dice.to_str(self.set_aside)
+        else:
+            return tuple(self.set_aside)
 
-    def get_remaining(self):
-        return tuple(self.remaining)
+    def get_remaining(self, as_str=False):
+        if as_str:
+            return Dice.to_str(self.remaining)
+        else:
+            return tuple(self.remaining)
 
+    @staticmethod
+    def to_str(dice_values):
+        return ' '.join([str(die) for die in dice_values])
+        
     def roll(self):
+        self.check_for_farkle(self.remaining) #<- eh? does not appear to do anything
         self.remaining = [random.randint(1,6) for die in self.remaining]
-        #print self.remaining
-        #if self.dice_combination_value(self.remaining) == 0:
-        #    raise GotFarkleException()
 
+    #DOES NOT WORK for all cases
     def is_valid_set_aside(self, dice_values):
-        #use set operations
         for die_value in dice_values:
             found = False
             for die in self.remaining:
@@ -35,13 +41,16 @@ class Dice(object):
                 return False
         return True
 
-    def find_n_of_a_kind(self, dice_values):
-# does this need to know if there are exactly n or more than n?
-    #return the number which has n of a kind, or None 
-    #return a tuple of all occurences
+    @staticmethod
+    def find_n_of_a_kind(n, die_counts):
+        matches = []
+        for i in range(1,7):
+            if die_counts[i] >= n:
+                matches.append(i)
+        return tuple(matches)
 
-    @staticmethod #<-investigate these labels
-    def zero_out_counts(die_counts):
+    #@staticmethod
+    #def zero_out_counts(die_counts):   <- ??
         
 
     def dice_combination_value(self, dice_values):
@@ -51,76 +60,53 @@ class Dice(object):
         for die in dice_values:
             die_counts[die] += 1
 
-        #four with pair of 2s should be checked first
-
-        # 3, 4, 5, and 6 of a kind
-# move this to an n of a kind checking function
-        for i in range(1,7):
-            if die_counts[i] == 6:
-                score += 3000
-                die_counts[i] = 0
-            if die_counts[i] == 5:
-                score += 2000
-                die_counts[i] = 0
-            if die_counts[i] == 4:
-                score += 1000
-                die_counts[i] = 0
-            if die_counts[i] == 3:
-                if i == 1:
-                    score += 300
-                else:
-                    score += i*100
-                die_counts[i] = 0
-
         # four with a pair
-# check for 
-        i_2, i_4 = None, None
-        for i in range(1,7):
-            if die_counts[i] == 2: i_2 = i
-            if die_counts[i] == 4: i_4 = i
-        if i_2 and i_4:
+        matches4, matches2 = Dice.find_n_of_a_kind(4, die_counts), Dice.find_n_of_a_kind(2, die_counts)
+        if matches4 and matches2:
             score += 1500
-            die_counts[i_2] = 0
-            die_counts[i_4] = 0
+            die_counts[matches4[0]] = die_counts[matches2[0]] = 0
 
         # two triplets
-        i_3a, i_3b = None, None
-        for i in range(1,7):
-            if die_counts[i] == 3:
-                if not i_3a:
-                    i_3a = i
-                else:
-                    i_3b = i
-        if i_3a and i_3b:
+        matches = Dice.find_n_of_a_kind(3, die_counts)
+        if len(matches) == 2
             score += 2500
-            die_counts[i_3a] = 0
-            die_counts[i_3b] = 0
+            die_counts[matches[0]] = die_counts[matches[1]] = 0
 
         # three pairs
-        i_2a, i_2b, i_2c = None, None, None
-        for i in range(1,7):
-            if die_counts[i] == 2:
-                if not i_2a:
-                    i_2a = i
-                elif not i_2b:
-                    i_2b = i
-                else:
-                    i_2c = i
-        if i_2a and i_2b and i_2c:
+        matches = Dice.find_n_of_a_kind(2, die_counts)
+        if len(matches) == 3:
             score += 1500
-            die_counts[i_2a] = 0
-            die_counts[i_2b] = 0
-            die_counts[i_2c] = 0
+            die_counts[matches[0]] = die_counts[matches[1]] = die_counts[matches[2]] = 0
 
-        # sort the frequencies and compare to a range
         # strait
-        seen = {1:False, 2:False, 3:False, 4:False, 5:False, 6:False}
-        for i in range(1,7):
-            if die_counts[i] > 0: seen[i] = True
-        if all(seen.values()):
+        if len(set(range(1,7)) - set(dice_values)) == 0:
             score += 1500
             for i in range(1,7):
                 die_counts[i] = 0
+
+        # 6, 5, 4, and 3 of a kind
+        matches = Dice.find_n_of_a_kind(6, die_counts)
+        if matches:
+            score += 3000
+            die_counts[matches[0]] = 0
+
+        matches = Dice.find_n_of_a_kind(5, die_counts)
+        if matches:
+            score += 2000
+            die_counts[matches[0]] = 0
+
+        matches = Dice.find_n_of_a_kind(4, die_counts)
+        if matches:
+            score += 1000
+            die_counts[matches[0]] = 0
+
+        matches = Dice.find_n_of_a_kind(3, die_counts)
+        if matches[0] == 1:
+            score += 300
+        else:
+            score += matches[0] * 100
+        die_counts[matches[0]] = 0
+
 
         # single 1's and 5's
         if die_counts[1] > 0:
@@ -130,33 +116,52 @@ class Dice(object):
             score += die_counts[5] * 50
             die_counts[5] = 0
 
-            #abstract out the setting of the die_counts to 0
+#        rules = [
+#                {'die_counts':(4,2),'value':1500},
+#                {'die_counts':(3,3),'value':2500},
+#                {'die_counts':(2,2,2),'value':1500},
+#                {'die_counts':(6,),'value':3000},
+#                {'die_counts':(5,),'value':2000},
+#                {'die_counts':(4,),'value':1000},
+#                {'die_counts':(
+#
+#                {'die_counts':(3,),'value':},
+#abstract out the setting of the die_counts to 0 ?
 
-#maybe have a rule based system with a nested dictionary
 
         if any(die_counts.values()):
             raise InvalidSetAsideException()
 
-        return score
+        return (score, die_counts)
         #return score and also remaining dice, do exception checking in two separate calling functions
 
-    def move_to_set_aside(self, dice_values):
-        if not self.is_valid_set_aside(dice_values):
+    def check_for_farkle(self, dice_values):
+        value, leftovers = self.dice_combination_value(dice_values)
+        if value = 0:
+            raise GotFarkleException()
+    
+    def evaluate_set_aside(self, dice_values):
+        value, leftovers = self.dice_combination_value(dice_values)
+        if value > 0 and not any(leftovers.values()):
             raise InvalidSetAsideException()
+        else:
+            return value
 
-        value = self.dice_combination_value(dice_values)
-        if value == 0:
-            raise InvalidSetAsideException()
+    def move_to_set_aside(self, dice_values):
+
+        value = self.evaluate_set_aside(dice_values)
+        self.score += value
 
         for die_value in dice_values:
             self.set_aside.append(die_value)
             self.remaining.remove(die_value)
 
-        self.score += value
-
         if len(self.set_aside) == 6:
             self.remaining = self.set_aside
             self.set_aside = []
+
+
+class Rules(object):
 
 
 class GotFarkleException(Exception):
@@ -169,7 +174,7 @@ class CantRollException(Exception):
     pass
 
 
-class HumanPlayer():
+class HumanPlayer(object):
     def take_turn(self, dice, scores):
         while True:
             print "\n"*64
@@ -180,11 +185,15 @@ class HumanPlayer():
             print "Turn score: ", dice.get_score()
 
             print "\nYou roll the dice:"
-            dice.roll()
-            print ' '.join([str(die) for die in dice.get_remaining()])
+            try:
+                dice.roll()
+            except GotFarkleException as e:
+                print "\nYou got a farkle!"
+#HERE working on getting the interface to recognize a farkle, still print out the dice, then end the turn, also do not allow the dice to be rolled again once this happens
+            print dice.get_remaining(as_str=True)
 
             print "\nSet Aside:"
-            print ' '.join([str(die) for die in dice.get_set_aside()])
+            print dice.get_set_aside(as_str=True)
 
             while True:
                 choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces, or enter nothing to stop.\n")
@@ -195,13 +204,15 @@ class HumanPlayer():
                 try:
                     dice.move_to_set_aside([int(choice) for choice in choices.split()])
                     break
-                except Exception as e:
+                except ValueError as e:
+                    print "The set aside must contain only integers from 1-6."
+                except InvalidSetAsideException as e:
                     print "That set aside is not valid."
 
 
 
 
-class AIPlayer():
+class AIPlayer(object):
     def take_turn(self, dice):
         pass
 
