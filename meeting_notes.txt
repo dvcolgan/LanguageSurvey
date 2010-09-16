@@ -1,0 +1,14 @@
+Tuesday September 14, 2010 07:07:39 PM
+acm classification hierarchy
+acm.org/about/class/1998
+
+look for survey papers
+try to find current work first
+
+citeseer
+google scholar
+digital libraries
+
+put exceptions wherever they should logicaly be thrown, handle it where it makes sense
+get it to work first and then refactor
+test the things that could break

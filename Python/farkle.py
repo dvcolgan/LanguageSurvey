@@ -1,29 +1,31 @@
 import random
 
 
-
 class Dice(object):
     def __init__(self):
         self.score = 0
         self.set_aside = []
         self.remaining = [0, 0, 0, 0, 0, 0]
 
+
+#add default parameter to return as string
     def get_score(self):
         return self.score
 
     def get_set_aside(self):
-        return [die for die in self.set_aside]
+        return tuple(self.set_aside)
 
     def get_remaining(self):
-        return [die for die in self.remaining]
+        return tuple(self.remaining)
 
     def roll(self):
         self.remaining = [random.randint(1,6) for die in self.remaining]
-        print self.remaining
-        if self.dice_combination_value(self.remaining) == 0:
-            raise GotFarkleException()
+        #print self.remaining
+        #if self.dice_combination_value(self.remaining) == 0:
+        #    raise GotFarkleException()
 
     def is_valid_set_aside(self, dice_values):
+        #use set operations
         for die_value in dice_values:
             found = False
             for die in self.remaining:
@@ -33,6 +35,15 @@ class Dice(object):
                 return False
         return True
 
+    def find_n_of_a_kind(self, dice_values):
+# does this need to know if there are exactly n or more than n?
+    #return the number which has n of a kind, or None 
+    #return a tuple of all occurences
+
+    @staticmethod #<-investigate these labels
+    def zero_out_counts(die_counts):
+        
+
     def dice_combination_value(self, dice_values):
         score = 0
         die_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
@@ -40,7 +51,10 @@ class Dice(object):
         for die in dice_values:
             die_counts[die] += 1
 
+        #four with pair of 2s should be checked first
+
         # 3, 4, 5, and 6 of a kind
+# move this to an n of a kind checking function
         for i in range(1,7):
             if die_counts[i] == 6:
                 score += 3000
@@ -59,6 +73,7 @@ class Dice(object):
                 die_counts[i] = 0
 
         # four with a pair
+# check for 
         i_2, i_4 = None, None
         for i in range(1,7):
             if die_counts[i] == 2: i_2 = i
@@ -97,6 +112,7 @@ class Dice(object):
             die_counts[i_2b] = 0
             die_counts[i_2c] = 0
 
+        # sort the frequencies and compare to a range
         # strait
         seen = {1:False, 2:False, 3:False, 4:False, 5:False, 6:False}
         for i in range(1,7):
@@ -114,10 +130,15 @@ class Dice(object):
             score += die_counts[5] * 50
             die_counts[5] = 0
 
+            #abstract out the setting of the die_counts to 0
+
+#maybe have a rule based system with a nested dictionary
+
         if any(die_counts.values()):
             raise InvalidSetAsideException()
 
         return score
+        #return score and also remaining dice, do exception checking in two separate calling functions
 
     def move_to_set_aside(self, dice_values):
         if not self.is_valid_set_aside(dice_values):
@@ -147,11 +168,8 @@ class InvalidSetAsideException(Exception):
 class CantRollException(Exception):
     pass
 
-class Player(object):
-    def take_turn(self, dice):
-        pass
 
-class HumanPlayer(Player):
+class HumanPlayer():
     def take_turn(self, dice, scores):
         while True:
             print "\n"*64
@@ -183,7 +201,7 @@ class HumanPlayer(Player):
 
 
 
-class AIPlayer(Player):
+class AIPlayer():
     def take_turn(self, dice):
         pass
 
@@ -197,6 +215,7 @@ class Farkle(object):
         self.players.append(player)
         self.scores.append(0)
 
+#add a name, use the uuid for nonhuman players, could be a database key
     def play(self):
 
         turn_index = 0
