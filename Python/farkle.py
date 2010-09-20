@@ -6,6 +6,7 @@ class Dice(object):
         self.score = 0
         self.set_aside = []
         self.remaining = [0, 0, 0, 0, 0, 0]
+        self.got_farkle = False
 
     def get_score(self):
         return self.score
@@ -27,19 +28,29 @@ class Dice(object):
         return ' '.join([str(die) for die in dice_values])
         
     def roll(self):
-        self.check_for_farkle(self.remaining) #<- eh? does not appear to do anything
+        if self.got_farkle:
+            raise GotFarkleException()
+
         self.remaining = [random.randint(1,6) for die in self.remaining]
+        self.check_for_farkle(self.remaining)
 
     #DOES NOT WORK for all cases
-    def is_valid_set_aside(self, dice_values):
-        for die_value in dice_values:
-            found = False
-            for die in self.remaining:
-                if die == die_value:
-                    found = True
-            if not found:
-                return False
-        return True
+    def dice_in_set_aside(self, dice_values):
+
+        proposed_dice = list(dice_values)
+        actual_dice = list(self.remaining)
+
+        remaining = list(dice_values)
+
+        for die in actual_dice:
+            if die in proposed_dice:
+                proposed_dice.remove(die)
+                actual_dice.remove(die)
+        if len(proposed_dice) > 0:
+            return False
+        else:
+            return True
+
 
     @staticmethod
     def find_n_of_a_kind(n, die_counts):
@@ -68,7 +79,7 @@ class Dice(object):
 
         # two triplets
         matches = Dice.find_n_of_a_kind(3, die_counts)
-        if len(matches) == 2
+        if len(matches) == 2:
             score += 2500
             die_counts[matches[0]] = die_counts[matches[1]] = 0
 
@@ -101,11 +112,12 @@ class Dice(object):
             die_counts[matches[0]] = 0
 
         matches = Dice.find_n_of_a_kind(3, die_counts)
-        if matches[0] == 1:
-            score += 300
-        else:
-            score += matches[0] * 100
-        die_counts[matches[0]] = 0
+        if matches:
+            if matches[0] == 1:
+                score += 300
+            else:
+                score += matches[0] * 100
+            die_counts[matches[0]] = 0
 
 
         # single 1's and 5's
@@ -115,6 +127,8 @@ class Dice(object):
         if die_counts[5] > 0:
             score += die_counts[5] * 50
             die_counts[5] = 0
+
+        return (score, die_counts)
 
 #        rules = [
 #                {'die_counts':(4,2),'value':1500},
@@ -129,25 +143,26 @@ class Dice(object):
 #abstract out the setting of the die_counts to 0 ?
 
 
-        if any(die_counts.values()):
-            raise InvalidSetAsideException()
 
-        return (score, die_counts)
-        #return score and also remaining dice, do exception checking in two separate calling functions
 
     def check_for_farkle(self, dice_values):
+        if dice_values == [0,0,0,0,0,0]: return
         value, leftovers = self.dice_combination_value(dice_values)
-        if value = 0:
+        if value == 0:
+            self.score = 0
+            self.got_farkle = True   # set so that the dice can't be rolled again after getting a farkle
             raise GotFarkleException()
     
     def evaluate_set_aside(self, dice_values):
         value, leftovers = self.dice_combination_value(dice_values)
         if value > 0 and not any(leftovers.values()):
-            raise InvalidSetAsideException()
-        else:
             return value
+        else:
+            raise InvalidSetAsideException()
 
     def move_to_set_aside(self, dice_values):
+        if not self.dice_in_set_aside(dice_values):
+            raise InvalidSetAsideException()
 
         value = self.evaluate_set_aside(dice_values)
         self.score += value
@@ -161,7 +176,6 @@ class Dice(object):
             self.set_aside = []
 
 
-class Rules(object):
 
 
 class GotFarkleException(Exception):
@@ -177,29 +191,29 @@ class CantRollException(Exception):
 class HumanPlayer(object):
     def take_turn(self, dice, scores):
         while True:
-            print "\n"*64
             print "\n\nScores:\n"
             for i, score in enumerate(scores):
                 print "Player {0}: {1}".format(i, score)
 
             print "Turn score: ", dice.get_score()
 
+            print "\nSet Aside:"
+            print dice.get_set_aside(as_str=True)
+
             print "\nYou roll the dice:"
             try:
                 dice.roll()
             except GotFarkleException as e:
+                print dice.get_remaining(as_str=True)
                 print "\nYou got a farkle!"
-#HERE working on getting the interface to recognize a farkle, still print out the dice, then end the turn, also do not allow the dice to be rolled again once this happens
+                raw_input('Hit enter to end your turn.')
+                return dice
+
             print dice.get_remaining(as_str=True)
 
-            print "\nSet Aside:"
-            print dice.get_set_aside(as_str=True)
 
             while True:
                 choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces, or enter nothing to stop.\n")
-
-                if choices == '':
-                    return dice
 
                 try:
                     dice.move_to_set_aside([int(choice) for choice in choices.split()])
@@ -208,6 +222,14 @@ class HumanPlayer(object):
                     print "The set aside must contain only integers from 1-6."
                 except InvalidSetAsideException as e:
                     print "That set aside is not valid."
+            
+            while True:
+                choice = raw_input("You have {0} points.  Hit enter to continue rolling, or type 'stop' to end your turn.\n".format(dice.get_score()))
+                if choice == '':
+                    break
+                if choice.lower() == 'stop':
+                    return dice
+                
 
 
 
@@ -245,7 +267,7 @@ def main():
     farkle = Farkle()
     farkle.add_player(HumanPlayer())
     winner = farkle.play()
-    print "The winner is player " + str(winner) + "!"
+    print "The winner is player {0}!".format(winner)
 
 if __name__ == "__main__":
     main()
