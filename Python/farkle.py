@@ -1,4 +1,5 @@
 import random
+import cPickle
 
 
 class Dice(object):
@@ -40,8 +41,6 @@ class Dice(object):
         proposed_dice = list(dice_values)
         actual_dice = list(self.remaining)
 
-        remaining = list(dice_values)
-
         for die in actual_dice:
             if die in proposed_dice:
                 proposed_dice.remove(die)
@@ -60,16 +59,20 @@ class Dice(object):
                 matches.append(i)
         return tuple(matches)
 
-    #@staticmethod
-    #def zero_out_counts(die_counts):   <- ??
-        
 
-    def dice_combination_value(self, dice_values):
-        score = 0
+
+    @staticmethod
+    def count_dice(dice_values):
         die_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
 
         for die in dice_values:
             die_counts[die] += 1
+
+        
+
+    def dice_combination_value(self, dice_values):
+        score = 0
+        die_counts = Dice.count_dice(dice_values)
 
         # four with a pair
         matches4, matches2 = Dice.find_n_of_a_kind(4, die_counts), Dice.find_n_of_a_kind(2, die_counts)
@@ -231,12 +234,88 @@ class HumanPlayer(object):
                     return dice
                 
 
+roll()
 
+class AIDecisionMaker(object):
+    def __init__(self):
+
+        self.strategy = {
+            'three_dice':{
+                'two_5s':
+                'two_1s':
+                'one_1_and_one_5':
+            },
+            'four_dice':{
+                'two_5s':
+                'two_1s':
+                'one_1_and_one_5':
+            },
+            'five_dice':{
+                'two_5s':
+                'two_1s':
+                'one_1_and_one_5':
+                'three_1s_or_three_3s_and_one_1_or_5':
+                'three_2s_and_one_1_or_5':
+                'three_4s_and_one_1_or_5':
+                'three_5s_and_one_1_or_5':
+                'three_6s_and_one_1_or_5':
+            },
+            'six_dice':{
+                'two_5s':
+                'two_1s':
+                'one_1_and_one_5':
+                'three_1s_or_three_3s_and_one_1_or_5':
+                'three_2s_and_one_1_or_5':
+                'three_4s_and_one_1_or_5':
+                'three_5s_and_one_1_or_5':
+                'three_6s_and_one_1_or_5':
+                'three_1s_or_three_3s_and_two_1_or_5':
+                'three_2s_and_two_1_or_5':
+                'three_4s_and_two_1_or_5':
+                'three_5s_and_two_1_or_5':
+                'three_6s_and_two_1_or_5':
+            },
+            'roll_or_stop_thresholds':{1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
+        }
+
+        def set_strategy(self, strategy):
+            self.strategy = strategy
+        
+        def save_to_file(self, filename):
+            f = open(filename, 'w')
+            cPickle.dump(self.strategy, f)
+            f.close()
+
+        def load_from_file(self, filename):
+            f = open(filename)
+            self.strategy = cPickle.load(f)
+            f.close()
 
 
 class AIPlayer(object):
-    def take_turn(self, dice):
-        pass
+    def __init__(decision_tree):
+        self.decisions_tree = AIDecisionMaker()
+        self.
+        self.name = str(uuid.uuid4())
+
+
+
+
+    def take_turn(self, dice, scores):
+        self.dice = dice
+        self.dice_counts = Dice.count_dice(self.dice)
+
+        self.get_move()
+
+        
+    def get_move(self):
+        if len(self.dice == 6):
+
+
+
+    def can_set_aside_all(self):
+        if self.dice.find_n_of_a_kind(6, 
+
 
 
 class Farkle(object):
@@ -261,6 +340,34 @@ class Farkle(object):
             if turn_index > len(self.players) - 1: turn_index = 0
 
         return turn_index
+
+
+class GA
+mutation_rate = 0.01
+crossover_rate = 0.7
+population = [Individual]
+mating_pool = [Individual]
+
+run()
+do_crossover()
+conduct_tournament()
+fill_mating_pool()
+evaluate_population()
+
+class FarkleTournament
+farkle_game
+
+add_players()
+run()
+
+class Individual(object):
+    def __init__(self):
+        self.gene
+Evaluate()
+
+
+
+
 
 
 def main():
