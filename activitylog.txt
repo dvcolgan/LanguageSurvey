@@ -40,6 +40,8 @@ Saturday September 11, 2010
 8:00 - 8:30 PM
 Continued reading about Forth.
 
+Week 3
+
 Tuesday September 14, 2010
 9:00 - 10:00 AM
 6:00 - 7:00 PM
@@ -52,5 +54,14 @@ Very productive code review with Dr. Nurkkala.
 Thursday September 16, 2010
 8:30 - 9:40 AM
 Literature search
+
 11:30 AM - 12:45 PM
 Got pretty far in implementing Dr. Nurkkala's suggestions.  Working on finishing up the human interface.
+
+Monday September 20
+6:00 AM - 8:00 AM
+Signed up for IEEE membership and worked on Python code.
+
+Monday September 20, 2010 08:43:06 PM
+8:00 - 8:45 PM
+Worked on GA design.
