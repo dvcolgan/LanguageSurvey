@@ -1,0 +1,14 @@
+With refactoring, you do not have to make your solutions flexible but can make them simple and refactor when you need to add more functionality.
+Well factored code is easier to optimize because the profiler can give you a finer granularity report.
+
+Instead of writing a comment, create a method out of it, because the method name will provide better documentation than a comment.
+
+When you change the system, you have refactored sufficiently when you only need to change one class to make the change.
+
+If you have a clump of data and you cannot delete one of the datums without causing the others to be meaningless, they should all be in the same object.
+
+When you get a bug report, write a test to expose it.
+
+Only test things that are likely to fail, not accessor methods.
+Test boundary cases.
+Test that errors do happen when they should.

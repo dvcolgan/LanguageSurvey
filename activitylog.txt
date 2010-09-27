@@ -62,6 +62,25 @@ Monday September 20
 6:00 AM - 8:00 AM
 Signed up for IEEE membership and worked on Python code.
 
-Monday September 20, 2010 08:43:06 PM
+Monday September 20
 8:00 - 8:45 PM
 Worked on GA design.
+
+Week 4
+
+Tuesday September 21
+6:00-7:00 PM
+Worked a little on random stuff.
+
+Wednesday September 22
+2:00 - 4:00 PM
+Another very productive code review with Dr. Nurkkala.
+
+Friday September 24
+8:00 - 8:30 PM
+Read chapter 1 of refactoring.
+
+Saturday September 25
+8:00 - 9:00 AM
+10:00 - 10:30 AM
+Read refactoring chapters 2-4.
