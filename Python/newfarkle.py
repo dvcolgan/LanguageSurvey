@@ -138,12 +138,11 @@ class DiceReporter(object):
 
         return len(proposed_dice) == 0
 
+    def is_scoring_combination(dice_values):
 
 
 
 
-
-class DiceEvaluator(object):
 
     def dice_combination_value(self, dice):
         score = 0
