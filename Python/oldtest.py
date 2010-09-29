@@ -2,6 +2,8 @@ import game
 import unittest
 
 class TestGame(unittest.TestCase):
+    def setUp(self):
+
     def test_constructor(self):
         g = game.FarkleGame()
         self.assertEquals(g.get_roll(), (), "Roll is not empty!")
