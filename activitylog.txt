@@ -85,12 +85,31 @@ Saturday September 25
 10:00 - 10:30 AM
 Read refactoring chapters 2-4.
 
-Tuesday September 27
+Tuesday September 28
 5:30 - 9:00 AM
 11:00 - 11:30 AM
 Worked on Python coding.
 
 Week 5
+Wednesday September 29
 5:45 - 6:15 AM
 6:45 - 7:30 AM
 More Python coding.
+
+2:00 - 2:30 PM
+Meeting with Dr. Nurkkala.
+
+Thursday September 30
+12:00 - 1:00 PM
+Literature Search
+
+5:00 - 7:00 PM
+Read test driven development chapters 1-20 or so.
+
+Friday October 1
+7:00 - 7:40 AM
+More literature searching, found many good articles in the ACM library.
+
+Tuesday October 5
+7:30 - 8:30
+Found more papers and read and documented "A Comparison of Ada and C++."
