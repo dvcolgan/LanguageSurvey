@@ -113,3 +113,10 @@ More literature searching, found many good articles in the ACM library.
 Tuesday October 5
 7:30 - 8:30
 Found more papers and read and documented "A Comparison of Ada and C++."
+
+Wednesday October 6
+8:00 - 9:00 AM
+Literature search.
+
+2:00 - 3:30 PM
+Meeting with Nurkkala, good progress in Python code.
