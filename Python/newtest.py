@@ -5,112 +5,77 @@ class TestGame(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_dice1(self):
+    def test_scoring(self):
         self.assertEquals(DiceFactory.set_as((1,)).get_score(), 100)
-    def test_dice2(self):
         self.assertEquals(DiceFactory.set_as((1,)).get_score(), 100)
-    def test_dice3(self):
         self.assertEquals(DiceFactory.set_as((5,)).get_score(), 50)
-    def test_dice4(self):
         self.assertEquals(DiceFactory.set_as((2,)).get_score(), 0)
-    def test_dice5(self):
         self.assertEquals(DiceFactory.set_as((3,)).get_score(), 0)
-    def test_dice6(self):
         self.assertEquals(DiceFactory.set_as((4,)).get_score(), 0)
-    def test_dice7(self):
         self.assertEquals(DiceFactory.set_as((6,)).get_score(), 0)
-    def test_dice8(self):
         self.assertEquals(DiceFactory.set_as((1,5)).get_score(), 150)
-    def test_dice9(self):
         self.assertEquals(DiceFactory.set_as((1,1)).get_score(), 200)
-    def test_dice10(self):
         self.assertEquals(DiceFactory.set_as((5,5)).get_score(), 100)
-    def test_dice11(self):
         self.assertEquals(DiceFactory.set_as((2,3)).get_score(), 0)
-    def test_dice12(self):
         self.assertEquals(DiceFactory.set_as((4,6)).get_score(), 0)
-    def test_dice13(self):
         self.assertEquals(DiceFactory.set_as((1,1,1)).get_score(), 300)
-    def test_dice14(self):
         self.assertEquals(DiceFactory.set_as((2,2,2)).get_score(), 200)
-    def test_dice15(self):
         self.assertEquals(DiceFactory.set_as((3,3,3)).get_score(), 300)
-    def test_dice16(self):
         self.assertEquals(DiceFactory.set_as((4,4,4)).get_score(), 400)
-    def test_dice17(self):
         self.assertEquals(DiceFactory.set_as((5,5,5)).get_score(), 500)
-    def test_dice18(self):
         self.assertEquals(DiceFactory.set_as((6,6,6)).get_score(), 600)
-    def test_dice19(self):
         self.assertEquals(DiceFactory.set_as((2,3,4)).get_score(), 0)
-    def test_dice20(self):
         self.assertEquals(DiceFactory.set_as((1,5,6)).get_score(), 150)
-    def test_dice21(self):
         self.assertEquals(DiceFactory.set_as((3,5,6)).get_score(), 50)
-    def test_dice22(self):
         self.assertEquals(DiceFactory.set_as((1,1,1,1)).get_score(), 1000)
-    def test_dice23(self):
         self.assertEquals(DiceFactory.set_as((2,2,2,2)).get_score(), 1000)
-    def test_dice24(self):
         self.assertEquals(DiceFactory.set_as((3,3,3,3)).get_score(), 1000)
-    def test_dice25(self):
         self.assertEquals(DiceFactory.set_as((4,4,4,4)).get_score(), 1000)
-    def test_dice26(self):
         self.assertEquals(DiceFactory.set_as((5,5,5,5)).get_score(), 1000)
-    def test_dice27(self):
         self.assertEquals(DiceFactory.set_as((6,6,6,6)).get_score(), 1000)
-    def test_dice28(self):
         self.assertEquals(DiceFactory.set_as((6,6,6,1)).get_score(), 700)
-    def test_dice29(self):
         self.assertEquals(DiceFactory.set_as((4,4,4,5)).get_score(), 450)
-    def test_dice30(self):
         self.assertEquals(DiceFactory.set_as((3,3,3,4)).get_score(), 300)
-    def test_dice31(self):
         self.assertEquals(DiceFactory.set_as((1,2,3,4)).get_score(), 100)
-    def test_dice32(self):
         self.assertEquals(DiceFactory.set_as((3,4,5,6)).get_score(), 50)
-    def test_dice33(self):
         self.assertEquals(DiceFactory.set_as((2,3,4,6)).get_score(), 0)
-    def test_dice34(self):
         self.assertEquals(DiceFactory.set_as((1,1,1,1,1)).get_score(), 2000)
-    def test_dice35(self):
         self.assertEquals(DiceFactory.set_as((2,2,2,2,2)).get_score(), 2000)
-    def test_dice36(self):
         self.assertEquals(DiceFactory.set_as((3,3,3,3,3)).get_score(), 2000)
-    def test_dice37(self):
         self.assertEquals(DiceFactory.set_as((4,4,4,4,4)).get_score(), 2000)
-    def test_dice38(self):
         self.assertEquals(DiceFactory.set_as((5,5,5,5,5)).get_score(), 2000)
-    def test_dice39(self):
         self.assertEquals(DiceFactory.set_as((6,6,6,6,6)).get_score(), 2000)
-    def test_dice40(self):
         self.assertEquals(DiceFactory.set_as((1,1,1,1,1,1)).get_score(), 3000)
-    def test_dice41(self):
         self.assertEquals(DiceFactory.set_as((2,2,2,2,2,2)).get_score(), 3000)
-    def test_dice42(self):
         self.assertEquals(DiceFactory.set_as((3,3,3,3,3,3)).get_score(), 3000)
-    def test_dice43(self):
         self.assertEquals(DiceFactory.set_as((4,4,4,4,4,4)).get_score(), 3000)
-    def test_dice44(self):
         self.assertEquals(DiceFactory.set_as((5,5,5,5,5,5)).get_score(), 3000)
-    def test_dice45(self):
         self.assertEquals(DiceFactory.set_as((6,6,6,6,6,6)).get_score(), 3000)
-    def test_dice46(self):
         self.assertEquals(DiceFactory.set_as((1,1,1,2,2,2)).get_score(), 2500)
-    def test_dice47(self):
         self.assertEquals(DiceFactory.set_as((3,3,3,4,4,4)).get_score(), 2500)
-    def test_dice48(self):
         self.assertEquals(DiceFactory.set_as((5,5,5,6,6,6)).get_score(), 2500)
-    def test_dice49(self):
         self.assertEquals(DiceFactory.set_as((1,1,2,2,3,3)).get_score(), 1500)
-    def test_dice50(self):
         self.assertEquals(DiceFactory.set_as((4,4,5,5,6,6)).get_score(), 1500)
-    def test_dice51(self):
         self.assertEquals(DiceFactory.set_as((1,1,1,1,2,2)).get_score(), 1500)
-    def test_dice52(self):
         self.assertEquals(DiceFactory.set_as((3,3,3,3,4,4)).get_score(), 1500)
-    def test_dice53(self):
         self.assertEquals(DiceFactory.set_as((5,5,5,5,6,6)).get_score(), 1500)
+        self.assertEquals(DiceFactory.set_as((5,5,4,5,6,6)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((4,6)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((1,5,4,6)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((3,3,3,4)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((1,2,3,4)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((3,4,5,6)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((2,3,4,6)).get_score(zero_for_extra=True), 0)
+        self.assertEquals(DiceFactory.set_as((6, 2, 5, 2, 6, 4)).get_score(zero_for_extra=False), 50)
+
+    def test_set_aside(self):
+        remaining = DiceFactory.set_as((2,2,2,2,3,4))
+        proposed_set_aside = DiceFactory.set_as((2,2,2,2))
+        self.assertEquals(proposed_set_aside.is_valid_set_aside(remaining), True)
+
+        remaining = DiceFactory.set_as((1,3,2,2,3,4))
+        proposed_set_aside = DiceFactory.set_as((1,))
+        self.assertEquals(proposed_set_aside.is_valid_set_aside(remaining), True)
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,9 +18,12 @@ class HumanPlayer(object):
         print "\nYou roll the dice:"
         print remaining.get_values_as_string()
 
-        choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces, or enter nothing to stop.\n")
+        choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces.\n")
 
-        return [int(choice) for choice in choices.split()]
+        try:
+            return [int(choice) for choice in choices.split()]
+        except ValueError:
+            return ''
 
 
     def query_stop(self, remaining, set_aside, turn_score, total_scores):
@@ -33,6 +36,9 @@ class HumanPlayer(object):
     def warn_invalid_set_aside(self):
         print "That set aside is invalid!"
 
+    def warn_farkle(self, roll):
+        print "You got a farkle!"
+        print "Dice: " + roll.get_values_as_string()
 
     
             
@@ -88,21 +94,20 @@ class Dice(object):
     def get_values_as_string(self):
         return ' '.join([str(die) for die in self.get_values()])
 
-    def is_valid_set_aside(self, dice_values):
-        if not self.contains_values(dice_values): return False
+    def is_valid_set_aside(self, remaining):
+        if not remaining.contains_values(self): return False
         if self.get_score(zero_for_extra=True) == 0: return False
         return True
 
-    def contains_values(self, dice_values):
-        proposed_dice = list(dice_values)
+    def contains_values(self, dice):
+        proposed_dice = list(dice.get_values())
         for die in self.get_values():
             if die in proposed_dice:
                 proposed_dice.remove(die)
         return len(proposed_dice) == 0
 
-    def is_farkle(self, dice_values):
+    def is_farkle(self):
         return self.get_score() == 0
-
 
     def find_n_of_a_kind(self, n, die_counts):
         matches = []
@@ -112,10 +117,10 @@ class Dice(object):
         return tuple(matches)
         
     def add(self, new_dice):
-        self.values.extend(new_dice)
+        self.values.extend(new_dice.get_values())
 
-    def remove(self, dice_values):
-        for die_value in dice_values:
+    def remove(self, dice):
+        for die_value in dice.get_values():
             self.values.remove(die_value)
 
 
@@ -123,64 +128,54 @@ class Dice(object):
         score = 0
         die_counts = self.get_counts()
 
-        # four with a pair
-        matches4, matches2 = self.find_n_of_a_kind(4, die_counts), self.find_n_of_a_kind(2, die_counts)
-        if matches4 and matches2:
-            score += 1500
-            die_counts[matches4[0]] = die_counts[matches2[0]] = 0
-
-        # two triplets
-        matches = self.find_n_of_a_kind(3, die_counts)
-        if len(matches) == 2:
-            score += 2500
-            die_counts[matches[0]] = die_counts[matches[1]] = 0
-
-        # three pairs
-        matches = self.find_n_of_a_kind(2, die_counts)
-        if len(matches) == 3:
-            score += 1500
-            die_counts[matches[0]] = die_counts[matches[1]] = die_counts[matches[2]] = 0
-
-        # strait
+        # four with a pair, two triplets, three pairs, strait, and 6 of a kind can all just return their point value because they use all the dice
+        if die_counts.values().count(4) and die_counts.values().count(2):
+            return 1500
+        if die_counts.values().count(3) == 2:
+            return 2500
+        if die_counts.values().count(2) == 3:
+            return 1500
         if self.have_one_of_each():
-            score += 1500
-            for i in range(1,7):
-                die_counts[i] = 0
+            return 1500
+        if die_counts.values().count(6):
+            return 3000
 
-        # 6, 5, 4, and 3 of a kind
-        matches = self.find_n_of_a_kind(6, die_counts)
-        if matches:
-            score += 3000
-            die_counts[matches[0]] = 0
-
-        matches = self.find_n_of_a_kind(5, die_counts)
-        if matches:
+        #3, 4, and 5 of a kind
+        if die_counts.values().count(5):
             score += 2000
-            die_counts[matches[0]] = 0
+            if die_counts[1] == 1: score += 100
+            if die_counts[5] == 1: score += 50
+            if zero_for_extra and (die_counts[2] == 1 or
+                                   die_counts[3] == 1 or
+                                   die_counts[4] == 1 or
+                                   die_counts[6] == 1):
+                score = 0
+            return score
 
-        matches = self.find_n_of_a_kind(4, die_counts)
-        if matches:
+        if die_counts.values().count(4):
             score += 1000
-            die_counts[matches[0]] = 0
+            if die_counts[1] <= 2: score += 100 * die_counts[1]
+            if die_counts[5] <= 2: score += 50 * die_counts[5]
+            if zero_for_extra and (1 <= die_counts[2] <= 2 or
+                                   1 <= die_counts[3] <= 2 or
+                                   1 <= die_counts[4] <= 2 or
+                                   1 <= die_counts[6] <= 2):
+                score = 0
+            return score
 
-        matches = self.find_n_of_a_kind(3, die_counts)
-        if matches:
-            if matches[0] == 1:
-                score += 300
-            else:
-                score += matches[0] * 100
-            die_counts[matches[0]] = 0
-
-        # single 1's and 5's
-        if die_counts[1] > 0:
-            score += die_counts[1] * 100
-            die_counts[1] = 0
-        if die_counts[5] > 0:
-            score += die_counts[5] * 50
-            die_counts[5] = 0
-
-        if zero_for_extra and not all(die_counts.values()):
-            return 0
+        for die in range(1,7):
+            if die_counts[die] == 3:
+                if die == 1:
+                    score += 300
+                else:
+                    score += die*100
+        if 1 <= die_counts[1] <= 2: score += 100 * die_counts[1]
+        if 1 <= die_counts[5] <= 2: score +=  50 * die_counts[5]
+        if zero_for_extra and (1 <= die_counts[2] <= 2 or
+                               1 <= die_counts[3] <= 2 or
+                               1 <= die_counts[4] <= 2 or
+                               1 <= die_counts[6] <= 2):
+            score = 0
         return score
 
 
@@ -220,22 +215,30 @@ class Farkle(object):
 
         while True:
             remaining = DiceFactory.rolled_dice(remaining.count())
+            if remaining.is_farkle():
+                player.warn_farkle(remaining)
+                return 0
 
             while True:
-                proposed_set_aside = player.query_set_aside(remaining,
-                                                            set_aside,
-                                                            turn_score,
-                                                            tuple(self.scores))
+                proposed_set_aside = DiceFactory.set_as(player.query_set_aside(remaining,
+                                                                               set_aside,
+                                                                               turn_score,
+                                                                               tuple(self.scores)))
 
-                if remaining.is_valid_set_aside(proposed_set_aside):
+                if proposed_set_aside.is_valid_set_aside(remaining):
                     remaining.remove(proposed_set_aside)
                     set_aside.add(proposed_set_aside)
                     break
                 else:
                     player.warn_invalid_set_aside()
 
+            turn_score += proposed_set_aside.get_score()
             if player.query_stop(remaining, set_aside, turn_score, tuple(self.scores)):
-                return score
+                return turn_score
+            if remaining.count() == 0:
+                remaining = DiceFactory.set_as((1,1,1,1,1,1))
+                set_aside = DiceFactory.set_as(())
+
             
 
 
