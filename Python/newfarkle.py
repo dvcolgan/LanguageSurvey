@@ -1,9 +1,47 @@
 import random
 
 
+class GreedyAIPlayer(object):
+    def __init__(self, name):
+        self.name = name
+
+    def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
+
+        if remaining.count() == 6 and remaining.get_score() > 1000:
+            return remaining.get_values()
+
+        if remaining.count() == 5 and remaining.get_score() = 1500:
+
+        if remaining.count() == 3:
+            result = ()
+            
+            for die in remaining.get_values():
+                if die == 1 or die == 5:
+                    result.append(die)
+            return result
+
+        if remaining.count() == 2:
+            result = ()
+            for die in remaining.get_values():
+                if die == 1 or die == 5:
+                    result.append(die)
+            return result
+
+        
+        if remaining.count() == 1:
+            return remaining.get_values()
+
+
+
+    def query_stop(self, remaining, set_aside, turn_score, total_scores):
+        if turn_score < 1000:
+            return False
+        else:
+            return True
+
 class HumanPlayer(object):
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        self.name = name
 
     def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
         print "\n\nScores:\n"
@@ -109,8 +147,9 @@ class Dice(object):
     def is_farkle(self):
         return self.get_score() == 0
 
-    def find_n_of_a_kind(self, n, die_counts):
+    def find_n_of_a_kind(self, n):
         matches = []
+        die_counts = self.get_counts()
         for i in range(1,7):
             if die_counts[i] >= n:
                 matches.append(i)

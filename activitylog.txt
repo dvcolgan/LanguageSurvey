@@ -123,3 +123,7 @@ Meeting with Nurkkala, good progress in Python code.
 
 8:00 - 9:00 PM
 Refactoring Python code.
+
+Thursday October 7
+7:30 - 9:30 AM
+Finished game simulation, working on AI player.
