@@ -1,9 +1,16 @@
 from newfarkle import Dice, DiceFactory
+from ga import SequenceProblem
 import unittest
 
 class TestGame(unittest.TestCase):
     def setUp(self):
         pass
+
+    def test_sequence_problem(self):
+        m = SequenceProblem()
+        self.assertEquals(m.run_tournament(range(10), [9,7,5,4,2,1,6,7,4,8]), range(10))
+        self.assertEquals(m.run_tournament([0,0,0,0,0,0,0,0,0,0], [0,1,0,0,0,0,0,0,0,0]), [0,1,0,0,0,0,0,0,0,0])
+
 
     def test_scoring(self):
         self.assertEquals(DiceFactory.set_as((1,)).get_score(), 100)

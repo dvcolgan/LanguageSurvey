@@ -1,440 +1,265 @@
 import random
-import cPickle
 
 
-#read:
-
-#refactoring
-
-#class should not pass its own instance variables
-#large number of static methods means the class may need to be split
-
-#the AI player does not need
-
-#
-
-#does this class need dice as state or only need to get passed it
-class DiceEvaluator
-    def __init__(self):
-        self.score = 0
-        self.got_farkle = False
-        
+class FarkleTournament(object):
+    def __init__(self, player1, player2, rounds=10):
+        self.player1 = player1
+        self.player2 = player2
+        self.rounds = 10
 
 
-#This class should only know about things related to dice, not scoring.
-#No mutator methods are exposed.  Only the Turn class can access the dice values themselves.
-class Dice(object):
-    def __init__(self):
-        self.set_aside = []
-        self.remaining = [0, 0, 0, 0, 0, 0]
+    def run(self):
+        self.game = Farkle()
+        self.game.add_player(self.player1)
+        self.game.add_player(self.player2)
 
-    def get_score(self):
-        return self.score
+        p1_wins, p2_wins = 0, 0
+        for i in range(self.rounds):
+            winner = game.play()
+            if winner == 0: i1_wins += 1
+            if winner == 1: i2_wins += 1
 
-    def get_set_aside(self, as_str=False):
-        if as_str:
-            return Dice.to_str(self.set_aside)
+        if i1_wins > i2_wins:
+            return self.player1
         else:
-            return tuple(self.set_aside)
+            return self.player2
 
-    def get_remaining(self, as_str=False):
-        if as_str:
-            return Dice.to_str(self.remaining)
-        else:
-            return tuple(self.remaining)
-
-
+class FarkleIndividualCreator(object):
     @staticmethod
-    def to_str(dice_values):
-        return ' '.join([str(die) for die in dice_values])
+    def create():
+        return AIPlayer()
+
+
+class GreedyAIPlayer(object):
+    def __init__(self, name):
+        self.name = name
+
+    def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
+
+        if remaining.count() == 6 and remaining.get_score() > 1000:
+            return remaining.get_values()
+
+        if remaining.count() == 5 and remaining.get_score() == 1500:
+            pass
+
+        if remaining.count() == 3:
+            result = ()
+            
+            for die in remaining.get_values():
+                if die == 1 or die == 5:
+                    result.append(die)
+            return result
+
+        if remaining.count() == 2:
+            result = ()
+            for die in remaining.get_values():
+                if die == 1 or die == 5:
+                    result.append(die)
+            return result
+
         
+        if remaining.count() == 1:
+            return remaining.get_values()
 
-    def dice_in_set_aside(self, dice_values):
 
-        proposed_dice = list(dice_values)
-        actual_dice = list(self.remaining)
 
-        for die in actual_dice:
-            if die in proposed_dice:
-                proposed_dice.remove(die)
-                actual_dice.remove(die)
-        if len(proposed_dice) > 0:
+    def query_stop(self, remaining, set_aside, turn_score, total_scores):
+        if turn_score < 1000:
             return False
         else:
             return True
 
+class HumanPlayer(object):
+    def __init__(self, name):
+        self.name = name
 
-    def find_n_of_a_kind(self, n):
-        self.count_dice()
-        matches = []
-        for i in range(1,7):
-            if self.die_counts[i] >= n:
-                matches.append(i)
-        return tuple(matches)
+    def get_name(self):
+        return self.name
 
+    def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
+        print "\n\nScores:\n"
+        for i, score in enumerate(total_scores):
+            print "Player {0}: {1}".format(i, score)
 
+        print "Turn score: ", turn_score
 
-    def count_dice():
-        self.die_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
+        print "\nSet Aside:"
+        print set_aside.get_values_as_string()
 
-        for die in self.dice_values:
-            self.die_counts[die] += 1
+        print "\nYou roll the dice:"
+        print remaining.get_values_as_string()
 
-        
+        choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces.\n")
 
-#put in evaluation class
-class Turn(object):
-
-    def __init__(self, dice):
-        self.dice = dice
-        self.score = 0
-
-
-    def roll(self):
-
-        self.dice
-        self.dice.remaining = [random.randint(1,6) for die in self.remaining]
-        self.die_counts = None
-        self.check_for_farkle()
+        try:
+            return [int(choice) for choice in choices.split()]
+        except ValueError:
+            return ''
 
 
-    def dice_combination_value(self, dice):
-        score = 0
-        self.count_dice()
-
-        # four with a pair
-        matches4, matches2 = dice.find_n_of_a_kind(4, die_counts), dice.find_n_of_a_kind(2, die_counts)
-        if matches4 and matches2:
-            score += 1500
-            die_counts[matches4[0]] = die_counts[matches2[0]] = 0
-
-        # two triplets
-        matches = Dice.find_n_of_a_kind(3, die_counts)
-        if len(matches) == 2:
-            score += 2500
-            die_counts[matches[0]] = die_counts[matches[1]] = 0
-
-        # three pairs
-        matches = Dice.find_n_of_a_kind(2, die_counts)
-        if len(matches) == 3:
-            score += 1500
-            die_counts[matches[0]] = die_counts[matches[1]] = die_counts[matches[2]] = 0
-
-        # strait
-        if len(set(range(1,7)) - set(dice_values)) == 0:
-            score += 1500
-            for i in range(1,7):
-                die_counts[i] = 0
-
-        # 6, 5, 4, and 3 of a kind
-        matches = Dice.find_n_of_a_kind(6, die_counts)
-        if matches:
-            score += 3000
-            die_counts[matches[0]] = 0
-
-        matches = Dice.find_n_of_a_kind(5, die_counts)
-        if matches:
-            score += 2000
-            die_counts[matches[0]] = 0
-
-        matches = Dice.find_n_of_a_kind(4, die_counts)
-        if matches:
-            score += 1000
-            die_counts[matches[0]] = 0
-
-        matches = Dice.find_n_of_a_kind(3, die_counts)
-        if matches:
-            if matches[0] == 1:
-                score += 300
-            else:
-                score += matches[0] * 100
-            die_counts[matches[0]] = 0
-
-
-        # single 1's and 5's
-        if die_counts[1] > 0:
-            score += die_counts[1] * 100
-            die_counts[1] = 0
-        if die_counts[5] > 0:
-            score += die_counts[5] * 50
-            die_counts[5] = 0
-
-        return (score, die_counts)
-
-#        rules = [
-#                {'die_counts':(4,2),'value':1500},
-#                {'die_counts':(3,3),'value':2500},
-#                {'die_counts':(2,2,2),'value':1500},
-#                {'die_counts':(6,),'value':3000},
-#                {'die_counts':(5,),'value':2000},
-#                {'die_counts':(4,),'value':1000},
-#                {'die_counts':(
-#
-#                {'die_counts':(3,),'value':},
-#abstract out the setting of the die_counts to 0 ?
-
-
-
-
-#should be in the evaluation class
-    def check_for_farkle(self):
-        if self.dice_values == [0,0,0,0,0,0]: return
-        value, leftovers = self.dice_combination_value()
-        if value == 0:
-            self.score = 0
-            self.got_farkle = True   # set so that the dice can't be rolled again after getting a farkle
-            raise GotFarkleException()
-    
-    def evaluate_set_aside(self):
-        value, leftovers = self.dice_combination_value()
-        if value > 0 and not any(leftovers.values()):
-            return value
+    def query_stop(self, remaining, set_aside, turn_score, total_scores):
+        choice = raw_input("You have {0} points.  Hit enter to continue rolling, or type 'stop' to end your turn.\n".format(turn_score))
+        if choice == '':
+            return False
         else:
-            raise InvalidSetAsideException()
+            return True
 
-    #should be in the dice class, because they relate to the current roll
-#should not evaluate the score, should only set aside dice
-    def move_to_set_aside(self):
-        if not self.dice_in_set_aside():
-            raise InvalidSetAsideException()
+    def warn_invalid_set_aside(self):
+        print "That set aside is invalid!"
 
-        value = self.evaluate_set_aside()
-        self.score += value
+    def warn_farkle(self, roll):
+        print "You got a farkle!"
+        print "Dice: " + roll.get_values_as_string()
 
-        for die_value in dice_values:
-            self.set_aside.append(die_value)
-            self.remaining.remove(die_value)
-
-        if len(self.set_aside) == 6:
-            self.remaining = self.set_aside
-            self.set_aside = []
-
-class Dice:
-    def get_set_aside(self, as_str=False):
-    def get_remaining(self, as_str=False):
-    def to_str(dice_values):
-    def dice_in_set_aside(self, dice_values):
-    def find_n_of_a_kind(self, n):
-    def count_dice():
-
-#the turn class is the only class that knows about the dice
-
-class Turn:
-    self.dice
-    self.score
     
-    def move_to_set_aside(self):
-    def roll(self):
-    def roll
-    def set_aside
-    def can_roll == check_for_farkle (call before rolling)
-    def get_score(self):
+            
 
-    def dice_combination_value(self, dice):
-    def check_for_farkle(self):
-    def evaluate_set_aside(self):
-
-
-    def
-
-    def get_score
-
-    def get_remaining
-
-    def get_set_aside
-
-
-
-
-
-class GotFarkleException(Exception):
-    pass
+            
 
 class InvalidSetAsideException(Exception):
     pass
-
-class CantRollException(Exception):
+class GotFarkleException(Exception):
+    pass
+class BadDieException(Exception):
     pass
 
 
+class DiceFactory(object):
+    @staticmethod
+    def rolled_dice(count):
+        dice = Dice()
+        dice.values = [random.randint(1,6) for die in range(count)]        
+        return dice
 
-class TurnState(object):
-    def get_set_aside
-    def get_remaining
-    def get_dice_counts
-    def is_n_of_a_kind
+    @staticmethod
+    def set_as(values):
+        for die in values:
+            if not (1 <= die <= 6):
+                raise BadDieException()
+        dice = Dice()
+        dice.values = list(values)
+        return dice
 
-class Dice:
-    def roll
-    def make_set_aside
-    def 
-
-
-class HumanPlayer(object):
-
-#need to provide enough state but not too much
-    def what_to_set_aside?(dice, other_players_scores):
-        action = raw_input("What do you want to do+?")
-        return action
-
-    def stop_or_keep_rolling(dice, other_players_scores)
+    
 
 
-    def turn:
-
-        while Not Farkle and Not Player Stops
-            self.roll()
-            player.what_to_set_aside()
-            self.set_aside()
-            player.stop_or_keep_rolling()
+class Dice(object):
 
 
-#enforce the rules and support the player
-#adapter pattern
+    def count(self):
+        return len(self.values)
 
-#for a workable compromise, the turn class has a roll method that scrambles the dice
+    def get_counts(self):
+        die_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
+        for die in self.values:
+            die_counts[die] += 1
+        return die_counts
 
+    def get_values(self):
+        return tuple(self.values)
 
+    def have_one_of_each(self):
+        counts = self.get_counts()
+        return all([counts[die] > 0 for die in range(1,7)])
 
-class Turn:
+    def get_values_as_string(self):
+        return ' '.join([str(die) for die in self.get_values()])
 
-    def take(self, dice, scores):
-        while True:
-            print "\n\nScores:\n"
-            for i, score in enumerate(scores):
-                print "Player {0}: {1}".format(i, score)
+    def is_valid_set_aside(self, remaining):
+        if not remaining.contains_values(self): return False
+        if self.get_score(zero_for_extra=True) == 0: return False
+        return True
 
-            print "Turn score: ", dice.get_score()
+    def contains_values(self, dice):
+        proposed_dice = list(dice.get_values())
+        for die in self.get_values():
+            if die in proposed_dice:
+                proposed_dice.remove(die)
+        return len(proposed_dice) == 0
 
-            print "\nSet Aside:"
-            print dice.get_set_aside(as_str=True)
+    def is_farkle(self):
+        return self.get_score() == 0
 
-            print "\nYou roll the dice:"
-            try:
-                dice.roll()
-            except GotFarkleException as e:
-                print dice.get_remaining(as_str=True)
-                print "\nYou got a farkle!"
-                raw_input('Hit enter to end your turn.')
-                return dice
-
-            print dice.get_remaining(as_str=True)
-
-
-            while True:
-                choices = raw_input("\nIndicate the dice you want to set aside by entering their numbers separated by spaces, or enter nothing to stop.\n")
-
-                try:
-                    dice.move_to_set_aside([int(choice) for choice in choices.split()])
-                    break
-                except ValueError as e:
-                    print "The set aside must contain only integers from 1-6."
-                except InvalidSetAsideException as e:
-                    print "That set aside is not valid."
-            
-            while True:
-                choice = raw_input("You have {0} points.  Hit enter to continue rolling, or type 'stop' to end your turn.\n".format(dice.get_score()))
-                if choice == '':
-                    break
-                if choice.lower() == 'stop':
-                    return dice
-                
-
-roll()
-
-class AIDecisionMaker(object):
-    def __init__(self):
-
-#take this and copy it x number of times for each score level
-        self.strategy = {
-            'three_dice':roll{
-                'two_5s':stop
-                'two_1s':
-                'one_1_and_one_5':
-            },
-            'four_dice':{
-                'two_5s':
-                'two_1s':
-                'one_1_and_one_5':
-            },
-            'five_dice':{
-                'two_5s':
-                'two_1s':
-                'one_1_and_one_5':
-                'three_1s_or_three_3s_and_one_1_or_5':
-                'three_2s_and_one_1_or_5':
-                'three_4s_and_one_1_or_5':
-                'three_5s_and_one_1_or_5':
-                'lessthan100 and three_6s_and_one_1_or_5':
-                'lessthan200 and three_6s_and_one_1_or_5':
-                'lessthan300 and three_6s_and_one_1_or_5':
-                'lessthan400 and three_6s_and_one_1_or_5':
-                'lessthan500 and three_6s_and_one_1_or_5':
-                'lessthan600 and three_6s_and_one_1_or_5':
-
-            },
-            'six_dice':{
-                'two_5s':
-                'two_1s':
-                'one_1_and_one_5':
-                'three_1s_or_three_3s_and_one_1_or_5':
-                'three_2s_and_one_1_or_5':
-                'three_4s_and_one_1_or_5':
-                'three_5s_and_one_1_or_5':
-                'three_6s_and_one_1_or_5':
-                'three_1s_or_three_3s_and_two_1_or_5':
-                'three_2s_and_two_1_or_5':
-                'three_4s_and_two_1s_or_5s':
-                'three_5s_and_two_1_or_5':
-                'three_6s_and_two_1_or_5':
-            },
-
-            'roll_or_stop_thresholds':{1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
-        }
-
-        def set_strategy(self, strategy):
-            self.strategy = strategy
+    def find_n_of_a_kind(self, n):
+        matches = []
+        die_counts = self.get_counts()
+        for i in range(1,7):
+            if die_counts[i] >= n:
+                matches.append(i)
+        return tuple(matches)
         
-        def save_to_file(self, filename):
-            f = open(filename, 'w')
-            cPickle.dump(self.strategy, f)
-            f.close()
+    def add(self, new_dice):
+        self.values.extend(new_dice.get_values())
 
-        def load_from_file(self, filename):
-            f = open(filename)
-            self.strategy = cPickle.load(f)
-            f.close()
+    def remove(self, dice):
+        for die_value in dice.get_values():
+            self.values.remove(die_value)
 
 
-class AIPlayer(object):
-    def __init__(decision_tree):
-        self.decisions_tree = AIDecisionMaker()
-        self.
-        self.name = str(uuid.uuid4())
+    def get_score(self, zero_for_extra=False):
+        score = 0
+        die_counts = self.get_counts()
+
+        # four with a pair, two triplets, three pairs, strait, and 6 of a kind can all just return their point value because they use all the dice
+        if die_counts.values().count(4) and die_counts.values().count(2):
+            return 1500
+        if die_counts.values().count(3) == 2:
+            return 2500
+        if die_counts.values().count(2) == 3:
+            return 1500
+        if self.have_one_of_each():
+            return 1500
+        if die_counts.values().count(6):
+            return 3000
+
+        #3, 4, and 5 of a kind
+        if die_counts.values().count(5):
+            score += 2000
+            if die_counts[1] == 1: score += 100
+            if die_counts[5] == 1: score += 50
+            if zero_for_extra and (die_counts[2] == 1 or
+                                   die_counts[3] == 1 or
+                                   die_counts[4] == 1 or
+                                   die_counts[6] == 1):
+                score = 0
+            return score
+
+        if die_counts.values().count(4):
+            score += 1000
+            if die_counts[1] <= 2: score += 100 * die_counts[1]
+            if die_counts[5] <= 2: score += 50 * die_counts[5]
+            if zero_for_extra and (1 <= die_counts[2] <= 2 or
+                                   1 <= die_counts[3] <= 2 or
+                                   1 <= die_counts[4] <= 2 or
+                                   1 <= die_counts[6] <= 2):
+                score = 0
+            return score
+
+        for die in range(1,7):
+            if die_counts[die] == 3:
+                if die == 1:
+                    score += 300
+                else:
+                    score += die*100
+        if 1 <= die_counts[1] <= 2: score += 100 * die_counts[1]
+        if 1 <= die_counts[5] <= 2: score +=  50 * die_counts[5]
+        if zero_for_extra and (1 <= die_counts[2] <= 2 or
+                               1 <= die_counts[3] <= 2 or
+                               1 <= die_counts[4] <= 2 or
+                               1 <= die_counts[6] <= 2):
+            score = 0
+        return score
 
 
-
-
-    def take_turn(self, dice, scores):
-        self.dice = dice
-
-        self.get_move()
-
-        
-    def get_move(self):
-        if len(self.dice == 6):
-
-
-
-    def can_set_aside_all(self):
-        if self.dice.find_n_of_a_kind(6, 
-
+class NotEnoughPlayersException(Exception):
+    pass
 
 
 class Farkle(object):
     def __init__(self):
         self.players = []
         self.scores = []
+        self.turn_index = 0
 
     def add_player(self, player):
         self.players.append(player)
@@ -442,50 +267,58 @@ class Farkle(object):
 
 #add a name, use the uuid for nonhuman players, could be a database key
     def play(self):
+        if len(self.players) == 0: raise NotEnoughPlayersException()
 
-        turn_index = 0
         while True:
-            dice = self.players[turn_index].take_turn(Dice(), tuple(self.scores))
-            self.scores[turn_index] += dice.get_score()
+            score = self.take_turn()
+            self.scores[self.turn_index] += score
 
-            if self.scores[turn_index] > 10000: break
-            turn_index += 1
-            if turn_index > len(self.players) - 1: turn_index = 0
+            if self.scores[self.turn_index] > 10000: break
+            self.turn_index += 1
+            if self.turn_index > len(self.players) - 1: self.turn_index = 0
 
         return turn_index
 
+    def take_turn(self):
+        player = self.players[self.turn_index]
+        turn_score = 0
+        set_aside = DiceFactory.set_as(())
+        remaining = DiceFactory.set_as((1,1,1,1,1,1)) #junk value to initialize the number of dice
 
-class GA
-mutation_rate = 0.01
-crossover_rate = 0.7
-population = [Individual]
-mating_pool = [Individual]
+        while True:
+            remaining = DiceFactory.rolled_dice(remaining.count())
+            if remaining.is_farkle():
+                player.warn_farkle(remaining)
+                return 0
 
-run()
-do_crossover()
-conduct_tournament()
-fill_mating_pool()
-evaluate_population()
+            while True:
+                proposed_set_aside = DiceFactory.set_as(player.query_set_aside(remaining,
+                                                                               set_aside,
+                                                                               turn_score,
+                                                                               tuple(self.scores)))
 
-class FarkleTournament
-farkle_game
+                if proposed_set_aside.is_valid_set_aside(remaining):
+                    remaining.remove(proposed_set_aside)
+                    set_aside.add(proposed_set_aside)
+                    break
+                else:
+                    player.warn_invalid_set_aside()
 
-add_players()
-run()
+            turn_score += proposed_set_aside.get_score()
+            if player.query_stop(remaining, set_aside, turn_score, tuple(self.scores)):
+                return turn_score
+            if remaining.count() == 0:
+                remaining = DiceFactory.set_as((1,1,1,1,1,1))
+                set_aside = DiceFactory.set_as(())
 
-class Individual(object):
-    def __init__(self):
-        self.gene
-Evaluate()
-
-
-
+            
 
 
 
 def main():
     farkle = Farkle()
-    farkle.add_player(HumanPlayer())
+    farkle.add_player(HumanPlayer('Player 1'))
+    farkle.add_player(HumanPlayer('Player 2'))
     winner = farkle.play()
     print "The winner is player {0}!".format(winner)
 

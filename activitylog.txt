@@ -127,3 +127,8 @@ Refactoring Python code.
 Thursday October 7
 7:30 - 9:30 AM
 Finished game simulation, working on AI player.
+
+Saturday October 9
+3:00 - 4:00 PM
+6:00 - 7:30 PM
+Wrote the GA system in Python
