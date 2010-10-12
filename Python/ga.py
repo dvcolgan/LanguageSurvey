@@ -1,8 +1,36 @@
 import random
-from farkle import FarkleTournament
+
+class FarkleProblem(object):
+    def create_random_individual(self):
+        return GAPlayer()
+
+    def run_tournament(self, p1, p2):
+        game = Farkle()
+        game.add_player(p1)
+        game.add_player(p2)
+
+        p1_wins, p2_wins = 0, 0
+        for i in range(self.rounds):
+            winner = game.play()
+            if winner == 0: p1_wins += 1
+            if winner == 1: p2_wins += 1
+        if p1_fitness >= p2_fitness: return p1
+        if p1_fitness <  p2_fitness: return p2
 
 
-#try to evolve the sequence 0-9
+    def mate_individuals(self, i1, i2):
+        pivot = random.randint(0,9)
+        child1 = seq1[:pivot] + seq2[pivot:]
+        child2 = seq2[:pivot] + seq1[pivot:]
+        return child1, child2
+
+    def mutate_individual(self, seq, mutation_rate):
+        if random.random() < mutation_rate:
+            pivot = random.randint(0,9)
+            seq[pivot] = random.randint(0,9)
+        return seq
+
+
 class SequenceProblem(object):
     def create_random_individual(self):
         return [random.randint(0,9) for i in range(10)]

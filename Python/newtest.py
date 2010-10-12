@@ -1,10 +1,29 @@
-from newfarkle import Dice, DiceFactory
+from farkle import Dice, DiceFactory
 from ga import SequenceProblem
 import unittest
 
 class TestGame(unittest.TestCase):
     def setUp(self):
         pass
+
+    def test_contains_n_or_more_of_a_kind(self):
+        self.assertEquals(
+                DiceFactory.set_as((1,2,2,3,4,2)).contains_n_or_more_of_a_kind(),
+                True)
+        self.assertEquals(
+                DiceFactory.set_as((1,4,2,3,4,2)).contains_n_or_more_of_a_kind(),
+                False)
+
+    def test_contains_one_scoring_die(self):
+        self.assertEquals(
+                DiceFactory.set_as((1,2,6,3,4,2)).contains_one_scoring_die(),
+                True)
+        self.assertEquals(
+                DiceFactory.set_as((1,5,2,3,4,2)).contains_one_scoring_die(),
+                False)
+        self.assertEquals(
+                DiceFactory.set_as((3,4,2,3,4,2)).contains_one_scoring_die(),
+                False)
 
     def test_sequence_problem(self):
         m = SequenceProblem()
@@ -13,7 +32,6 @@ class TestGame(unittest.TestCase):
 
 
     def test_scoring(self):
-        self.assertEquals(DiceFactory.set_as((1,)).get_score(), 100)
         self.assertEquals(DiceFactory.set_as((1,)).get_score(), 100)
         self.assertEquals(DiceFactory.set_as((5,)).get_score(), 50)
         self.assertEquals(DiceFactory.set_as((2,)).get_score(), 0)
