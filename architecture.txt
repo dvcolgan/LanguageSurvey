@@ -44,12 +44,12 @@ if 1 die, there is no choice, take it or you farkle
 if 2 die, take it all if both scoring, take the one if there is one,  else farkle
 
 if 6 die and first time through,
-    if 6 of a kind or other 6 combos, take them
-    if 5 of a kind take as many dice as possible
-    if 4 of a kind, take as many dice as you can
+-    if 6 of a kind or other 6 combos, take them
+-    if 5 of a kind take as many dice as possible
+-    if 4 of a kind, take as many dice as you can
 
 
-    if 3 of a kind and 2 1s or 5s: take 1 die, 2 die, 3 die, 4 die, 5 die
+    if 3 of a kind and 2 1s or 5s: take 1 die, 3 die, 5 die
 *       3 1s or 3s
 *       3 2s
 *       3 3s
@@ -65,35 +65,35 @@ if 6 die and first time through,
 *       3 6s
 
 
-    if only 3 of a kind take it
+-   if only 3 of a kind take it
 *   if 2 5s: take 1 or 2
 *   if 2 1s: take 1 or 2
 *   if 1 1 and 1 5, take the 1 or take both
-    if 1 5 or 1, must take it
+-   if 1 5 or 1, must take it
 
 if 5 die,
-    if 5 of a kind take them
-    if 4 of a kind, take as many as possible
-    if 3 of a kind and 1s and 5s, take all
+-    if 5 of a kind take them
+-    if 4 of a kind, take as many as possible
+-    if 3 of a kind and 1s and 5s, take all
+-    if only 3 of a kind take it
+-    if 1 5 or 1, must take it
 
-    if 3 of a kind and a 1 or 5: take 1 die, 3 die, 4 die
+
+-    if 3 of a kind and a 1 or 5: take 1 die, 3 die, 4 die
 *       3 1s or 3s
 *       3 2s
 *       3 3s
 *       3 4s
 *       3 5s
 *       3 6s
-    
 
-    if only 3 of a kind take it
 *   if 2 5s: take 1 or 2
 *   if 2 1s: take 1 or 2
 *   if 1 1 and 1 5, take the 1 or take both
-    if 1 5 or 1, must take it
 
 if 4 die,
-    if 4 of a kind, take them all
-    if 3 of a kind and 1 or 5, take all
+-    if 4 of a kind, take them all
+-    if 3 of a kind and 1 or 5, take all
 
     if only 3 of a kind take it
 *   if 2 5s: take 1 or 2
@@ -102,17 +102,17 @@ if 4 die,
     if 1 5 or 1, must take it
 
 if 3 die,
-    if 3 of a kind must take it
+-    if 3 of a kind must take it
 
 *   if 2 5s: take 1 or 2
 *   if 2 1s: take 1 or 2
 *   if 1 1 and 1 5, take the 1 or take both
-    if 1 5 or 1, must take it
+-    if 1 5 or 1, must take it
 
 if 2 die,
-    take as many as possible
+-    take as many as possible
 
-if 1 die, must take it
+-if 1 die, must take it
 
 
 the interesting ones are only the threes and the twos with higher numbers of dice
