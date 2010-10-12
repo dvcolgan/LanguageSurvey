@@ -132,3 +132,8 @@ Saturday October 9
 3:00 - 4:00 PM
 6:00 - 7:30 PM
 Wrote the GA system in Python
+
+Monday October 11
+7:00 - 8:00 AM
+8:00 - 9:00 PM
+Continuing work on the GA.  Working on encoding the problem.
