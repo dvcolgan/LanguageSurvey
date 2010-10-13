@@ -137,6 +137,21 @@ class GA(object):
     def is_converged(self):
         return False
 
+    def find_strongest_individual(self):
+        pool = list(self.population)
+        winners = []
+        while len(pool) > 1:
+            for i in range(0, len(pool), 2):
+                print i
+                individual1, individual2 = pool[i], pool[i+1]
+                winner = self.problem_manager.run_tournament(individual1,
+                                                             individual2)
+                winners.append(winner)
+            pool = winners
+            winners = []
+        print pool[0].gene
+
+
     def print_report(self):
         for individual in self.population:
             print individual.gene
@@ -150,10 +165,11 @@ class GA(object):
             self.do_mutation()
             if self.is_converged(): break
             self.print_report()
+        self.find_strongest_individual()
 
 
 if __name__ == "__main__":
     print 'starting'
-    ga = GA(FarkleProblem(), population_size=100)
+    ga = GA(FarkleProblem(), population_size=16, max_generations=2)
     ga.run()
     print 'done'

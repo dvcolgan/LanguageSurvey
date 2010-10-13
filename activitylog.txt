@@ -121,6 +121,8 @@ Literature search.
 2:00 - 3:30 PM
 Meeting with Nurkkala, good progress in Python code.
 
+Week 6
+
 8:00 - 9:00 PM
 Refactoring Python code.
 
@@ -137,3 +139,8 @@ Monday October 11
 7:00 - 8:00 AM
 8:00 - 9:00 PM
 Continuing work on the GA.  Working on encoding the problem.
+
+Tuesday October 12
+6:00 - 9:00 AM
+10:00 - 11:00 AM
+The GA is now running.
