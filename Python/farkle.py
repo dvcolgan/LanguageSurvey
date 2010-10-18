@@ -1,56 +1,85 @@
 import random
 from random import randint
 
+class VerboseGAPlayer(object):
+    def __init__(self, ga_player):
+        self.ga_player = ga_player
+
+    def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
+        return self.ga_player.query_set_aside(remaining, set_aside, turn_score, total_scores)
+        
+
+
+    def query_stop(self, remaining, set_aside, turn_score, total_scores):
+        return self.ga_player.query_stop(remaining, set_aside, turn_score, total_scores)
+
+    def warn_invalid_set_aside(self):
+        raise InvalidSetAsideException()
+
+    def warn_farkle(self, roll):
+        print 'AI player got a farkle!', roll
+        
+
 class GAPlayer(object):
     def __init__(self, gene=None):
-#[0, 1, 0, 0, 0, 0, 1, 0, 2, 2, 1, 0, 1, 1, 0, 1, 2, 2, 2, 1, 1, 1, 1, 1, 0, 2, 2, 1, 0, 1, 150, 850, 400, 1650, 450, 400]
+#create a dsl and do code generation? for later
+        self.gene_mutator = [
+self.randint01, #0, rolled 3, two 1's: 0=take one, 1=take two
+self.randint01, #1, rolled 3, two 5's: 0=take one, 1=take two
+self.randint01, #2, rolled 3, one 1 and one 5: 0=take 1, 1=take both
+
+self.randint01, #3, rolled 4, two 1's: 0=take one, 1=take two
+self.randint01, #4, rolled 4, two 5's: 0=take one, 1=take two
+self.randint01, #5, rolled 4, one 1 and one 5: 0=take 1, 1=take both
+
+self.randint02, #6, rolled 5, three 1's and a 5: 0=take one, 1=take three, 2=take four
+self.randint02, #7, rolled 5, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
+self.randint02, #8, rolled 5, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
+self.randint02, #9, rolled 5, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
+self.randint02, #10, rolled 5, three 5's and a 1: 0=take one, 1=take three, 2=take four
+self.randint02, #11, rolled 5, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
+
+self.randint01, #12, rolled 5, two 1's: 0=take one, 1=take two
+self.randint01, #13, rolled 5, two 5's: 0=take one, 1=take two
+self.randint01, #14, rolled 5, one 1 and one 5: 0=take 1, 1=take both
+
+self.randint02, #15, rolled 6, three 1's and two 5's: 0=take one, 1=take three, 2=take five
+self.randint02, #16, rolled 6, three 2's and two others: 0=take one, 1=take three, 2=take five
+self.randint02, #17, rolled 6, three 3's and two others: 0=take one, 1=take three, 2=take five
+self.randint02, #18, rolled 6, three 4's and two others: 0=take one, 1=take three, 2=take five
+self.randint02, #19, rolled 6, three 5's and two 1's: 0=take one, 1=take three, 2=take five
+self.randint02, #20, rolled 6, three 6's and two others: 0=take one, 1=take three, 2=take five
+
+self.randint02, #21, rolled 6, three 1's and a 5: 0=take one, 1=take three, 2=take four
+self.randint02, #22, rolled 6, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
+self.randint02, #23, rolled 6, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
+self.randint02, #24, rolled 6, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
+self.randint02, #25, rolled 6, three 5's and a 1: 0=take one, 1=take three, 2=take four
+self.randint02, #26, rolled 6, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
+
+self.randint01, #27, rolled 6, two 1's: 0=take one, 1=take two
+self.randint01, #28, rolled 6, two 5's: 0=take one, 1=take two
+self.randint01, #29, rolled 6, one 1 and one 5: 0=take 1, 1=take both
+
+self.randrange50_3500, #30, if have 1 dice left, threshold to stop at
+self.randrange50_3500, #31, if have 2 dice left, threshold to stop at
+self.randrange50_3500, #32, if have 3 dice left, threshold to stop at
+self.randrange50_3500, #33, if have 4 dice left, threshold to stop at
+self.randrange50_3500, #34, if have 5 dice left, threshold to stop at
+self.randrange50_3500, #35, if have 6 dice left, threshold to stop at
+        ]
+
         if gene is not None:
             self.gene = gene
         else:
-            self.gene = [
-randint(0,1), #0, rolled 3, two 1's: 0=take one, 1=take two
-randint(0,1), #1, rolled 3, two 5's: 0=take one, 1=take two
-randint(0,1), #2, rolled 3, one 1 and one 5: 0=take 1, 1=take both
+            self.gene = [self.gene_mutator[i]() for i in range(len(self.gene_mutator))]
 
-randint(0,1), #3, rolled 4, two 1's: 0=take one, 1=take two
-randint(0,1), #4, rolled 4, two 5's: 0=take one, 1=take two
-randint(0,1), #5, rolled 4, one 1 and one 5: 0=take 1, 1=take both
-
-randint(0,2), #6, rolled 5, three 1's and a 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #7, rolled 5, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #8, rolled 5, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #9, rolled 5, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #10, rolled 5, three 5's and a 1: 0=take one, 1=take three, 2=take four
-randint(0,2), #11, rolled 5, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,1), #12, rolled 5, two 1's: 0=take one, 1=take two
-randint(0,1), #13, rolled 5, two 5's: 0=take one, 1=take two
-randint(0,1), #14, rolled 5, one 1 and one 5: 0=take 1, 1=take both
-
-randint(0,2), #15, rolled 6, three 1's and two 5's: 0=take one, 1=take three, 2=take five
-randint(0,2), #16, rolled 6, three 2's and two others: 0=take one, 1=take three, 2=take five
-randint(0,2), #17, rolled 6, three 3's and two others: 0=take one, 1=take three, 2=take five
-randint(0,2), #18, rolled 6, three 4's and two others: 0=take one, 1=take three, 2=take five
-randint(0,2), #19, rolled 6, three 5's and two 1's: 0=take one, 1=take three, 2=take five
-randint(0,2), #20, rolled 6, three 6's and two others: 0=take one, 1=take three, 2=take five
-
-randint(0,2), #21, rolled 6, three 1's and a 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #22, rolled 6, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #23, rolled 6, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #24, rolled 6, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
-randint(0,2), #25, rolled 6, three 5's and a 1: 0=take one, 1=take three, 2=take four
-randint(0,2), #26, rolled 6, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
-
-randint(0,1), #27, rolled 5, two 1's: 0=take one, 1=take two
-randint(0,1), #28, rolled 5, two 5's: 0=take one, 1=take two
-randint(0,1), #29, rolled 5, one 1 and one 5: 0=take 1, 1=take both
-
-random.choice(range(0, 3501, 50)), #30, if have 1 dice left, threshold to stop at
-random.choice(range(0, 3501, 50)), #31, if have 2 dice left, threshold to stop at
-random.choice(range(0, 3501, 50)), #32, if have 3 dice left, threshold to stop at
-random.choice(range(0, 3501, 50)), #33, if have 4 dice left, threshold to stop at
-random.choice(range(0, 3501, 50)), #34, if have 5 dice left, threshold to stop at
-random.choice(range(0, 3501, 50)), #35, if have 6 dice left, threshold to stop at
-            ]
+    def randint01(self):
+        return randint(0,1)
+    def randint02(self):
+        return randint(0,2)
+    def randrange50_3500(self):
+        return random.choice(range(0, 3501, 50))
 
     def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
         if (remaining.contains_one_scoring_die() or
@@ -628,8 +657,6 @@ class Farkle(object):
                     set_aside.add(proposed_set_aside)
                     break
                 else:
-                    print "proposed:", proposed_set_aside.get_values()
-                    print "remaining:", remaining.get_values()
                     player.warn_invalid_set_aside()
 
             turn_score += proposed_set_aside.get_score()
@@ -639,11 +666,10 @@ class Farkle(object):
                 remaining = DiceFactory.set_as((1,1,1,1,1,1))
                 set_aside = DiceFactory.set_as(())
 
-
 def main():
     farkle = Farkle()
-    farkle.add_player(GreedyAIPlayer(500))
-    farkle.add_player(GreedyAIPlayer(1000))
+    #farkle.add_player(GreedyAIPlayer(500))
+    farkle.add_player(GAPlayer([0, 0, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 0, 0, 0, 2, 2, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 0, 1, 2400, 50, 0, 2900, 450, 1600]))
     winner = farkle.play()
     print "The winner is player {0}!".format(winner)
 

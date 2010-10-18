@@ -1,6 +1,13 @@
 import random
 from farkle import GAPlayer, Farkle
 
+def lists_are_same(lst1, lst2):
+    for e1, e2 in zip(lst1, lst2):
+        if e1 != e2:
+            return False
+    return True
+
+
 class FarkleProblem(object):
     def create_random_individual(self):
         return GAPlayer()
@@ -20,77 +27,50 @@ class FarkleProblem(object):
 
 
     def mate_individuals(self, i1, i2):
-        pivot = random.randint(0,9)
+        pivot = random.randint(0,len(i1.gene_mutator))
         child1 = i1.gene[:pivot] + i2.gene[pivot:]
         child2 = i2.gene[:pivot] + i1.gene[pivot:]
         return GAPlayer(child1), GAPlayer(child2)
 
     def mutate_individual(self, ind, mutation_rate):
-        if random.random() < mutation_rate:
-            print 'mutated'
-            pivot = random.randint(0,9)
-            if pivot == 0: ind.gene[pivot] = randint(0,1)
-            elif pivot == 1: ind.gene[pivot] = randint(0,1)
-            elif pivot == 2: ind.gene[pivot] = randint(0,1)
-            elif pivot == 3: ind.gene[pivot] = randint(0,1)
-            elif pivot == 4: ind.gene[pivot] = randint(0,1)
-            elif pivot == 5: ind.gene[pivot] = randint(0,1)
-            elif pivot == 6: ind.gene[pivot] = randint(0,2)
-            elif pivot == 7: ind.gene[pivot] = randint(0,2)
-            elif pivot == 8: ind.gene[pivot] = randint(0,2)
-            elif pivot == 9: ind.gene[pivot] = randint(0,2)
-            elif pivot == 10: ind.gene[pivot] = randint(0,2)
-            elif pivot == 11: ind.gene[pivot] = randint(0,2)
-            elif pivot == 12: ind.gene[pivot] = randint(0,1)
-            elif pivot == 13: ind.gene[pivot] = randint(0,1)
-            elif pivot == 14: ind.gene[pivot] = randint(0,1)
-            elif pivot == 15: ind.gene[pivot] = randint(0,2)
-            elif pivot == 16: ind.gene[pivot] = randint(0,2)
-            elif pivot == 17: ind.gene[pivot] = randint(0,2)
-            elif pivot == 18: ind.gene[pivot] = randint(0,2)
-            elif pivot == 19: ind.gene[pivot] = randint(0,2)
-            elif pivot == 20: ind.gene[pivot] = randint(0,2)
-            elif pivot == 21: ind.gene[pivot] = randint(0,2)
-            elif pivot == 22: ind.gene[pivot] = randint(0,2)
-            elif pivot == 23: ind.gene[pivot] = randint(0,2)
-            elif pivot == 24: ind.gene[pivot] = randint(0,2)
-            elif pivot == 25: ind.gene[pivot] = randint(0,2)
-            elif pivot == 26: ind.gene[pivot] = randint(0,2)
-            elif pivot == 27: ind.gene[pivot] = randint(0,1)
-            elif pivot == 28: ind.gene[pivot] = randint(0,1)
-            elif pivot == 29: ind.gene[pivot] = randint(0,1)
-            elif pivot == 30: ind.gene[pivot] = random.choice(range(0, 3501, 50))
-            elif pivot == 30: ind.gene[pivot] = random.choice(range(0, 3501, 50))
-            elif pivot == 30: ind.gene[pivot] = random.choice(range(0, 3501, 50))
-            elif pivot == 30: ind.gene[pivot] = random.choice(range(0, 3501, 50))
-            elif pivot == 30: ind.gene[pivot] = random.choice(range(0, 3501, 50))
-            elif pivot == 30: ind.gene[pivot] = random.choice(range(0, 3501, 50))
+        pivot = random.randint(0,len(ind.gene_mutator))
+        ind.gene[pivot] = ind.gene_mutator[pivot]()
         return ind
 
 
+#manually set the python random methods to do the same thing for tests
+
+#make this into a test?
+#run this problem every time we change the GA code
+
+class SequenceIndividual(object):
+    def __init__(self):
+        self.gene = [random.randint(0,9) for i in range(10)]
+
 class SequenceProblem(object):
     def create_random_individual(self):
-        return [random.randint(0,9) for i in range(10)]
+        return SequenceIndividual()
 
     def run_tournament(self, p1, p2):
         p1_fitness, p2_fitness = 0, 0
         for i in range(10):
-            if p1[i] == i: p1_fitness += 1
-            if p2[i] == i: p2_fitness += 1
+            if p1.gene[i] == i: p1_fitness += 1
+            if p2.gene[i] == i: p2_fitness += 1
 
         if p1_fitness >= p2_fitness: return p1
         if p1_fitness <  p2_fitness: return p2
 
     def mate_individuals(self, seq1, seq2):
         pivot = random.randint(0,9)
-        child1 = seq1[:pivot] + seq2[pivot:]
-        child2 = seq2[:pivot] + seq1[pivot:]
+        child1, child2 = SequenceIndividual, SequenceIndividual
+        child1.gene = seq1.gene[:pivot] + seq2.gene[pivot:]
+        child2.gene = seq2.gene[:pivot] + seq1.gene[pivot:]
         return child1, child2
 
     def mutate_individual(self, seq, mutation_rate):
         if random.random() < mutation_rate:
             pivot = random.randint(0,9)
-            seq[pivot] = random.randint(0,9)
+            seq.gene[pivot] = random.randint(0,9)
         return seq
 
 
@@ -98,7 +78,7 @@ class SequenceProblem(object):
 
 
 class GA(object):
-    def __init__(self, problem_manager, population_size=1000, max_generations=1000, mutation_rate=0.01, crossover_rate=0.8):
+    def __init__(self, problem_manager, population_size=128, max_generations=100, mutation_rate=0.01, crossover_rate=0.8):
         self.population = []
         self.problem_manager = problem_manager
         self.population_size = population_size
@@ -119,7 +99,7 @@ class GA(object):
             winner = self.problem_manager.run_tournament(contestant1,
                                                          contestant2)
             self.mating_pool.append(winner)
-            
+
     def do_crossover(self):
         self.population = []
         for i in range(0, self.population_size, 2):
@@ -134,22 +114,45 @@ class GA(object):
             if random.random() < self.mutation_rate:
                 self.problem_manager.mutate_individual(individual, self.mutation_rate)
 
-    def is_converged(self):
-        return False
+    def find_converging_individual(self):
+        #thanks to http://stackoverflow.com/questions/3957856/determine-if-a-python-list-is-95-the-same
+        # first use the Boyer-Moore Majority Vote Algorithm to determine the
+        # most common element, then count that element to determine if it makes
+        # up 95% of the elements
+
+        candidate_cnt = 0
+        current_candidate = self.population[0]
+        for ind in self.population:
+            if lists_are_same(ind.gene, current_candidate.gene):
+                candidate_cnt += 1
+            else:
+                candidate_cnt -= 1
+
+            if candidate_cnt == 0:
+                current_candidate = ind
+                candidate_cnt = 1
+
+        times_appearing = 0
+        for ind in self.population:
+            if lists_are_same(ind.gene, current_candidate.gene):
+                times_appearing += 1
+
+        convergence = (1.0 * times_appearing) / len(self.population)
+        return convergence, current_candidate
+
 
     def find_strongest_individual(self):
         pool = list(self.population)
         winners = []
         while len(pool) > 1:
             for i in range(0, len(pool), 2):
-                print i
                 individual1, individual2 = pool[i], pool[i+1]
                 winner = self.problem_manager.run_tournament(individual1,
                                                              individual2)
                 winners.append(winner)
             pool = winners
             winners = []
-        print pool[0].gene
+        return pool[0]
 
 
     def print_report(self):
@@ -163,13 +166,17 @@ class GA(object):
             self.hold_binary_tournament()
             self.do_crossover()
             self.do_mutation()
-            if self.is_converged(): break
-            self.print_report()
-        self.find_strongest_individual()
+            convergence, most_common_ind = self.find_converging_individual()
+            print convergence
+            if convergence > 0.95:
+                print most_common_ind.gene
+                break
+        else:
+            print self.find_strongest_individual().gene
 
 
 if __name__ == "__main__":
     print 'starting'
-    ga = GA(FarkleProblem(), population_size=16, max_generations=2)
+    ga = GA(FarkleProblem())
     ga.run()
     print 'done'

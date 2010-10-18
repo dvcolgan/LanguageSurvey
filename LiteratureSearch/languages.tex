@@ -3,96 +3,94 @@
 
 \begin{document}
 
-\section{Found Papers of Interest}
+\section{Literature Survey of Previous Work}
 
-\begin{enumerate}
-    \item A comparison of 7 programming languages: \cite{Prechelt7LangComp}
+There appear to be two kinds of research done to compare programming languages
+in the literature: feature by feature comparisons and comparisons of small
+programs.
 
-\item A comparison of 4 OO languages: \cite{Henderson4OOLangComp}
+\subsection{Feature Comparisons}
 
-\item A conceptual perspective on comparing OO languages: \cite{KristensenPerspCompOOLangs}
+Feuer and Gehani take a more academic and conceptual approach comparing C and
+Pascal.\cite{FeuerCVsPascal}  The only code they directly compared was a single
+function implementing a binary search.  They begin with a history of the
+languages and discuss design decisions, followed by a step by step walk through
+each language's major features.  They also evaluate C and Pascal for different
+problem domains.  This paper is more of an informative overview than a hard
+empirical evaluation.
 
-\item Ada VS Java as a first language for teaching: \cite{BrosgolAdaVsJavaTeaching}
+In a comparison of Ada 95 and Java, Brosgol takes a similar
+approach,\cite{BrosgolCompOOAdaVsJava} going feature by feature through the two
+languages. He provides sample code snippets throughout.  He arrives at a table
+of features, highlighting differences in syntax and programming organization
+features, memory management, and OO features like inheritance, polymorphism, and
+encapsulation.
 
-\item C VS Pascal: \cite{FeuerCVsPascal}
+Nami presents a factual comparison of Eiffel, C++, Java, and
+Smalltalk\cite{NamiCompOOSoftEng}.  He gives a brief introduction to each
+language, describing design decisions and history.  He then classifies each
+language based on static vs dynamic typing, compiled vs interpreted build
+methods, built-in quality assurance facilities, automatic documentation
+facilities, multiple vs single inheritance, and concludes with a brief
+discussion on each language's efficacy for building infrastructures.
 
-\item Comparing OO Languages (Dr. Dobbs): \cite{DDJFloydeCompOOLangs}
+Tang does a similar comparison of Ada and C++ using much of the same methods as
+the other studies.\cite{TangAdaVsCpp}
 
-\item Comparing the OO features of Ada VS Java: \cite{BrosgolCompOOAdaVsJava}
+\subsection{Small Program Comparisons}
 
-\end{enumerate}
+Perhaps more useful and interesting are those comparisons done by inspecting
+the same program written in different languages.  These give concrete examples
+of the differences.
 
-\section{Comparing object-oriented languages}
+The method I follow for this project is closely related to the method used by
+\cite{Prechelt7LangComp}, in which Prechelt compared C, C++, Java, Perl, Python,
+Rexx, and Tcl by having various computer science masters students and volunteers
+from newsgroups online write the same small program in one of the languages.  He
+then compared the resulting programs based on program runtime, memory
+consumption, lines of code, program reliability (based on whether the program
+crashes or not), the amount of time it took each programmer to write the
+program, and program structure.  The program he had the participants write was a
+simple string processing program that consisted of converting telephone numbers
+into sentences based on a large dictionary and mapping scheme.  Most of the
+programs he received were fairly small programs, taking a median of 3.1 hours to
+write, and averaging around 200-300 line of code.
 
-Floyd has various programmers implement a linked-list structure in various languages.\cite{DDJFloydeCompOOLangs}  He compares:
+Some of the more interesting results from Prechelt's study included the
+observation that in lower level languages, a lot of code was dedicated to
+writing the data structures, while in the higher level languages, the programmer
+usually took advantage of the language's existing built-in data structures.  He
+also found that scripts tended to require about twice as much memory as C and
+C++, with Java taking 3-4 times as much, that C and C++ was about twice as fast
+as Java and several more times faster than scripting languages.
 
-\begin{enumerate}
-    \item Garbage Collection
-    \item Single VS Multiple Inheritance
-    \item Binding Time
-    \item Compiled VS Interpreted
-    \item Exception Handling Features
-    \item Lines of Code for Each Implementation
-\end{enumerate}
+Prechelt includes a discussion of the validity of his evaluations.  He
+acknowledges the potential problems of asking for self-reported data from the
+Internet, as well as potential differences in programmer ability and working
+conditions.  He suggests that the large number of people (80) who contributed
+programs balances out many of these problems, and that the results should not be
+trusted for small differences.  He does assert that large differences are more
+likely to be accurate.
 
-He does not do in depth analysis.
+Henderson and Zorn perform a similar study in \cite{Henderson4OOLangComp}.  They
+compare C++, a well known language, with four lesser-known languages: Oberon-2,
+Modula-3, Sather, and Self.  They also write a short program in each of the
+languages, this time a simple database for university personnel information.
+These are all Object Oriented languages, and as such, the comparison is weighted
+specifically towards OO features.  They compare each language's methods of
+implementing and capabilities fr inheritance, dynamic dispatch, code reuse, and
+information hiding.  In addition to OO features, they also compare execution
+time, lines of code, and compile time.  Henderson and Zorn explicitly state that
+one of the goals of their survey is to increase programmer awareness of
+lesser-known languages.
 
-
-\section{A comparison of the object-oriented features of Ada 95 and Java}
-Brosgol does a factual language feature comparison of Ada95 and Java\cite{BrosgolCompOOAdaVsJava}.  He compares:
-
-\begin{enumerate}
-    \item Class implementation
-    \item Implicit VS Explicit pointers
-    \item Memory Management and Garbage Collection
-    \item How Methods are Called
-    \item Inheritance Abilities
-    \item Polymorphism Abilities
-    \item Dynamic VS Static Binding
-    \item Encapsulation Facilities
-    \item Generics Support
-    \item Namespace Structures
-\end{enumerate}
-
-\section{A comparative survey of concurrent programming languages}
-Nami does a factual language feature comparison of Eiffel, C++, Java, and Smalltalk\cite{NamiCompOOSoftEng}.  He compares:
-
-\begin{enumerate}
-    \item Static VS Dynamic Typing
-    \item Compiled VS Interpreted
-    \item Quality Assurance Facilities
-    \item Automatic Documentation
-    \item Multiple VS Single Inheritance
-    \item A brief discussion of building infrastructures
-\end{enumerate}
-
-\section{A comparison of Ada and C++}
-Tang compares Ada and C++\cite{TangAdaVsCpp}.  He compares:
-
-\begin{enumerate}
-    \item Encapsulation and Abstract Data Types - Ada packages VS C++ classes, comparison of overloading capabilities
-    \item Generics, with a mention of the typing discipline of the languages
-    \item Memory management and Garbage Collection, memory leaks
-    \item Inheritance - Ada has a primitive form, C++ has full
-    \item Polymorphism and Dynamic Binding - Ada has a primitive forms, C++ has full
-    \item Exception Handling - similar for both
-    \item Concurrency - Ada's are simpler and built in, C++ relies on OS support
-    \item Efficiency - brief discussion of design decisions relating to performance
-    \item Reliability - Ada is more reliable due to safety features, stronger typing, C++ has C's problems
-\end{enumerate}
-
-
-
-
-\section{Still Looking For}
-
-\begin{enumerate}
-    \item M. Shaw, G. T. Almes, J. M. Newcomer, B. K. Reid and W. Wulf, "A Comparison of Programming Languages for Software Engineering", Software-Practice and Experience, 11, pp. 1-52 (1981).
-
-        \url{http://oai.dtic.mil/oai/oai?verb=getRecord&metadataPrefix=html&identifier=ADA053562}
-
-\item H. J. Boom and E. D. Jong, "A Critical Comparison of Several Programming Language Implementations", Software-Practice and Experience, 10, pp. 435-473 (1980).
-\end{enumerate}
+In a more informal study, Floyd compares C++, Smalltalk, Eiffel, Sather,
+Objective-C, Parasol, Beta, Turbo Pascal, C+@, Liana, Ada, and, Drool.  He
+collects an implementation of a linked-list structure from various people and
+then summarizes the results in a table that compares garbage collection schemes,
+inheritance (single or multiple), binding time, compilation (compiled vs
+interpreted), exception handling features, and lines of code.  He simply
+enumerates the implementations and does not do further analysis.
 
 \bibliographystyle{plain}
 \bibliography{languages}
