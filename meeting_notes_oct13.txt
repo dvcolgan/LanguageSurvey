@@ -1,0 +1,5 @@
+literature survey done next week
+
+put on the GUI on the human vs others part
+
+buy programming clojure from pragprog.com

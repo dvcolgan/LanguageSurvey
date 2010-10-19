@@ -144,3 +144,17 @@ Tuesday October 12
 6:00 - 9:00 AM
 10:00 - 11:00 AM
 The GA is now running.
+
+Week 7
+
+Saturday October 16
+5:30 - 9:00 AM
+Almost finished literature search.
+
+Monday October 18
+5:30 - 8:30 AM
+Heavily into Python GUI development.
+
+Tuesday October 19
+5:00 - 8:30 AM
+Submitted literature search and still working on getting the GUI to work.

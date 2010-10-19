@@ -2,23 +2,38 @@ import random
 from random import randint
 
 class VerboseGAPlayer(object):
-    def __init__(self, ga_player):
-        self.ga_player = ga_player
+    def __init__(self, gene):
+        self.ga_player = GAPlayer(gene)
 
     def query_set_aside(self, remaining, set_aside, turn_score, total_scores):
-        return self.ga_player.query_set_aside(remaining, set_aside, turn_score, total_scores)
-        
 
+        print 'GA player rolled the dice:'
+        print remaining.get_values_as_string()
+        proposed_set_aside = self.ga_player.query_set_aside(remaining,
+                                                            set_aside,
+                                                            turn_score,
+                                                            total_scores)
+        print 'GA player decided to set aside:', DiceFactory.set_as(proposed_set_aside).get_values_as_string()
+        return proposed_set_aside
 
     def query_stop(self, remaining, set_aside, turn_score, total_scores):
-        return self.ga_player.query_stop(remaining, set_aside, turn_score, total_scores)
+        choice = self.ga_player.query_stop(remaining,
+                                           set_aside,
+                                           turn_score,
+                                           total_scores)
+        if choice:
+            print 'GA player decided to stop with', turn_score, 'points.\n'
+        else:
+            print 'GA player decided to keep rolling with', turn_score, 'points.'
+        return choice
 
     def warn_invalid_set_aside(self):
-        raise InvalidSetAsideException()
+        #the GA player should never get an error like this
+        pass
 
     def warn_farkle(self, roll):
-        print 'AI player got a farkle!', roll
-        
+        print 'GA player got a farkle!'
+        print "Dice:", roll.get_values_as_string(), '\n'
 
 class GAPlayer(object):
     def __init__(self, gene=None):
@@ -669,7 +684,7 @@ class Farkle(object):
 def main():
     farkle = Farkle()
     #farkle.add_player(GreedyAIPlayer(500))
-    farkle.add_player(GAPlayer([0, 0, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 0, 0, 0, 2, 2, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 0, 1, 2400, 50, 0, 2900, 450, 1600]))
+    farkle.add_player(VerboseGAPlayer([0, 0, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 0, 0, 0, 2, 2, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 0, 1, 2400, 50, 0, 2900, 450, 1600]))
     winner = farkle.play()
     print "The winner is player {0}!".format(winner)
 

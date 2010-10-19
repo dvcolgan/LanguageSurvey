@@ -27,13 +27,13 @@ class FarkleProblem(object):
 
 
     def mate_individuals(self, i1, i2):
-        pivot = random.randint(0,len(i1.gene_mutator))
+        pivot = random.randint(0,len(i1.gene_mutator)-1)
         child1 = i1.gene[:pivot] + i2.gene[pivot:]
         child2 = i2.gene[:pivot] + i1.gene[pivot:]
         return GAPlayer(child1), GAPlayer(child2)
 
     def mutate_individual(self, ind, mutation_rate):
-        pivot = random.randint(0,len(ind.gene_mutator))
+        pivot = random.randint(0,len(ind.gene_mutator)-1)
         ind.gene[pivot] = ind.gene_mutator[pivot]()
         return ind
 
@@ -160,18 +160,21 @@ class GA(object):
             print individual.gene
 
     def run(self):
-        self.generate_random_population()
-        for i in range(self.max_generations):
-            print 'generation',  i
-            self.hold_binary_tournament()
-            self.do_crossover()
-            self.do_mutation()
-            convergence, most_common_ind = self.find_converging_individual()
-            print convergence
-            if convergence > 0.95:
-                print most_common_ind.gene
-                break
-        else:
+        try:
+            self.generate_random_population()
+            for i in range(self.max_generations):
+                print 'generation',  i
+                self.hold_binary_tournament()
+                self.do_crossover()
+                self.do_mutation()
+                convergence, most_common_ind = self.find_converging_individual()
+                print convergence
+                if convergence > 0.95:
+                    print most_common_ind.gene
+                    break
+            else:
+                print self.find_strongest_individual().gene
+        except KeyboardInterrupt:
             print self.find_strongest_individual().gene
 
 
