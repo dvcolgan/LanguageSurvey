@@ -1,29 +1,33 @@
 \documentclass{article}
 \usepackage{url}
-
+\title{Literature Survey of Methods for Comparing Programming Languages}
+\author{David Colgan}
+\date{\today}
 \begin{document}
+\maketitle
+
 
 \section{Literature Survey of Previous Work}
 
-There appear to be two kinds of research done to compare programming languages
-in the literature: feature by feature comparisons and comparisons of small
-programs.
+At this time there appears to be two kinds of research available in the
+literature that compare programming languages: feature by feature comparisons
+and comparisons of small programs.
 
 \subsection{Feature Comparisons}
 
-Feuer and Gehani take a more academic and conceptual approach comparing C and
-Pascal.\cite{FeuerCVsPascal}  The only code they directly compared was a single
-function implementing a binary search.  They begin with a history of the
-languages and discuss design decisions, followed by a step by step walk through
-each language's major features.  They also evaluate C and Pascal for different
+Feuer and Gehani take a conceptual approach when they compare C and
+Pascal.\cite{FeuerCVsPascal}  They begin with a history of the languages and
+discuss design decisions, followed by a step by step walk through each
+language's major features.  They also evaluate C and Pascal for different
 problem domains.  This paper is more of an informative overview than a hard
-empirical evaluation.
+empirical evaluation.  The only actual code they show is a single function
+implementing a binary search.
 
 In a comparison of Ada 95 and Java, Brosgol takes a similar
 approach,\cite{BrosgolCompOOAdaVsJava} going feature by feature through the two
-languages. He provides sample code snippets throughout.  He arrives at a table
-of features, highlighting differences in syntax and programming organization
-features, memory management, and OO features like inheritance, polymorphism, and
+languages.  He provides sample code snippets throughout.  He arrives at a table
+of features, highlighting differences in syntax, program organization features,
+memory management, and OO features like inheritance, polymorphism, and
 encapsulation.
 
 Nami presents a factual comparison of Eiffel, C++, Java, and
@@ -31,11 +35,14 @@ Smalltalk\cite{NamiCompOOSoftEng}.  He gives a brief introduction to each
 language, describing design decisions and history.  He then classifies each
 language based on static vs dynamic typing, compiled vs interpreted build
 methods, built-in quality assurance facilities, automatic documentation
-facilities, multiple vs single inheritance, and concludes with a brief
+generators, multiple vs single inheritance, and concludes with a brief
 discussion on each language's efficacy for building infrastructures.
 
 Tang does a similar comparison of Ada and C++ using much of the same methods as
 the other studies.\cite{TangAdaVsCpp}
+
+Many of these studies are a high level overview of various languages.  They
+compare features, but do not give in-depth examples.
 
 \subsection{Small Program Comparisons}
 
@@ -44,25 +51,26 @@ the same program written in different languages.  These give concrete examples
 of the differences.
 
 The method I follow for this project is closely related to the method used by
-\cite{Prechelt7LangComp}, in which Prechelt compared C, C++, Java, Perl, Python,
-Rexx, and Tcl by having various computer science masters students and volunteers
-from newsgroups online write the same small program in one of the languages.  He
-then compared the resulting programs based on program runtime, memory
-consumption, lines of code, program reliability (based on whether the program
-crashes or not), the amount of time it took each programmer to write the
-program, and program structure.  The program he had the participants write was a
-simple string processing program that consisted of converting telephone numbers
-into sentences based on a large dictionary and mapping scheme.  Most of the
-programs he received were fairly small programs, taking a median of 3.1 hours to
+Prechelt \cite{Prechelt7LangComp}.  He compares C, C++, Java, Perl, Python,
+Rexx, and Tcl by having various computer science masters students and
+volunteers from newsgroups online write the same small program in one of the
+languages.  He then compared the resulting programs based on program runtime,
+memory consumption, lines of code, program reliability (based on whether the
+program crashes or not), the amount of time it took each programmer to write
+the program, and program structure.  The program he had the participants write
+was a simple string processing program that consisted of converting telephone
+numbers into sentences based on a large dictionary and mapping scheme.  Most of
+the programs he received were fairly small, taking a median of 3.1 hours to
 write, and averaging around 200-300 line of code.
 
-Some of the more interesting results from Prechelt's study included the
-observation that in lower level languages, a lot of code was dedicated to
-writing the data structures, while in the higher level languages, the programmer
-usually took advantage of the language's existing built-in data structures.  He
-also found that scripts tended to require about twice as much memory as C and
-C++, with Java taking 3-4 times as much, that C and C++ was about twice as fast
-as Java and several more times faster than scripting languages.
+Some of the more interesting results from Prechelt's study include the
+observation that in lower level languages, a lot of code is dedicated to
+writing the data structures, while in the higher level languages, the
+programmer usually takes advantage of the language's existing built-in
+capabilities.  He also found that scripts tend to require about twice as much
+memory as C and C++, with Java taking 3-4 times as much, and that C and C++ are
+about twice as fast as Java and several more times faster than scripting
+languages.
 
 Prechelt includes a discussion of the validity of his evaluations.  He
 acknowledges the potential problems of asking for self-reported data from the
@@ -72,25 +80,31 @@ programs balances out many of these problems, and that the results should not be
 trusted for small differences.  He does assert that large differences are more
 likely to be accurate.
 
-Henderson and Zorn perform a similar study in \cite{Henderson4OOLangComp}.  They
-compare C++, a well known language, with four lesser-known languages: Oberon-2,
-Modula-3, Sather, and Self.  They also write a short program in each of the
-languages, this time a simple database for university personnel information.
-These are all Object Oriented languages, and as such, the comparison is weighted
-specifically towards OO features.  They compare each language's methods of
-implementing and capabilities fr inheritance, dynamic dispatch, code reuse, and
-information hiding.  In addition to OO features, they also compare execution
-time, lines of code, and compile time.  Henderson and Zorn explicitly state that
-one of the goals of their survey is to increase programmer awareness of
-lesser-known languages.
+Henderson and Zorn perform a similar study in \cite{Henderson4OOLangComp}.
+They compare C++, a well known language, with four lesser-known languages:
+Oberon-2, Modula-3, Sather, and Self.  They also write a short program in each
+of the languages, a simple database for university personnel information.
+These are all Object Oriented languages, and as such, the comparison is
+weighted specifically towards OO features.  They compare each language's
+methods of implementing and capabilities for inheritance, dynamic dispatch, code
+reuse, and information hiding.  In addition to OO features, they also compare
+execution time, lines of code, and compile time.  Henderson and Zorn explicitly
+state that one of the goals of their survey is to increase programmer awareness
+of lesser-known languages.
 
 In a more informal study, Floyd compares C++, Smalltalk, Eiffel, Sather,
-Objective-C, Parasol, Beta, Turbo Pascal, C+@, Liana, Ada, and, Drool.  He
-collects an implementation of a linked-list structure from various people and
-then summarizes the results in a table that compares garbage collection schemes,
-inheritance (single or multiple), binding time, compilation (compiled vs
-interpreted), exception handling features, and lines of code.  He simply
-enumerates the implementations and does not do further analysis.
+Objective-C, Parasol, Beta, Turbo Pascal, C+@, Liana, Ada, and,
+Drool\cite{DDJFloydeCompOOLangs}.  He collects an implementation of a
+linked-list structure from various people and then summarizes the results in a
+table that compares garbage collection schemes, inheritance (single or
+multiple), binding time, compilation (compiled vs interpreted), exception
+handling features, and lines of code.  He simply enumerates the implementations
+and does not do further analysis.
+
+I will combine these two approaches.  The deliverables for my project will,
+like Prechelt, include implementations of the same program in several different
+languages, but I will also include high level feature comparisons between the
+languages as well.
 
 \bibliographystyle{plain}
 \bibliography{languages}
