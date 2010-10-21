@@ -1,0 +1,3 @@
+how to represent the game?
+
+use emacs, slime plugins
