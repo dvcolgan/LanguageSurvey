@@ -158,3 +158,14 @@ Heavily into Python GUI development.
 Tuesday October 19
 5:00 - 8:30 AM
 Submitted literature search and still working on getting the GUI to work.
+
+Wednesday October 20
+2:00 - 3:30 PM
+Meeting with Dr. Nurkkala.  Decided to be done with Python for now and move to
+Clojure.  Began reading the Clojure book and finished the introduction.
+
+Thursday October 21
+5:00 - 8:30 AM
+Spent the morning fighting with Emacs and Clojure, discovered the Leiningen
+project builder (best name ever by the way), and eventually was victoriant.  I
+now have a working Emacs installation with Slime evaluating code.
