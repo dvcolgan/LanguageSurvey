@@ -164,8 +164,32 @@ Wednesday October 20
 Meeting with Dr. Nurkkala.  Decided to be done with Python for now and move to
 Clojure.  Began reading the Clojure book and finished the introduction.
 
+Week 8
+
 Thursday October 21
 5:00 - 8:30 AM
 Spent the morning fighting with Emacs and Clojure, discovered the Leiningen
 project builder (best name ever by the way), and eventually was victoriant.  I
 now have a working Emacs installation with Slime evaluating code.
+
+Friday October 22
+6:45 - 7:30 AM
+8:30 - 9:00 AM
+12:00-1:00 PM
+Reading chapter 2 of Programming Clojure.
+
+Saturday October 23
+8:30 - 9:45 AM
+Finished chapter 2 and reading chapter 4 of Programming Clojure.
+
+Monday October 25
+5:30 - 7:00
+Finished chapter 4 and am reading chapter 5 of Programming Clojure.
+7:15 - 8:30
+Finished chapter 5 of Programming Clojure.
+
+Week 9
+
+Thursday October 28
+5:00 - 6:15 PM
+Read chapter 6 of Programming Clojure.
