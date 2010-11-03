@@ -1,0 +1,19 @@
+(defn get-score [dice]
+  (let [dice-to-counts (frequencies dice)
+	counts-to-dice (into (sorted-map)
+			     (zipmap (vals dice-to-counts)
+				     (keys dice-to-counts)))
+	sorted-counts-to-dice (
+	
+    
+    
+
+
+
+
+
+(defn get-counts [dice]
+
+
+  (  (1 1 2 4 3 3)
+       

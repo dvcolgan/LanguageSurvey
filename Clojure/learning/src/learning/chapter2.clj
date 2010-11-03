@@ -376,3 +376,62 @@
 
 (demo-memoize)
 
+;;chapter 7 - macros
+(defmacro unless [expr form]
+  (list 'if expr nil form))
+
+
+
+(macroexpand-1 '(unless false (println "this should print")))
+
+(defmacro bad-unless [expr form]
+  (list 'if 'expr nil form))
+
+(macroexpand-1 '(bad-unless false (println "this should print")))
+
+
+
+;;# - automatic gensym
+'foo#
+
+;;multimethods
+(defn my-print [obj]
+  (.write *out* obj))
+
+(defn my-println [obj]
+  (my-print obj)
+  (.write *out* "\n"))
+
+(my-println "aoeu")
+(my-println nil)
+
+(defn my-print [obj]
+  (cond
+   (nil? obj) (.write *out* "nil")
+   (string? obj) (.write *out* obj)))
+
+(defmulti my-print class)
+
+(defmethod my-print String [s]
+	   (.write *out* s))
+
+(defmethod my-print nil [s]
+	   (.write *out* "nil"))
+
+(defmethod my-print Number [n]
+	   (.write *out* (.toString n)))
+
+(my-println 42)
+
+(defmethod my-print :default [s]
+	   (.write *out* "#<")
+	   (.write *out* (.toString s))
+	   (.write *out* ">"))
+
+;;this example is polymorphism and what most languages can only do
+
+;;Clojure can do more
+(defmethod my-print Integer [n]
+	   (.write *out* (.toString n)))
+
+(my-print 42)

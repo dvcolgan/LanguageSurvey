@@ -193,3 +193,28 @@ Week 9
 Thursday October 28
 5:00 - 6:15 PM
 Read chapter 6 of Programming Clojure.
+
+Friday October 29
+7:30 - 10:00 PM
+Read chapter 3 and part of 7 of Programming Clojure, watched a video screencast
+on Clojure too.
+
+Saturday October 30
+8:00 - 9:00
+Finished Programming Clojure.
+
+Monday November 1
+7:30 - 9:00 am
+Working on the Farkle implementation in Clojure.
+12:15 - 1:30 pm
+Learning more Clojure.
+
+Tuesday November 2
+7:30-8:00 am
+Solved a project Euler problem.
+10:00-11:30 am
+Working on the Farkle implementation in Clojure.
+
+Wednesday November 3
+7:15 - 8:15 am
+Working on the Farkle implementation in Clojure.  Unit testing is a lot easier in this language.

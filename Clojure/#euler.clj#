@@ -1,0 +1,37 @@
+
+;;1 If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
+
+;;Find the sum of all the multiples of 3 or 5 below 1000.
+
+(defn divisible-by? [x n]
+  (= (rem x n) 0))
+
+(defn nums-divisible-by-3-5 [n]
+  (reduce + (take-while #(< % n) (filter #(or
+					   (divisible-by? % 3)
+					   (divisible-by? % 5))
+					 (iterate inc 0)))))
+	   
+(defn sieve [n]
+  (let [n (int n)]
+    "Returns a list of all primes from 2 to n"
+    (let [root (int (Math/round (Math/floor (Math/sqrt n))))]
+      (loop [i (int 3)
+             a (int-array n)
+             result (list 2)]
+        (if (>= i n)
+          (reverse result)
+          (recur (+ i (int 2))
+                 (if (< i root)
+                   (loop [arr a
+                          inc (+ i i)
+                          j (* i i)]
+                     (if (>= j n)
+                       arr
+                       (recur (do (aset arr j (int 1)) arr)
+                              inc
+                              (+ j inc))))
+                   a)
+                 (if (zero? (aget a i))
+                   (conj result i)
+                   result)))))))
