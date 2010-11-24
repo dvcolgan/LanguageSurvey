@@ -8,6 +8,7 @@
 (defn third [x]
   (first (next (next x))))
 
+
 (deftest third-test
   (is (= 1 (third [3 2 1])))
   (is (= nil (third [3 2])))
@@ -152,6 +153,10 @@
 
 (defn is-valid-set-aside [dice]
   (> (get-score dice true) 0))
+
+(deftest test-is-valid-set-aside
+  (is (= (is-valid-set-aside [1 1 5])))
+  )
 
 (defn is-farkle [dice]
   (= (get-score dice) 0))
@@ -448,7 +453,7 @@
     (> turn-score stop-threshold))
     
   (warn-invalid-set-aside [this]
-    nil)
+    (println "AI player made an invalid set aside!"))
 
   (warn-farkle [this roll]
     (println "AI player got a farkle!")
@@ -560,6 +565,10 @@
 		 (assoc scores player updated-score)))))))
 
 
+(defn main []
+  (let [winner (play-farkle [(HumanPlayer. "David")
+                             (HumanPlayer. "Samuel")])]
+    (println "The winner is" (get-name winner) "!")))
 
 (defn -main [& args]
   (let [winner (play-farkle [(GreedyAIPlayer. "David" 600)
@@ -576,3 +585,4 @@
 	
 
 (run-tests)
+(main)

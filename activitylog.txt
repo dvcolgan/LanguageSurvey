@@ -260,8 +260,17 @@ clojure.org docs
 2:15 - 2:45
 Beginning work on the GA player in Clojure.
 
-Monday
+Monday November 22
 12:00 - 2:00PM
 Making more progress in the GA.  Asked a question on stackoverflow, working on the main game loop.
 
+Tuesday November 23
+7:45 - 10:00PM
+Almost have the human-controlled game working.
 
+Wednesday November 24
+8:15 - 9:15
+Bug hunting and fighting with the system.  It seems that Emacs with slime does not necessarily like Clojure yet to some degree.
+
+12:00-1:30
+More fighting with Clojure.  I'm starting to get really annoyed at the Java cruft that Clojure has associated with it.
