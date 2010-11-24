@@ -218,3 +218,50 @@ Working on the Farkle implementation in Clojure.
 Wednesday November 3
 7:15 - 8:15 am
 Working on the Farkle implementation in Clojure.  Unit testing is a lot easier in this language.
+Document changes now instead of all at the end.
+
+Sunday November 7
+8:00 - 9:30
+Working on the Farkle GA in Clojure.  It looks like all I will have to do to be able to parallelize it is to run it with pmap instead of map.
+
+Monday November 8
+8:00 - 9:30
+Making great progress on the GA system.  The code looks like it will be a LOT shorter.
+
+Wednesday November 10
+5:00 - 6:30
+Finished the GA framework and test code in Farkle.
+6:30-7:30
+Attempting to install VimClojure to speed development time.
+7:30-8:30
+More wrestling with VimClojure.
+
+Tuesday November 16
+8:45-10:45
+Installed Enclojure IDE
+Found that the format function RETURNS a string, not prints it out.
+Figuring out how to properly iterate over a sequence to print it out.
+
+Thursday November 18
+12-1 PM
+Fought with the tools, couldn't get protocols to work.
+
+Saturday November 20
+10:30 12:45
+Finally figured out that I had misnamed something which was causing the real problem before!  Psh.
+Protocols will work beautifully for the different players.
+Wow this code is short.  Things that would take several lines and many minutes to write are 3 function calls composed.
+(zipmap players (repeat 0)) -> initialize scores to 0
+Stackoverflow.com is an amazing resource
+http://java.ociweb.com/mark/clojure/article.html
+clojure book
+clojure.org docs
+
+2:15 - 2:45
+Beginning work on the GA player in Clojure.
+
+Monday
+12:00 - 2:00PM
+Making more progress in the GA.  Asked a question on stackoverflow, working on the main game loop.
+
+
