@@ -1,14 +1,160 @@
 (ns farkle.core
   (:use clojure.contrib.str-utils)
-  (:use clojure.test clojure.set))
-					;(defstruct player :name :strategy
+  (:use clojure.test clojure.set)
+  (:gen-class))
 
-(defn rand-int01 []
-  (rand-int 2))
-(defn rand-int02 []
-  (rand-int 3))
-(defn rand-range-50-3500 []
-  (rand-nth (range 0 3501 50)))
+
+
+(defn third [x]
+  (first (next (next x))))
+
+(deftest third-test
+  (is (= 1 (third [3 2 1])))
+  (is (= nil (third [3 2])))
+  (is (= 1 (third [3 2 1 0])))
+  )
+
+
+(defn sort-by-frequency [lst]
+  (let [counts (seq (frequencies lst))]
+    (sort
+     (fn [a b]
+       (let [comp (compare (second b)
+			   (second a))]
+	 (if (= comp 0)
+	   (compare (first a)
+		    (first b))
+	   comp)))
+     counts)))
+
+(deftest sort-by-frequency-test
+  (is (= (sort-by-frequency []) '()))
+  (is (= (sort-by-frequency [1]) '([1 1])))
+  (is (= (sort-by-frequency [1 1]) '([1 2])))
+  (is (= (sort-by-frequency [1 1 1]) '([1 3])))
+  (is (= (sort-by-frequency [1 1 1 1]) '([1 4])))
+  (is (= (sort-by-frequency [1 1 1 1 1]) '([1 5])))
+  (is (= (sort-by-frequency [1 1 1 1 1 1]) '([1 6])))
+  (is (= (sort-by-frequency [1 2 3 4 5 6]) '([1 1] [2 1] [3 1] [4 1] [5 1] [6 1])))
+  (is (= (sort-by-frequency [1 3 3 3 4 4]) '([3 3] [4 2] [1 1])))
+  (is (= (sort-by-frequency [1 1 1]) '([1 3])))
+  )
+
+(defn value-of-extra-1s-and-5s [die-counts]
+  (let [die-map (into (hash-map) die-counts)]
+    (+ (if (<= (die-map 1 0) 2) (* (die-map 1 0) 100) 0)
+       (if (<= (die-map 5 0) 2) (* (die-map 5 0) 50) 0))))
+
+(deftest value-of-extra-1s-and-5s-test
+  (is (= (value-of-extra-1s-and-5s '()) 0))
+  (is (= (value-of-extra-1s-and-5s '([1 1])) 100))
+  (is (= (value-of-extra-1s-and-5s '([5 1])) 50))
+  (is (= (value-of-extra-1s-and-5s '([1 1] [5 1])) 150))
+  (is (= (value-of-extra-1s-and-5s '([1 2] [5 2])) 300))
+  (is (= (value-of-extra-1s-and-5s '([1 3] [5 3])) 0))
+  (is (= (value-of-extra-1s-and-5s '([1 1] [5 3])) 100))
+  (is (= (value-of-extra-1s-and-5s '([1 3] [5 2])) 100))
+  (is (= (value-of-extra-1s-and-5s '([2 3] [1 2] [5 1])) 250))
+  )
+
+
+(defn have-straight? [dice]
+  (= (sort dice)
+     (range 1 7)))
+
+
+
+(defn get-score
+  ([dice] (get-score dice false))
+  ([dice zero-for-extra]
+     (if (= (count dice) 0)
+       0
+       (let [die-map (frequencies dice)
+	     die-counts (sort-by-frequency dice)
+	     [fst-die fst-cnt] (first die-counts)
+	     [snd-die snd-cnt] (second die-counts)
+	     [trd-die trd-cnt] (third die-counts)
+	     single-dice-value (value-of-extra-1s-and-5s die-counts)]
+	 (cond
+	  (and (= fst-cnt 4) (= snd-cnt 2)) 1500
+	  (and (= fst-cnt 3) (= snd-cnt 3)) 2500
+	  (and (= fst-cnt 2) (= snd-cnt 2) (= trd-cnt 2)) 1500
+	  (have-straight? dice) 1500
+	  (= fst-cnt 6) 3000
+	  (and zero-for-extra
+	       (every? true?
+		(map #(<= 1 (val %) 2) die-map))) 0
+          (= fst-cnt 5) (+ single-dice-value 2000)
+	  (= fst-cnt 4) (+ single-dice-value 1000)
+	  (= fst-cnt 3) (+ single-dice-value
+			   (if (= fst-die 1)
+			     300
+			     (* fst-die 100)))
+	  :else single-dice-value)))))
+
+
+
+
+(deftest get-score-test
+  (is (= (get-score [1]) 100))
+  (is (= (get-score [5]) 50))
+  (is (= (get-score [2]) 0))
+  (is (= (get-score [3]) 0))
+  (is (= (get-score [4]) 0))
+  (is (= (get-score [6]) 0))
+  (is (= (get-score [1 5]) 150))
+  (is (= (get-score [1 1]) 200))
+  (is (= (get-score [5 5]) 100))
+  (is (= (get-score [2 3]) 0))
+  (is (= (get-score [4 6]) 0))
+  (is (= (get-score [1 1 1]) 300))
+  (is (= (get-score [2 2 2]) 200))
+  (is (= (get-score [3 3 3]) 300))
+  (is (= (get-score [4 4 4]) 400))
+  (is (= (get-score [5 5 5]) 500))
+  (is (= (get-score [6 6 6]) 600))
+  (is (= (get-score [2 3 4]) 0))
+  (is (= (get-score [1 5 6]) 150))
+  (is (= (get-score [3 5 6]) 50))
+  (is (= (get-score [1 1 1 1]) 1000))
+  (is (= (get-score [2 2 2 2]) 1000))
+  (is (= (get-score [3 3 3 3]) 1000))
+  (is (= (get-score [4 4 4 4]) 1000))
+  (is (= (get-score [5 5 5 5]) 1000))
+  (is (= (get-score [6 6 6 6]) 1000))
+  (is (= (get-score [6 6 6 1]) 700))
+  (is (= (get-score [4 4 4 5]) 450))
+  (is (= (get-score [3 3 3 4]) 300))
+  (is (= (get-score [1 2 3 4]) 100))
+  (is (= (get-score [3 4 5 6]) 50))
+  (is (= (get-score [2 3 4 6]) 0))
+  (is (= (get-score [1 1 1 1 1]) 2000))
+  (is (= (get-score [2 2 2 2 2]) 2000))
+  (is (= (get-score [3 3 3 3 3]) 2000))
+  (is (= (get-score [4 4 4 4 4]) 2000))
+  (is (= (get-score [5 5 5 5 5]) 2000))
+  (is (= (get-score [6 6 6 6 6]) 2000))
+  (is (= (get-score [1 1 1 1 1 1]) 3000))
+  (is (= (get-score [2 2 2 2 2 2]) 3000))
+  (is (= (get-score [3 3 3 3 3 3]) 3000))
+  (is (= (get-score [4 4 4 4 4 4]) 3000))
+  (is (= (get-score [5 5 5 5 5 5]) 3000))
+  (is (= (get-score [6 6 6 6 6 6]) 3000))
+  (is (= (get-score [1 1 1 2 2 2]) 2500))
+  (is (= (get-score [3 3 3 4 4 4]) 2500))
+  (is (= (get-score [5 5 5 6 6 6]) 2500))
+  (is (= (get-score [1 1 2 2 3 3]) 1500))
+  (is (= (get-score [4 4 5 5 6 6]) 1500))
+  (is (= (get-score [1 1 1 1 2 2]) 1500))
+  (is (= (get-score [3 3 3 3 4 4]) 1500))
+  (is (= (get-score [5 5 5 5 6 6]) 1500))
+  )
+
+(defn is-valid-set-aside [dice]
+  (> (get-score dice true) 0))
+
+(defn is-farkle [dice]
+  (= (get-score dice) 0))
 
 
 (defprotocol FarklePlayer
@@ -292,14 +438,14 @@
     (if (and (= (count remaining) 6)
 	     (> (get-score remaining) 1000))
       remaining
-      (let [freqs (frequencies [1 2 1 2 1 3 4 5 3 5 3])]
+      (let [freqs (frequencies remaining)]
 	(filter #(or (= (freqs %) 3)
 		     (= % 1)
 		     (= % 5))
 		remaining))))
 
   (query-stop [this remaining set-aside turn-score total-scores]
-    (< turn-score stop-threshold))
+    (> turn-score stop-threshold))
     
   (warn-invalid-set-aside [this]
     nil)
@@ -309,7 +455,16 @@
     (println "Dice:" roll))
   )
 
-
+(deftest test-GreedyAIPlayer
+  (is (=
+       (query-set-aside (GreedyAIPlayer. "David" 500)
+			[1 2 3 4 5] [1] 100 [])
+       [1 5]))
+  (is (=
+       (query-stop (GreedyAIPlayer. "David" 500)
+		   [2 3 4] [1 1 5] 250 [])
+       false))
+)
 
 
 (deftype HumanPlayer [name]
@@ -349,20 +504,6 @@
     (println "Dice:" roll))
 )
 
-
-(defn play-farkle [players]
-  (if (= (count players) 0)
-    (println "Not enough players!")
-    (loop [rotation (cycle players)
-	   scores (zipmap players (repeat 0))]
-      (let [player (first rotation)
-	    updated-score (take-turn player (take (count players)
-						  (vec
-						   (map val scores))))]
-	(if (>= updated-score 10000)
-	  (println (get-name player) "is the winner!")
-	  (recur (rest rotation)
-		 (assoc scores player updated-score)))))))
 
 (defn roll-dice [num-to-roll]
   (for [die (range num-to-roll)]
@@ -404,260 +545,30 @@
 				die-count
 				6)))))))))
 
+(defn play-farkle [players]
+  (if (= (count players) 0)
+    (println "Not enough players!")
+    (loop [rotation (cycle players)
+	   scores (zipmap players (repeat 0))]
+      (let [player (first rotation)
+	    updated-score (take-turn player (take (count players)
+						  (vec
+						   (map val scores))))]
+	(if (>= updated-score 10000)
+	  (println (get-name player) "is the winner!")
+	  (recur (rest rotation)
+		 (assoc scores player updated-score)))))))
+
+
 
 (defn -main [& args]
-  (let [winner (play-farkle [(HumanPlayer. "David")
+  (let [winner (play-farkle [(GreedyAIPlayer. "David" 600)
 			     (GreedyAIPlayer. "Samuel" 1000)])]
     (println "The winner is" (get-name winner) "!")))
 
 
 
 
-  
-
-
-
-
-
-
-(defn third [x]
-  (first (next (next x))))
-
-(deftest third-test
-  (is (= 1 (third [3 2 1])))
-  (is (= nil (third [3 2])))
-  (is (= 1 (third [3 2 1 0])))
-  )
-
-
-(defn sort-by-frequency [lst]
-  (let [counts (seq (frequencies lst))]
-    (sort
-     (fn [a b]
-       (let [comp (compare (second b)
-			   (second a))]
-	 (if (= comp 0)
-	   (compare (first a)
-		    (first b))
-	   comp)))
-     counts)))
-
-(deftest sort-by-frequency-test
-  (is (= (sort-by-frequency []) '()))
-  (is (= (sort-by-frequency [1]) '([1 1])))
-  (is (= (sort-by-frequency [1 1]) '([1 2])))
-  (is (= (sort-by-frequency [1 1 1]) '([1 3])))
-  (is (= (sort-by-frequency [1 1 1 1]) '([1 4])))
-  (is (= (sort-by-frequency [1 1 1 1 1]) '([1 5])))
-  (is (= (sort-by-frequency [1 1 1 1 1 1]) '([1 6])))
-  (is (= (sort-by-frequency [1 2 3 4 5 6]) '([1 1] [2 1] [3 1] [4 1] [5 1] [6 1])))
-  (is (= (sort-by-frequency [1 3 3 3 4 4]) '([3 3] [4 2] [1 1])))
-  (is (= (sort-by-frequency [1 1 1]) '([1 3])))
-  )
-
-(defn value-of-extra-1s-and-5s [die-counts]
-  (let [die-map (into (hash-map) die-counts)]
-    (+ (if (<= (die-map 1 0) 2) (* (die-map 1 0) 100) 0)
-       (if (<= (die-map 5 0) 2) (* (die-map 5 0) 50) 0))))
-(deftest value-of-extra-1s-and-5s-test
-  (is (= (value-of-extra-1s-and-5s '()) 0))
-  (is (= (value-of-extra-1s-and-5s '([1 1])) 100))
-  (is (= (value-of-extra-1s-and-5s '([5 1])) 50))
-  (is (= (value-of-extra-1s-and-5s '([1 1] [5 1])) 150))
-  (is (= (value-of-extra-1s-and-5s '([1 2] [5 2])) 300))
-  (is (= (value-of-extra-1s-and-5s '([1 3] [5 3])) 0))
-  (is (= (value-of-extra-1s-and-5s '([1 1] [5 3])) 100))
-  (is (= (value-of-extra-1s-and-5s '([1 3] [5 2])) 100))
-  (is (= (value-of-extra-1s-and-5s '([2 3] [1 2] [5 1])) 250))
-  )
-
-
-(defn have-straight? [dice]
-  (= (sort dice)
-     (range 1 7)))
-
-(defn is-valid-set-aside [dice]
-  (> (get-score dice true) 0))
-
-(defn is-farkle [dice]
-  (= (get-score dice) 0))
-
-(defn nested
-  ([one] (nested one 2))
-  ([one two] two))
-     
-
-(defn get-score
-  ([dice] (get-score dice false))
-  ([dice zero-for-extra]
-     (if (= (count dice) 0)
-       0
-       (let [die-map (frequencies dice)
-	     die-counts (sort-by-frequency dice)
-	     [fst-die fst-cnt] (first die-counts)
-	     [snd-die snd-cnt] (second die-counts)
-	     [trd-die trd-cnt] (third die-counts)
-	     single-dice-value (value-of-extra-1s-and-5s die-counts)]
-	 (cond
-	  (and (= fst-cnt 4) (= snd-cnt 2)) 1500
-	  (and (= fst-cnt 3) (= snd-cnt 3)) 2500
-	  (and (= fst-cnt 2) (= snd-cnt 2) (= trd-cnt 2)) 1500
-	  (have-straight? dice) 1500
-	  (= fst-cnt 6) 3000
-	  (and zero-for-extra
-	       (every?
-		(map #(<= 1 (val %) 2) die-map))) 0
-          (= fst-cnt 5) (+ single-dice-value 2000)
-	  (= fst-cnt 4) (+ single-dice-value 1000)
-	  (= fst-cnt 3) (+ single-dice-value
-			   (if (= fst-die 1)
-			     300
-			     (* fst-die 100)))
-	  :else single-dice-value)))))
-
-
-
-
-(deftest get-score-test
-  (is (= (get-score [1]) 100))
-  (is (= (get-score [5]) 50))
-  (is (= (get-score [2]) 0))
-  (is (= (get-score [3]) 0))
-  (is (= (get-score [4]) 0))
-  (is (= (get-score [6]) 0))
-  (is (= (get-score [1 5]) 150))
-  (is (= (get-score [1 1]) 200))
-  (is (= (get-score [5 5]) 100))
-  (is (= (get-score [2 3]) 0))
-  (is (= (get-score [4 6]) 0))
-  (is (= (get-score [1 1 1]) 300))
-  (is (= (get-score [2 2 2]) 200))
-  (is (= (get-score [3 3 3]) 300))
-  (is (= (get-score [4 4 4]) 400))
-  (is (= (get-score [5 5 5]) 500))
-  (is (= (get-score [6 6 6]) 600))
-  (is (= (get-score [2 3 4]) 0))
-  (is (= (get-score [1 5 6]) 150))
-  (is (= (get-score [3 5 6]) 50))
-  (is (= (get-score [1 1 1 1]) 1000))
-  (is (= (get-score [2 2 2 2]) 1000))
-  (is (= (get-score [3 3 3 3]) 1000))
-  (is (= (get-score [4 4 4 4]) 1000))
-  (is (= (get-score [5 5 5 5]) 1000))
-  (is (= (get-score [6 6 6 6]) 1000))
-  (is (= (get-score [6 6 6 1]) 700))
-  (is (= (get-score [4 4 4 5]) 450))
-  (is (= (get-score [3 3 3 4]) 300))
-  (is (= (get-score [1 2 3 4]) 100))
-  (is (= (get-score [3 4 5 6]) 50))
-  (is (= (get-score [2 3 4 6]) 0))
-  (is (= (get-score [1 1 1 1 1]) 2000))
-  (is (= (get-score [2 2 2 2 2]) 2000))
-  (is (= (get-score [3 3 3 3 3]) 2000))
-  (is (= (get-score [4 4 4 4 4]) 2000))
-  (is (= (get-score [5 5 5 5 5]) 2000))
-  (is (= (get-score [6 6 6 6 6]) 2000))
-  (is (= (get-score [1 1 1 1 1 1]) 3000))
-  (is (= (get-score [2 2 2 2 2 2]) 3000))
-  (is (= (get-score [3 3 3 3 3 3]) 3000))
-  (is (= (get-score [4 4 4 4 4 4]) 3000))
-  (is (= (get-score [5 5 5 5 5 5]) 3000))
-  (is (= (get-score [6 6 6 6 6 6]) 3000))
-  (is (= (get-score [1 1 1 2 2 2]) 2500))
-  (is (= (get-score [3 3 3 4 4 4]) 2500))
-  (is (= (get-score [5 5 5 6 6 6]) 2500))
-  (is (= (get-score [1 1 2 2 3 3]) 1500))
-  (is (= (get-score [4 4 5 5 6 6]) 1500))
-  (is (= (get-score [1 1 1 1 2 2]) 1500))
-  (is (= (get-score [3 3 3 3 4 4]) 1500))
-  (is (= (get-score [5 5 5 5 6 6]) 1500))
-  )
-
-
-
-(defn find-converging-individual [population]
-  (let [[frequency individual]
-	(first
-	 (reverse
-	  (sort
-	   (map-invert
-	    (into (hash-map) (frequencies population))))))]
-    [(/ frequency (count population))
-     individual]))
-
-
-
-
-
-
-
-
-
-(defn run-ga [population-size max-generations mutation-rate crossover-rate
-	      new-individual-fn fitness-fn crossover-fn mutation-fn]
-  (loop [generation 0
-	 population (repeatedly population-size new-individual-fn)]
-    (let [mating-pool (map fitness-fn
-			    (repeatedly population-size #(rand-nth population))
-			    (repeatedly population-size #(rand-nth population)))
-	  crossed-pool (mapcat identity (map (fn [i1 i2]
-						(if (< (rand) crossover-rate)
-						  (crossover-fn i1 i2)
-						  [i1 i2]))
-					      (repeatedly population-size #(rand-nth mating-pool))
-					      (repeatedly population-size #(rand-nth mating-pool))))
-	  mutated-pool (map (fn [i]
-			       (if (< (rand) mutation-rate)
-				 (mutation-fn i)
-				 i))
-			     (repeatedly population-size #(rand-nth crossed-pool)))]
-      (let [[convergence most-common-individual] (find-converging-individual mutated-pool)]
-	(if (or (> convergence 0.95)
-		(> generation max-generations))
-	  (str "Most common individual: " most-common-individual ", " convergence ", " generation ", " (str (vec mutated-pool)))
-	  (do
-	    (format "Generation %d" generation)
-	    (recur (inc generation) mutated-pool)))))))
-
-
-
-
-      
-(defn generate-random-individual []
-  (vec (repeatedly 10 #(rand-int 10))))
-
-(generate-random-individual)
-	
-(defn evaluate-fitness [individual1 individual2]
-  (letfn [(evaluate-fn [individual] (reduce + (map #(if (= %1 %2) 1 0)
-						 individual
-						 (range 10))))]
-    (if (> (evaluate-fn individual1)
-	   (evaluate-fn individual2))
-      individual1
-      individual2)))
-
-(deftest evaluate-fitness-test
-  
-  (is (= (evaluate-fitness [0 1 2 3 4 5 6 7 8 9] [9 8 7 6 5 4 3 2 1 0]) [0 1 2 3 4 5 6 7 8 9]))
-  )
-
-	
-(defn do-crossover  [individual1 individual2]
-  (let [pivot (rand-int 10)
-	[fst-front fst-back] (split-at pivot individual1)
-	[snd-front snd-back] (split-at pivot individual2)]
-    [(vec (concat fst-front snd-back))
-     (vec (concat snd-front fst-back))]))
-
-(do-crossover (generate-random-individual)
-	      (generate-random-individual))
-
-(defn do-mutation [individual]
-  (let [pivot (rand-int 10)]
-    (assoc individual pivot (rand-int 10))))
-
-(do-mutation [0 1 2 3 4 5 6 7 8 9])
 
 
 
