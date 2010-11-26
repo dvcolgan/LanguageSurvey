@@ -272,5 +272,20 @@ Wednesday November 24
 8:15 - 9:15
 Bug hunting and fighting with the system.  It seems that Emacs with slime does not necessarily like Clojure yet to some degree.
 
-12:00-1:30
+12:00-1:30PM
 More fighting with Clojure.  I'm starting to get really annoyed at the Java cruft that Clojure has associated with it.
+
+Thursday November 25
+9:00 - 10:30AM
+Spend an hour finding a stupid bug that was my fault.  Doing (func coll) is not the same as (func [coll]).
+
+11:00 - 1:00PM
+Finally finished the human interface to the farkle game.  Now on to the GA.
+
+7:15 - 9:15
+Clojure is harder to debug using my usual method of lots of print statements, at least doing it the usual way.
+The dynamic nature of the programs are sometimes a problem if i have a terse little function and somewhere inside it there is an error because something is now returning a scalar instead of a vector.
+
+I am definitely thinking of new ways of doing things doing this problem again in a new language and a new paradigm.
+
+I noticed myself blaming problems on the newness of the language, when it actually was my own fault.
