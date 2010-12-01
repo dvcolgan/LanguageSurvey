@@ -1,6 +1,6 @@
 (ns farkle.ga
   (:use clojure.test clojure.set)
-  (:use farkle.game)
+  (:use farkle.game farkle.players)
   )
 
 (defn rand-int01 []

@@ -1,8 +1,799 @@
 (ns farkle.core
   (:use clojure.contrib.str-utils)
   (:use clojure.test clojure.set)
-  (:use farkle.game farkle.ga)
-  (:gen-class))
+  (:gen-class)
+  )
+
+
+
+
+(defn third [x]
+  (first (next (next x))))
+
+
+(deftest test-third
+  (is (= 1 (third [3 2 1])))
+  (is (= nil (third [3 2])))
+  (is (= 1 (third [3 2 1 0])))
+  )
+
+
+(defn sort-by-frequency [lst]
+  (let [counts (seq (frequencies lst))]
+    (sort
+     (fn [a b]
+       (let [comp (compare (second b)
+			   (second a))]
+	 (if (= comp 0)
+	   (compare (first a)
+		    (first b))
+	   comp)))
+     counts)))
+
+(deftest sort-by-frequency-test
+  (is (= (sort-by-frequency []) '()))
+  (is (= (sort-by-frequency [1]) '([1 1])))
+  (is (= (sort-by-frequency [1 1]) '([1 2])))
+  (is (= (sort-by-frequency [1 1 1]) '([1 3])))
+  (is (= (sort-by-frequency [1 1 1 1]) '([1 4])))
+  (is (= (sort-by-frequency [1 1 1 1 1]) '([1 5])))
+  (is (= (sort-by-frequency [1 1 1 1 1 1]) '([1 6])))
+  (is (= (sort-by-frequency [1 2 3 4 5 6]) '([1 1] [2 1] [3 1] [4 1] [5 1] [6 1])))
+  (is (= (sort-by-frequency [1 3 3 3 4 4]) '([3 3] [4 2] [1 1])))
+  (is (= (sort-by-frequency [1 1 1]) '([1 3])))
+  )
+
+(defn value-of-extra-1s-and-5s [dice]
+  (let [freqs (frequencies dice)]
+    (+ (if (<= (freqs 1 0) 2)
+         (* (freqs 1 0) 100)
+         0)
+       (if (<= (freqs 5 0) 2)
+         (* (freqs 5 0) 50)
+         0))))
+
+(deftest value-of-extra-1s-and-5s-test
+  (is (= (value-of-extra-1s-and-5s [1]) 100))
+  (is (= (value-of-extra-1s-and-5s [5]) 50))
+  (is (= (value-of-extra-1s-and-5s [1 5]) 150))
+  (is (= (value-of-extra-1s-and-5s [5 1 1 5]) 300))
+  (is (= (value-of-extra-1s-and-5s [1 1 1]) 0))
+  (is (= (value-of-extra-1s-and-5s [1]) 100))
+  (is (= (value-of-extra-1s-and-5s [5 5]) 100))
+  (is (= (value-of-extra-1s-and-5s [5 1 1 5 3]) 300))
+  )
+
+
+(defn have-straight? [dice]
+  (= (sort dice)
+     (range 1 7)))
+
+(deftest test-have-straight
+  (is (have-straight? [1 2 3 4 5 6]))
+  (is (have-straight? [2 1 4 3 6 5]))
+  )
+
+(defn roll-has-nonscoring-dice [dice]
+  (let [die-map (frequencies dice)]
+    (not
+      (every? true? (map #(or (or (= (val %) 0)
+                                  (<= 3 (val %) 6))
+                              (= (key %) 1)
+                              (= (key %) 5))
+                         die-map)))))
+
+(deftest test-roll-has-nonscoring-dice
+  (is (= (roll-has-nonscoring-dice [1]) false))
+  (is (= (roll-has-nonscoring-dice [2]) true))
+  (is (= (roll-has-nonscoring-dice [3]) true))
+  (is (= (roll-has-nonscoring-dice [4]) true))
+  (is (= (roll-has-nonscoring-dice [5]) false))
+  (is (= (roll-has-nonscoring-dice [6]) true))
+  (is (= (roll-has-nonscoring-dice [1 2]) true))
+  (is (= (roll-has-nonscoring-dice [1 3]) true))
+  (is (= (roll-has-nonscoring-dice [1 4]) true))
+  (is (= (roll-has-nonscoring-dice [1 5]) false))
+  (is (= (roll-has-nonscoring-dice [1 6]) true))
+  (is (= (roll-has-nonscoring-dice [5 1 1 5]) false))
+  )
+
+
+(defn get-score
+  ([dice] (get-score dice false))
+  ([dice zero-for-extra]
+   (if (= (count dice) 0)
+     (do (println "here")
+     0)
+     (let [die-counts (sort-by-frequency dice)
+           [fst-die fst-cnt] (first die-counts)
+           [snd-die snd-cnt] (second die-counts)
+           [trd-die trd-cnt] (third die-counts)
+           single-dice-value (value-of-extra-1s-and-5s dice)]
+       (cond
+         (and (= fst-cnt 4) (= snd-cnt 2)) 1500
+         (and (= fst-cnt 3) (= snd-cnt 3)) 2500
+         (and (= fst-cnt 2) (= snd-cnt 2) (= trd-cnt 2)) 1500
+         (have-straight? dice) 1500
+         (= fst-cnt 6) 3000
+         (and zero-for-extra (roll-has-nonscoring-dice dice)) 0
+         (= fst-cnt 5) (+ single-dice-value 2000)
+         (= fst-cnt 4) (+ single-dice-value 1000)
+         (= fst-cnt 3) (+ single-dice-value
+                          (if (= fst-die 1)
+                            300
+                            (* fst-die 100)))
+         :else single-dice-value)))))
+
+
+
+(deftest get-score-test
+  (is (= (get-score [1]) 100))
+  (is (= (get-score [5]) 50))
+  (is (= (get-score [2]) 0))
+  (is (= (get-score [3]) 0))
+  (is (= (get-score [4]) 0))
+  (is (= (get-score [6]) 0))
+  (is (= (get-score [1 5]) 150))
+  (is (= (get-score [1 1]) 200))
+  (is (= (get-score [5 5]) 100))
+  (is (= (get-score [2 3]) 0))
+  (is (= (get-score [4 6]) 0))
+  (is (= (get-score [1 1 1]) 300))
+  (is (= (get-score [2 2 2]) 200))
+  (is (= (get-score [3 3 3]) 300))
+  (is (= (get-score [4 4 4]) 400))
+  (is (= (get-score [5 5 5]) 500))
+  (is (= (get-score [6 6 6]) 600))
+  (is (= (get-score [2 3 4]) 0))
+  (is (= (get-score [1 5 6]) 150))
+  (is (= (get-score [3 5 6]) 50))
+  (is (= (get-score [1 1 1 1]) 1000))
+  (is (= (get-score [2 2 2 2]) 1000))
+  (is (= (get-score [3 3 3 3]) 1000))
+  (is (= (get-score [4 4 4 4]) 1000))
+  (is (= (get-score [5 5 5 5]) 1000))
+  (is (= (get-score [6 6 6 6]) 1000))
+  (is (= (get-score [6 6 6 1]) 700))
+  (is (= (get-score [4 4 4 5]) 450))
+  (is (= (get-score [3 3 3 4]) 300))
+  (is (= (get-score [1 2 3 4]) 100))
+  (is (= (get-score [3 4 5 6]) 50))
+  (is (= (get-score [2 3 4 6]) 0))
+  (is (= (get-score [1 1 1 1 1]) 2000))
+  (is (= (get-score [2 2 2 2 2]) 2000))
+  (is (= (get-score [3 3 3 3 3]) 2000))
+  (is (= (get-score [4 4 4 4 4]) 2000))
+  (is (= (get-score [5 5 5 5 5]) 2000))
+  (is (= (get-score [6 6 6 6 6]) 2000))
+  (is (= (get-score [1 1 1 1 1 1]) 3000))
+  (is (= (get-score [2 2 2 2 2 2]) 3000))
+  (is (= (get-score [3 3 3 3 3 3]) 3000))
+  (is (= (get-score [4 4 4 4 4 4]) 3000))
+  (is (= (get-score [5 5 5 5 5 5]) 3000))
+  (is (= (get-score [6 6 6 6 6 6]) 3000))
+  (is (= (get-score [1 1 1 2 2 2]) 2500))
+  (is (= (get-score [3 3 3 4 4 4]) 2500))
+  (is (= (get-score [5 5 5 6 6 6]) 2500))
+  (is (= (get-score [1 1 2 2 3 3]) 1500))
+  (is (= (get-score [4 4 5 5 6 6]) 1500))
+  (is (= (get-score [1 1 1 1 2 2]) 1500))
+  (is (= (get-score [3 3 3 3 4 4]) 1500))
+  (is (= (get-score [5 5 5 5 6 6]) 1500))
+  (is (= (get-score [1 2] true) 0))
+  (is (= (get-score [1 3] true) 0))
+  (is (= (get-score [1 4] true) 0))
+  (is (= (get-score [1 6] true) 0))
+  (is (= (get-score [2 3] true) 0))
+  (is (= (get-score [4 6] true) 0))
+  (is (= (get-score [2 3 4] true) 0))
+  (is (= (get-score [1 5 6] true) 0))
+  (is (= (get-score [3 5 6] true) 0))
+  (is (= (get-score [3 3 3 4] true) 0))
+  (is (= (get-score [2 2 2 4] true) 0))
+  (is (= (get-score [2 2 2 3] true) 0))
+  (is (= (get-score [6 6 6 4] true) 0))
+  (is (= (get-score [6 6 6 3] true) 0))
+  (is (= (get-score [1 2 3 4] true) 0))
+  (is (= (get-score [3 4 5 6] true) 0))
+  (is (= (get-score [2 3 4 6] true) 0))
+  (is (= (get-score [5 1 1 5] true) 300))
+  )
+
+(defn contains-values [first-vals second-vals]
+  (loop [container (sort first-vals)
+         containee (sort second-vals)]
+    (if (= (count containee) 0)
+      true
+      (if (= (count container) 0)
+        false
+        (if (= (first container)
+               (first containee))
+          (recur (rest container)
+                 (rest containee))
+          (recur (rest container)
+                 containee))))))
+
+(defn is-valid-set-aside [remaining new-set-aside]
+  (and (contains-values remaining new-set-aside)
+       (> (get-score new-set-aside true) 0)))
+
+(deftest test-is-valid-set-aside
+  (is (= (is-valid-set-aside [5 1 1 5] [5 1 1 5]) true))
+  (is (= (is-valid-set-aside [1 4 5 1 1 5] [4 5 1 1 5]) false))
+  )
+
+
+
+(defn is-farkle [dice]
+  (= (get-score dice) 0))
+
+
+(defn contains-one-scoring-die [dice]
+  (let [freqs (frequencies dice)]
+    (and (< (freqs 2) 3)
+         (< (freqs 3) 3)
+         (< (freqs 4) 3)
+         (< (freqs 6) 3)
+         (or (and (= (freqs 1) 1)
+                  (= (freqs 5) 0))
+             (and (= (freqs 1) 0)
+                  (= (freqs 5) 1))))))
+
+(deftest test-contains-one-scoring-die
+  (is (= (contains-one-scoring-die [1 2 3 2 4 6]) true))
+  (is (= (contains-one-scoring-die [1 1 3 2 4 6]) false))
+  (is (= (contains-one-scoring-die [5 3 2 4 6]) true))
+  (is (= (contains-one-scoring-die [1 5 3 2 4 6]) false))
+  (is (= (contains-one-scoring-die [5 5 3 2 4 6]) false))
+  (is (= (contains-one-scoring-die [3 3 3 1 4 6]) false))
+  )
+
+(defn contains-only-three-of-a-kind [dice]
+  (let [freqs (frequencies dice)]
+    (and (not (<= 1 (freqs 1) 2))
+         (not (<= 1 (freqs 5) 2))
+         (= (reduce + (map #(if (= (val %) 3) 1 0) freqs)) 1))))
+
+(deftest test-contains-only-three-of-a-kind
+  (is (= (contains-only-three-of-a-kind [1 1 1 3 2 4]) true))
+  (is (= (contains-only-three-of-a-kind [1 1 1 1 2 4]) false))
+  (is (= (contains-only-three-of-a-kind [1 3 3 3 2 4]) false))
+  (is (= (contains-only-three-of-a-kind [2 5 5 5 2 4]) true))
+  )
+
+(defn all-dice-score [dice]
+  ;;TODO
+  )
+  
+
+(defprotocol FarklePlayer
+  (get-name [this])
+  (query-set-aside [this remaining set-aside turn-score total-scores])
+  (query-stop [this remaining set-aside turn-score total-scores])
+  (warn-invalid-set-aside [this])
+  (warn-farkle [this roll]))
+
+
+
+(deftype GAPlayer []
+  FarklePlayer
+  (get-name [this]
+    "GAPlayer")
+
+  (query-set-aside [this remaining set-aside turn-score total-scores]
+    [])
+
+  (query-stop [this remaining set-aside turn-score total-scores]
+    true)
+  
+  (warn-invalid-set-aside [this]
+    (println "I don't know what you did, but the GA player should never invalid set aside."))
+
+  (warn-farkle [this roll]
+    nil)
+  )
+
+
+
+
+(deftype GreedyAIPlayer [name stop-threshold]
+  FarklePlayer
+  (get-name [this]
+    name)
+  (query-set-aside [this remaining set-aside turn-score total-scores]
+    (println "AI player rolled" remaining)
+    (if (and (= (count remaining) 6)
+	     (> (get-score remaining) 1000))
+      remaining
+      (let [freqs (frequencies remaining)
+            new-set-aside (filter #(or (= (freqs %) 3)
+                                       (= % 1)
+                                       (= % 5))
+                                  remaining)]
+        (do
+          (println "AI player set aside" new-set-aside)
+          new-set-aside))))
+
+  (query-stop [this remaining set-aside turn-score total-scores]
+    (> turn-score stop-threshold))
+    
+  (warn-invalid-set-aside [this]
+    (println "AI player made an invalid set aside!"))
+
+  (warn-farkle [this roll]
+    (println "AI player got a farkle!")
+    (println "Dice:" roll))
+  )
+
+(deftest test-GreedyAIPlayer
+  (is (=
+       (query-set-aside (GreedyAIPlayer. "David" 500)
+			[1 2 3 4 5] [1] 100 [])
+       [1 5]))
+  (is (=
+       (query-stop (GreedyAIPlayer. "David" 500)
+		   [2 3 4] [1 1 5] 250 [])
+       false))
+)
+
+
+(deftype HumanPlayer [name]
+  FarklePlayer
+  (get-name [this]
+    name)
+  (query-set-aside [this remaining set-aside turn-score total-scores]
+    (println "\n\nScores:\n")
+    (doseq [[i score] (map-indexed vector total-scores)]
+      (println (format "Player %d: %d" i score)))
+    (println "Turn score:" turn-score)
+    
+    (println "Set Aside:")
+    (println set-aside)
+    
+    (println "You roll the dice:")
+    (println remaining)
+    (println "Indicate the dice you want to set aside by entering their numbers separated by spaces.")
+
+    ;;TODO this throws an exception and crashes on invalid input, tried using try/catch, couldn't get it to work
+    (let [choices (read-line)]
+      (map #(Integer/parseInt %) (re-split #" " choices))))
+
+  (query-stop [this remaining set-aside turn-score total-scores]
+    (println
+      (format
+        "You have %d points.  Hit enter to continue rolling, or type 'stop' to end your turn."
+        turn-score))
+    (let [choice (read-line)]
+      (if (= choice "")
+        false
+        true)))
+
+  (warn-invalid-set-aside [this]
+    (println "That set aside is invalid!"))
+
+  (warn-farkle [this roll]
+    (println "You got a farkle!")
+    (println "Dice:" roll))
+)
+
+(defn rand-int01 []
+  (rand-int 2))
+(defn rand-int02 []
+  (rand-int 3))
+(defn rand-range-50-3500 []
+  (rand-nth (range 0 3501 50)))
+
+(def gene-mutator
+     [
+      rand-int01, ;0, rolled 3, two 1's: 0=take one, 1=take two
+      rand-int01, ;1, rolled 3, two 5's: 0=take one, 1=take two
+      rand-int01, ;2, rolled 3, one 1 and one 5: 0=take 1, 1=take both
+
+      rand-int01, ;3, rolled 4, two 1's: 0=take one, 1=take two
+      rand-int01, ;4, rolled 4, two 5's: 0=take one, 1=take two
+      rand-int01, ;5, rolled 4, one 1 and one 5: 0=take 1, 1=take both
+
+      rand-int02, ;6, rolled 5, three 1's and a 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;7, rolled 5, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;8, rolled 5, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;9, rolled 5, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;10, rolled 5, three 5's and a 1: 0=take one, 1=take three, 2=take four
+      rand-int02, ;11, rolled 5, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
+
+      rand-int01, ;12, rolled 5, two 1's: 0=take one, 1=take two
+      rand-int01, ;13, rolled 5, two 5's: 0=take one, 1=take two
+      rand-int01, ;14, rolled 5, one 1 and one 5: 0=take 1, 1=take both
+
+      rand-int02, ;15, rolled 6, three 1's and two 5's: 0=take one, 1=take three, 2=take five
+      rand-int02, ;16, rolled 6, three 2's and two others: 0=take one, 1=take three, 2=take five
+      rand-int02, ;17, rolled 6, three 3's and two others: 0=take one, 1=take three, 2=take five
+      rand-int02, ;18, rolled 6, three 4's and two others: 0=take one, 1=take three, 2=take five
+      rand-int02, ;19, rolled 6, three 5's and two 1's: 0=take one, 1=take three, 2=take five
+      rand-int02, ;20, rolled 6, three 6's and two others: 0=take one, 1=take three, 2=take five
+
+      rand-int02, ;21, rolled 6, three 1's and a 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;22, rolled 6, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;23, rolled 6, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;24, rolled 6, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
+      rand-int02, ;25, rolled 6, three 5's and a 1: 0=take one, 1=take three, 2=take four
+      rand-int02, ;26, rolled 6, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
+
+      rand-int01, ;27, rolled 6, two 1's: 0=take one, 1=take two
+      rand-int01, ;28, rolled 6, two 5's: 0=take one, 1=take two
+      rand-int01, ;29, rolled 6, one 1 and one 5: 0=take 1, 1=take both
+
+      rand-range-50-3500, ;30, if have 1 dice left, threshold to stop at
+      rand-range-50-3500, ;31, if have 2 dice left, threshold to stop at
+      rand-range-50-3500, ;32, if have 3 dice left, threshold to stop at
+      rand-range-50-3500, ;33, if have 4 dice left, threshold to stop at
+      rand-range-50-3500, ;34, if have 5 dice left, threshold to stop at
+      rand-range-50-3500, ;35, if have 6 dice left, threshold to stop at
+      ])
+
+(defn create-random-gene []
+  (for [chromosome-mutator gene-mutator]
+    (chromosome-mutator)))
+
+
+(deftype GAPlayer [gene]
+  FarklePlayer
+  (query-set-aside [this remaining set-aside turn-score total-scores]
+    (let [die-counts (frequencies remaining)]
+      (cond
+       (or (contains-one-scoring-die remaining)
+	   (contains-only-three-of-a-kind remaining)
+	   (>= (get-score remaining) 1000)
+	   (all-dice-score remaining)) (get-most-valuable-set-aside remaining)
+       
+
+       (= (count remaining) 2) (get-most-valuable-set-aside remaining)
+
+       (= (count remaining) 3) (cond
+				(= (die-counts 1) 2) (cond
+						      (= (nth gene 0) 0) [1]
+						      (= (nth gene 0) 1) [1,1])
+				(= (die-counts 5) 2) (cond
+						      (= (nth gene 1) 0) [5]
+						      (= (nth gene 1) 1) [5,5])
+				(and (= (die-counts 1) 1)
+				     (= (die-counts 5) 1)) (cond
+							    (= (nth gene 2) 0) [1]
+							    (= (nth gene 2) 1) [1,5]))
+
+       (= (count remaining) 4) (cond
+				(= (die-counts 1) 2) (cond
+						      (= (nth gene 3) 0) [1]
+						      (= (nth gene 3) 1) [1,1])
+				(= (die-counts 5) 2) (cond
+						      (= (nth gene 4) 0) [5]
+						      (= (nth gene 4) 1) [5,5])
+				(and (= (die-counts 1) 1)
+				     (= (die-counts 5) 1)) (cond
+							    (= (nth gene 5) 0) [1]
+							    (= (nth gene 5) 1) [1,5]))
+
+       (= (count remaining) 5) (cond
+				(contains-three-of-a-kind-and-one-other remaining 1) (cond
+										      (= (nth gene 6) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 6) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 6) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 2) (cond
+										      (= (nth gene 7) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 7) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 7) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 3) (cond
+										      (= (nth gene 8) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 8) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 8) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 4) (cond
+										      (= (nth gene 9) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 9) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 9) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 5) (cond
+										      (= (nth gene 10) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 10) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 10) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 6) (cond
+										      (= (nth gene 11) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 11) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 11) 2) (get-most-valuable-set-aside remaining))
+										    
+				(= (die-counts 1) 2) (cond
+						      (= (nth gene 12) 0) [1]
+						      (= (nth gene 12) 1) [1,1])
+				(= (die-counts 5) 2) (cond
+						      (= (nth gene 13) 0) [5]
+						      (= (nth gene 13) 1) [5,5])
+				(and (= (die-counts 1) 1)
+				     (= (die-counts 5) 1)) (cond
+							    (= (nth gene 14) 0) [1]
+							    (= (nth gene 14) 1) [1,5]))
+	     
+
+       (= (count remaining) 6) (cond
+				(contains-three-of-a-kind-and-two-others remaining 1) (cond
+										      (= (nth gene 15) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 15) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 15) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-two-others remaining 2) (cond
+										      (= (nth gene 16) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 16) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 16) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-two-others remaining 3) (cond
+										      (= (nth gene 17) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 17) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 17) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-two-others remaining 4) (cond
+										      (= (nth gene 18) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 18) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 18) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-two-others remaining 5) (cond
+										      (= (nth gene 19) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 19) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 19) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-two-others remaining 6) (cond
+										      (= (nth gene 20) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 20) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 20) 2) (get-most-valuable-set-aside remaining))
+
+				(contains-three-of-a-kind-and-one-other remaining 1) (cond
+										      (= (nth gene 21) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 21) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 21) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 2) (cond
+										      (= (nth gene 22) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 22) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 22) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 3) (cond
+										      (= (nth gene 23) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 23) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 23) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 4) (cond
+										      (= (nth gene 24) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 24) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 24) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 5) (cond
+										      (= (nth gene 25) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 25) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 25) 2) (get-most-valuable-set-aside remaining))
+				(contains-three-of-a-kind-and-one-other remaining 6) (cond
+										      (= (nth gene 26) 0) (get-most-valuable-single-die remaining)
+										      (= (nth gene 26) 1) (get-three-of-a-kind remaining)
+										      (= (nth gene 26) 2) (get-most-valuable-set-aside remaining))
+										    
+
+				(= (die-counts 1) 2) (cond
+						      (= (nth gene 27) 0) [1]
+						      (= (nth gene 27) 1) [1,1])
+				(= (die-counts 5) 2) (cond
+						      (= (nth gene 28) 0) [5]
+						      (= (nth gene 28) 1) [5,5])
+				(and (= (die-counts 1) 1)
+				     (= (die-counts 5) 1)) (cond
+							    (= (nth gene 29) 0) [1]
+							    (= (nth gene 29) 1) [1,5])))))
+
+            
+
+  (query-stop [this remaining set-aside turn-score total-scores]
+    (let [die-count (count remaining)]
+      (cond
+       (= die-count 1) (>= turn-score (nth gene 30))
+       (= die-count 2) (>= turn-score (nth gene 31))
+       (= die-count 3) (>= turn-score (nth gene 32))
+       (= die-count 4) (>= turn-score (nth gene 33))
+       (= die-count 5) (>= turn-score (nth gene 34))
+       (= die-count 6) (>= turn-score (nth gene 35))
+       :else true)))
+       
+  (warn-invalid-set-aside [this]
+    nil)
+
+  (warn-farkle [this roll]
+    nil)
+  )
+
+
+
+
+
+
+
+
+
+(defn roll-dice [num-to-roll]
+  (for [die (range num-to-roll)]
+    (inc (rand-int 6))))
+
+
+(deftest test-roll-dice
+  (is (every? #(<= 1 % 6) (roll-dice 1000))))
+
+
+
+
+
+(defn get-validated-set-aside [player remaining set-aside turn-score total-scores]
+  (loop [new-set-aside (query-set-aside player remaining set-aside turn-score total-scores)]
+    (if (is-valid-set-aside remaining new-set-aside)
+      new-set-aside
+      (do
+        (warn-invalid-set-aside player)
+        (recur (query-set-aside player remaining set-aside turn-score total-scores))))))
+
+(defn take-turn [player total-scores]
+  (loop [turn-score 0
+         set-aside []
+         remaining (roll-dice 6)]
+    (if (is-farkle remaining)
+      (do
+        (warn-farkle player remaining)
+        0)
+      (let [new-set-aside (get-validated-set-aside player remaining set-aside turn-score total-scores)
+            new-turn-score (+ turn-score (get-score new-set-aside))]
+        (if (query-stop player remaining set-aside new-turn-score total-scores)
+          new-turn-score
+          (recur new-turn-score
+                 (concat set-aside new-set-aside)
+                 (roll-dice (let [die-count (- (count remaining)
+                                               (count new-set-aside))]
+                              (if (> die-count 0)
+                                die-count
+                                6)))))))))
+
+(defn play-farkle [players]
+  (if (= (count players) 0)
+    (println "Not enough players!")
+    (loop [rotation (cycle players)
+	   scores (zipmap players (repeat 0))]
+      (let [player (first rotation)
+	    updated-score (+ (scores player)
+                         (take-turn player (take (count players)
+                                                 (vec
+                                                   (map val scores)))))]
+        (if (>= updated-score 10000)
+          player
+          (recur (rest rotation)
+                 (assoc scores player updated-score)))))))
+
+
+(defn main []
+  (let [winner (play-farkle [(HumanPlayer. "David")
+                             (GreedyAIPlayer. "Samuel" 800)])]
+    (println "The winner is" (str (get-name winner) "!"))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(defprotocol GAProblem
+  (create-random-individual [this])
+  (run-tournament [this individual1 individual2])
+  (mate-individuals [this individual1 individual2])
+  (mutate-individual [this individual]))
+
+
+(deftype FarkleProblem []
+  GAProblem
+  (create-random-individual [this]
+    (farkle.game/GAPlayer.))
+
+  (run-tournament [this individual1 individual2]
+    (loop [p1-wins 0 p2-wins 0]
+      (if (= (play-farkle [individual1 individual2]) individual1)
+	(recur (inc p1-wins) p2-wins)
+	(recur p1-wins (inc p2-wins)))))
+
+  (mate-individuals [this individual1 individual2]
+    (let [pivot (rand-int 10)]
+      [(concat (take pivot individual1) (drop pivot individual2))
+       (concat (take pivot individual2) (drop pivot individual1))]))
+
+  (mutate-individual [this individual]
+    (let [pivot (rand-int 10)]
+      ;do something to mutate this individual
+      individual))
+)
+
+
+
+		  
+(deftype SequenceProblem []
+  GAProblem
+  (create-random-individual [this]
+    (vec (repeatedly 10 #(rand-int 10))))
+
+  (run-tournament [this individual1 individual2]
+    (letfn [(evaluate-fn [individual] (reduce + (map #(if (= %1 %2) 1 0)
+						     individual
+						     (range 10))))]
+      (if (> (evaluate-fn individual1)
+	     (evaluate-fn individual2))
+	individual1
+	individual2)))
+
+  (mate-individuals [this individual1 individual2]
+    (let [pivot (rand-int 10)
+	  [fst-front fst-back] (split-at pivot individual1)
+	  [snd-front snd-back] (split-at pivot individual2)]
+      [(vec (concat fst-front snd-back))
+       (vec (concat snd-front fst-back))]))
+
+  (mutate-individual [this individual]
+    (let [pivot (rand-int 10)]
+      (assoc individual pivot (rand-int 10))))
+  )
+
+
+
+
+
+
+(defn find-converging-individual [population]
+  (let [[frequency individual]
+	(first
+	 (reverse
+	  (sort
+	   (map-invert
+	    (into (hash-map) (frequencies population))))))]
+    [(/ frequency (count population))
+     individual]))
+
+
+(defn run-ga [problem-manager population-size max-generations mutation-rate crossover-rate]
+  (loop [generation 0
+	 population (repeatedly population-size #(create-random-individual problem-manager))]
+    (let [mating-pool (map (fn [i1 i2] (run-tournament problem-manager i1 i2))
+			    (repeatedly population-size #(rand-nth population))
+			    (repeatedly population-size #(rand-nth population)))
+
+	  crossed-pool (mapcat identity (map (fn [i1 i2]
+						(if (< (rand) crossover-rate)
+						  (mate-individuals problem-manager i1 i2)
+						  [i1 i2]))
+					      (repeatedly population-size #(rand-nth mating-pool))
+					      (repeatedly population-size #(rand-nth mating-pool))))
+	  mutated-pool (map (fn [i]
+			       (if (< (rand) mutation-rate)
+				 (mutate-individual problem-manager i)
+				 i))
+			     (repeatedly population-size #(rand-nth crossed-pool)))]
+      (let [[convergence most-common-individual] (find-converging-individual mutated-pool)]
+	(if (or (> convergence 0.95)
+		(> generation max-generations))
+	  (str "Most common individual: "
+	       most-common-individual ", "
+	       convergence ", "
+	       generation ", "
+	       (str (vec mutated-pool)))
+	  (do
+	    (println (format "Generation %d" generation))
+	    (recur (inc generation) mutated-pool)))))))
+
+
+
+
+      
+
+
+
+
+
+  
+	
+
+;(run-tests)
+;(main)
 
 
 (defn -main [& args]
@@ -11,265 +802,7 @@
     (println "The winner is" (get-name winner) "!")))
 
 
+(run-tests)
 
 
-
-
-;(deftype GAPlayer [gene]
-;  
-;self.gene_mutator = [
-;self.randint01, #0, rolled 3, two 1's: 0=take one, 1=take two
-;self.randint01, #1, rolled 3, two 5's: 0=take one, 1=take two
-;self.randint01, #2, rolled 3, one 1 and one 5: 0=take 1, 1=take both
-;
-;self.randint01, #3, rolled 4, two 1's: 0=take one, 1=take two
-;self.randint01, #4, rolled 4, two 5's: 0=take one, 1=take two
-;self.randint01, #5, rolled 4, one 1 and one 5: 0=take 1, 1=take both
-;
-;self.randint02, #6, rolled 5, three 1's and a 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #7, rolled 5, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #8, rolled 5, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #9, rolled 5, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #10, rolled 5, three 5's and a 1: 0=take one, 1=take three, 2=take four
-;self.randint02, #11, rolled 5, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;
-;self.randint01, #12, rolled 5, two 1's: 0=take one, 1=take two
-;self.randint01, #13, rolled 5, two 5's: 0=take one, 1=take two
-;self.randint01, #14, rolled 5, one 1 and one 5: 0=take 1, 1=take both
-;
-;self.randint02, #15, rolled 6, three 1's and two 5's: 0=take one, 1=take three, 2=take five
-;self.randint02, #16, rolled 6, three 2's and two others: 0=take one, 1=take three, 2=take five
-;self.randint02, #17, rolled 6, three 3's and two others: 0=take one, 1=take three, 2=take five
-;self.randint02, #18, rolled 6, three 4's and two others: 0=take one, 1=take three, 2=take five
-;self.randint02, #19, rolled 6, three 5's and two 1's: 0=take one, 1=take three, 2=take five
-;self.randint02, #20, rolled 6, three 6's and two others: 0=take one, 1=take three, 2=take five
-;
-;self.randint02, #21, rolled 6, three 1's and a 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #22, rolled 6, three 2's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #23, rolled 6, three 3's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #24, rolled 6, three 4's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;self.randint02, #25, rolled 6, three 5's and a 1: 0=take one, 1=take three, 2=take four
-;self.randint02, #26, rolled 6, three 6's and a 1 or 5: 0=take one, 1=take three, 2=take four
-;
-;self.randint01, #27, rolled 6, two 1's: 0=take one, 1=take two
-;self.randint01, #28, rolled 6, two 5's: 0=take one, 1=take two
-;self.randint01, #29, rolled 6, one 1 and one 5: 0=take 1, 1=take both
-;
-;self.randrange50_3500, #30, if have 1 dice left, threshold to stop at
-;self.randrange50_3500, #31, if have 2 dice left, threshold to stop at
-;self.randrange50_3500, #32, if have 3 dice left, threshold to stop at
-;self.randrange50_3500, #33, if have 4 dice left, threshold to stop at
-;self.randrange50_3500, #34, if have 5 dice left, threshold to stop at
-;self.randrange50_3500, #35, if have 6 dice left, threshold to stop at
-;        ]
-;
-;        if gene is not None:
-;            self.gene = gene
-;        else:
-;            self.gene = [self.gene_mutator[i]() for i in range(len(self.gene_mutator))]
-;
-;
-;  (query_set_aside [this remaining set-aside turn-score total-scores]
-;    (if (remaining.contains_one_scoring_die() or
-;            remaining.contains_only_three_of_a_kind() or
-;            remaining.get_score() >= 1000 or
-;            remaining.all_dice_score()):
-;            return remaining.get_most_valuable_set_aside()
-;
-;        if remaining.count() == 2:
-;            return remaining.get_most_valuable_set_aside()
-;
-;        if remaining.count() == 3:
-;            if remaining.get_counts()[1] == 2:
-;                if self.gene[0] == 0: return (1,)
-;                if self.gene[0] == 1: return (1,1)
-;            elif remaining.get_counts()[5] == 2:
-;                if self.gene[1] == 0: return (5,)
-;                if self.gene[1] == 1: return (5,5)
-;            elif remaining.get_counts()[1] == 1 and remaining.get_counts()[5] == 1:
-;                if self.gene[2] == 0: return (1,)
-;                if self.gene[2] == 1: return (1,5)
-;
-;        if remaining.count() == 4:
-;            if remaining.get_counts()[1] == 2:
-;                if self.gene[3] == 0: return (1,)
-;                if self.gene[3] == 1: return (1,1)
-;            elif remaining.get_counts()[5] == 2:
-;                if self.gene[4] == 0: return (5,)
-;                if self.gene[4] == 1: return (5,5)
-;            elif remaining.get_counts()[1] == 1 and remaining.get_counts()[5] == 1:
-;                if self.gene[5] == 0: return (1,)
-;                if self.gene[5] == 1: return (1,5)
-;
-;			    
-;        if remaining.count() == 5:
-;            if remaining.contains_three_of_a_kind_and_one_other(1):
-;                if self.gene[6] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[6] == 1:
-;                    return (1,1,1)
-;                if self.gene[6] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(2):
-;                if self.gene[7] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[7] == 1:
-;                    return (2,2,2)
-;                if self.gene[7] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(3):
-;                if self.gene[8] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[8] == 1:
-;                    return (3,3,3)
-;                if self.gene[8] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(4):
-;                if self.gene[9] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[9] == 1:
-;                    return (4,4,4)
-;                if self.gene[9] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(5):
-;                if self.gene[10] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[10] == 1:
-;                    return (5,5,5)
-;                if self.gene[10] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(6):
-;                if self.gene[11] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[11] == 1:
-;                    return (6,6,6)
-;                if self.gene[11] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;
-;            elif remaining.get_counts()[1] == 2:
-;                if self.gene[12] == 0: return (1,)
-;                if self.gene[12] == 1: return (1,1)
-;            elif remaining.get_counts()[5] == 2:
-;                if self.gene[13] == 0: return (5,)
-;                if self.gene[13] == 1: return (5,5)
-;            elif remaining.get_counts()[1] == 1 and remaining.get_counts()[5] == 1:
-;                if self.gene[14] == 0: return (1,)
-;                if self.gene[14] == 1: return (1,5)
-;
-;
-;        if remaining.count() == 6:
-;            if remaining.contains_three_of_a_kind_and_two_others(1):
-;                if self.gene[15] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[15] == 1:
-;                    return (1,1,1)
-;                if self.gene[15] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_two_others(2):
-;                if self.gene[16] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[16] == 1:
-;                    return (2,2,2)
-;                if self.gene[16] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_two_others(3):
-;                if self.gene[17] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[17] == 1:
-;                    return (3,3,3)
-;                if self.gene[17] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_two_others(4):
-;                if self.gene[18] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[18] == 1:
-;                    return (4,4,4)
-;                if self.gene[18] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_two_others(5):
-;                if self.gene[19] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[19] == 1:
-;                    return (5,5,5)
-;                if self.gene[19] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_two_others(6):
-;                if self.gene[20] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[20] == 1:
-;                    return (6,6,6)
-;                if self.gene[20] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;
-;            if remaining.contains_three_of_a_kind_and_one_other(1):
-;                if self.gene[21] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[21] == 1:
-;                    return (1,1,1)
-;                if self.gene[21] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(2):
-;                if self.gene[22] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[22] == 1:
-;                    return (2,2,2)
-;                if self.gene[22] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(3):
-;                if self.gene[23] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[23] == 1:
-;                    return (3,3,3)
-;                if self.gene[23] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(4):
-;                if self.gene[24] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[24] == 1:
-;                    return (4,4,4)
-;                if self.gene[24] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(5):
-;                if self.gene[25] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[25] == 1:
-;                    return (5,5,5)
-;                if self.gene[25] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;            elif remaining.contains_three_of_a_kind_and_one_other(6):
-;                if self.gene[26] == 0:
-;                    return remaining.get_most_valuable_single_die()
-;                if self.gene[26] == 1:
-;                    return (6,6,6)
-;                if self.gene[26] == 2:
-;                    return remaining.get_most_valuable_set_aside()
-;
-;            elif remaining.get_counts()[1] == 2:
-;                if self.gene[27] == 0: return (1,)
-;                if self.gene[27] == 1: return (1,1)
-;            elif remaining.get_counts()[5] == 2:
-;                if self.gene[28] == 0: return (5,)
-;                if self.gene[28] == 1: return (5,5)
-;            elif remaining.get_counts()[1] == 1 and remaining.get_counts()[5] == 1:
-;                if self.gene[29] == 0: return (1,)
-;                if self.gene[29] == 1: return (1,5)
-;            
-;
-;  (query_stop [this remaining set-aside turn-score total-scores]
-;    (let [die-count (count remaining)]
-;      (cond
-;       (= die-count 1) (>= turn-score (nth gene 30))
-;       (= die-count 2) (>= turn-score (nth gene 31))
-;       (= die-count 3) (>= turn-score (nth gene 32))
-;       (= die-count 4) (>= turn-score (nth gene 33))
-;       (= die-count 5) (>= turn-score (nth gene 34))
-;       (= die-count 6) (>= turn-score (nth gene 35))
-;       :else true)))
-;       
-;  (warn-invalid-set-aside [this]
-;    nil)
-;
-;  (warn-farkle [this roll]
-;    pass)
-;  )
 

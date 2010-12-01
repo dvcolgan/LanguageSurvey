@@ -289,3 +289,13 @@ The dynamic nature of the programs are sometimes a problem if i have a terse lit
 I am definitely thinking of new ways of doing things doing this problem again in a new language and a new paradigm.
 
 I noticed myself blaming problems on the newness of the language, when it actually was my own fault.
+
+Sunday November 28
+
+12:30 - 1:30
+Reorganizing the code, fighting with namespaces.
+
+Wednesday December 1
+
+8:30 - 10:30AM
+Finishing up Clojure code.

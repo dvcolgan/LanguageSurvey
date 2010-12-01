@@ -1,6 +1,7 @@
 (ns farkle.game
   (:use clojure.contrib.str-utils)
   (:use clojure.test clojure.set)
+  (:use farkle.players)
 )
 
 (defn third [x]
@@ -224,115 +225,7 @@
   (= (get-score dice) 0))
 
 
-(defprotocol FarklePlayer
-  (get-name [this])
-  (query-set-aside [this remaining set-aside turn-score total-scores])
-  (query-stop [this remaining set-aside turn-score total-scores])
-  (warn-invalid-set-aside [this])
-  (warn-farkle [this roll]))
 
-
-
-(deftype GAPlayer []
-  FarklePlayer
-  (get-name [this]
-    "GAPlayer")
-
-  (query-set-aside [this remaining set-aside turn-score total-scores]
-    [])
-
-  (query-stop [this remaining set-aside turn-score total-scores]
-    true)
-  
-  (warn-invalid-set-aside [this]
-    (println "I don't know what you did, but the GA player should never invalid set aside."))
-
-  (warn-farkle [this roll]
-    nil)
-  )
-
-
-
-
-(deftype GreedyAIPlayer [name stop-threshold]
-  FarklePlayer
-  (get-name [this]
-    name)
-  (query-set-aside [this remaining set-aside turn-score total-scores]
-    (println "AI player rolled" remaining)
-    (if (and (= (count remaining) 6)
-	     (> (get-score remaining) 1000))
-      remaining
-      (let [freqs (frequencies remaining)
-            new-set-aside (filter #(or (= (freqs %) 3)
-                                       (= % 1)
-                                       (= % 5))
-                                  remaining)]
-        (do
-          (println "AI player set aside" new-set-aside)
-          new-set-aside))))
-
-  (query-stop [this remaining set-aside turn-score total-scores]
-    (> turn-score stop-threshold))
-    
-  (warn-invalid-set-aside [this]
-    (println "AI player made an invalid set aside!"))
-
-  (warn-farkle [this roll]
-    (println "AI player got a farkle!")
-    (println "Dice:" roll))
-  )
-
-(deftest test-GreedyAIPlayer
-  (is (=
-       (query-set-aside (GreedyAIPlayer. "David" 500)
-			[1 2 3 4 5] [1] 100 [])
-       [1 5]))
-  (is (=
-       (query-stop (GreedyAIPlayer. "David" 500)
-		   [2 3 4] [1 1 5] 250 [])
-       false))
-)
-
-
-(deftype HumanPlayer [name]
-  FarklePlayer
-  (get-name [this]
-    name)
-  (query-set-aside [this remaining set-aside turn-score total-scores]
-    (println "\n\nScores:\n")
-    (doseq [[i score] (map-indexed vector total-scores)]
-      (println (format "Player %d: %d" i score)))
-    (println "Turn score:" turn-score)
-    
-    (println "Set Aside:")
-    (println set-aside)
-    
-    (println "You roll the dice:")
-    (println remaining)
-    (println "Indicate the dice you want to set aside by entering their numbers separated by spaces.")
-
-    ;;TODO this throws an exception and crashes on invalid input, tried using try/catch, couldn't get it to work
-    (let [choices (read-line)]
-      (map #(Integer/parseInt %) (re-split #" " choices))))
-
-  (query-stop [this remaining set-aside turn-score total-scores]
-    (println
-      (format
-        "You have %d points.  Hit enter to continue rolling, or type 'stop' to end your turn."
-        turn-score))
-    (let [choice (read-line)]
-      (if (= choice "")
-        false
-        true)))
-
-  (warn-invalid-set-aside [this]
-    (println "That set aside is invalid!"))
-
-  (warn-farkle [this roll]
-    (println "You got a farkle!")
-    (println "Dice:" roll))
-)
 
 
 (defn roll-dice [num-to-roll]
@@ -405,5 +298,5 @@
   
 	
 
-(run-tests)
+;(run-tests)
 ;(main)
