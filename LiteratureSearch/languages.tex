@@ -6,6 +6,54 @@
 \begin{document}
 \maketitle
 
+\section{Introduction}
+
+Most computer science majors and software developers have used Java and C.
+According to the TIOBE Index
+(\url{http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html}), these
+two languages have consistently been among the most popular for general use.
+They are all established, well understood, and use the object oriented or
+imperative paradigm.
+
+Most of the other top languages are fairly similar to Java and C.  Languages
+like C\#, PHP, Python, Perl, and Objective-C all use some combination of the
+procedural and object oriented paradigm.   But are procedural and object
+oriented languages the best computer science has to offer for creating reliable,
+high performing software on a budget?  Many lesser-known languages, a good
+number of which have heavy influence from the functional paradigm, claim
+increased programmer productivity, fewer errors, shorter programs, and greatly
+enhanced support for multicore processing.
+
+\section{Research Goals}
+
+This project seeks to determine if Clojure, Forth, Erlang, Haskell, or J are
+compelling alternatives to the common procedural and object oriented languages
+most often used today in commercial environments.
+
+These five languages are ones I deem interesting and have wanted to learn in
+the past.  They are also all somewhat to very mind-bending, and several require
+a completely new approach to programming when compared to Java or C.  The
+languages are:
+
+\begin{itemize}
+\item Clojure, a Lisp dialect on the Java Virtual Machine
+\url{clojure.org/}
+
+\item Forth, a stack-based language
+\url{www.forth.org/}
+
+\item Erlang, a concurrency-oriented language
+\url{www.erlang.org/}
+
+\item Haskell, a lazy, purely functional language
+\url{www.haskell.org/}
+
+\item J, an array language similar to APL
+\url{www.jsoftware.com/}
+\end{itemize}
+
+If I somehow get done with these languages and have more time, I could
+investigate OCaml, Scala, Lua, or Groovy.
 
 \section{Literature Survey of Previous Work}
 
@@ -105,6 +153,67 @@ I will combine these two approaches.  The deliverables for my project will,
 like Prechelt, include implementations of the same program in several different
 languages, but I will also include high level feature comparisons between the
 languages as well.
+
+\section{Research Goals}
+
+This project seeks to determine if 
+
+\section{My Work}
+
+I began the semester by implementing the Farkle and GA system in Python, the language I know best, so that I could figure out the general idea of how the program would be implemented.  I programmed in a mostly Object-Oriented manner, and came up with a pretty good implementation of the system.  
+
+After completing the Python version, I then rewrote the system in Clojure.  Clojure is a language I have not had experience with, though I have used other Lisp dialects.  In my past experience with Lisps, I did not fully understand or apply the functional style.  Having completed the Farkle and GA systme for Clojure, I now have two versions of the same system written in different languages and different paradigms, but which do almost exactly the same thing.  This allows me to make some interesting comparisons.
+
+\subsection{Methods Used to Learn Clojure}
+
+To begin the process of learning Clojure, I began by reading the book Programming Clojure by Stuart Halloway.  After going through this book, I was a bit underwhelmed by my level of understanding.  I got the basics, but I still didn't feel ready to begin implementing the Farkle system.  A few of the other resources I used included a very well-written Clojure tutorial found at \url{http://java.ociweb.com/mark/clojure/article.html}, the official Clojure website at \url{http://www.clojure.org}, the PeepCode screencast on Clojure at \url{http://peepcode.com/products/functional-programming-with-clojure}, the very helpful community question and answer site \url{http://www.stackoverflow.com}, and other random pages found through Google searches.
+
+\subsection{Comparison of Lines of Code}
+
+The Python code comes in at around 900 lines of code excluding tests, while the Clojure code is around 600 lines, a substantial difference.  However, it is very possible for me to reduce the Python code in size if I cleaned it up further.  It had the disadvantage of going first.  
+
+\subsection{Ease of Learning}
+
+For those coming from a mostly procedural and object oriented background, Clojure will definitely be a stretch.  The most striking difference is the new paradigm.  Clojure is not purely functional, allowing side effects like printing to the screen anywhere in the code.  However, once a variable has been given a value, its value cannot be changed.  All procedural programming involves changing state, so those without a functional background will have to completely adjust their thinking.  Idiomatic Clojure makes heavy use of recursion and higher order functions.
+
+Another major difference is Clojure's laziness.  It does not evaluate expressions unless it has to, causing great speedups in some cases, and allowing for infinite data structures.  This is a powerful feature, but it takes some getting used to.  
+
+The syntax of Clojure is also very different than most other languages.  Its syntax of parentheses and brackets allows for powerful macros, but it is definitely not C-like, so programmers who have never seen syntax like this will have to make an adjustment.
+
+Therefore, Clojure has three new major concepts to learn: the functional paradigm, laziness, and the new style of syntax.
+
+\subsection{Miscellaneous Observations}
+
+One very cool side effect of rewriting the system in a second language is that I discovered better ways to write the Python code as I wrote the Clojure code.  Even though Python is predominantly a procedural and object oriented language, it has very powerful functional capabilities as well, and some of the ways that Clojure forced me to use a functional style could also be used in the Python code to make it more readable and shorter.
+
+\subsection{Disadvantages of Clojure}
+
+Clojure is plagued by a few problems.  The most obvious is it's close integration with Java.  While this is good in that it can use Java libraries, it also inherits many of Java's problems.  Clojure is not a very good language for scripts or anything that requires fast startup.  Starting any Clojure program cold takes on the order of 10 seconds.  For this reason, when developing Clojure it is recommended that you have one running Clojure repl and continuously send commands to it.
+
+The second major problem with Clojure is simply its age.  The language is only a few years old, and it is rapidly evolving and getting better.  However, even core features of the language have been implemented just this year, such as protocols.
+
+A bigger problem is that because the language is so young, the tools are not very mature either.  Slime, the flagship editing environment for all kinds of Lisps built on Emacs does not support Clojure nearly as well as the more mature Lisps.  A case in point is that the read-line function, the primary way of getting command line input, simply doesn't work in Slime.  This created a problem for my command line program.  The Slime debugger is also not very helpful when working with Clojure.  Stack traces will show 100 levels of Java method calls and a single location in my own code where the error occured.
+
+There is a system developed to write Clojure in Vim called VimClojure, but I could not figure out how to install it completely.  After spending multiple hours on it, I eventually went back to Emacs.
+
+There are also Eclipse and Netbeans plugins that I did not investigate.
+
+\section{Comparison Table}
+
+
+\begin{tabular}{l*{6}{l}l}
+                        & Python & Clojure \\
+    \hline
+    Ease of Learning    & Easy & Hard \\
+    Line of Code        & ~900 & ~600 \\
+    Maturity            & Mature (nearly 20 years old) & Very young (around 3 years old) \\
+    Support for Concurrency &     & Software Transactional Memory \\
+    Purity              & Impure & Pure by default \\
+    Supported Paradigms & Procedural, Object Oriented, Functional & Functional, Object Oriented \\
+    Evaluation Strategy & Eager & Lazy \\
+    Execution Method    & Interpreted & Byte-code Compiled \\
+\end{tabular}
+
 
 \bibliographystyle{plain}
 \bibliography{languages}

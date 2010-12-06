@@ -21,6 +21,7 @@ Monday September 06, 2010
 4:15 - 5:15 PM
 Read A Not So Short Introduction to Latex
 
+7:15
 
 Week 2
 
@@ -39,6 +40,8 @@ Started reading about Forth for some variety.
 Saturday September 11, 2010
 8:00 - 8:30 PM
 Continued reading about Forth.
+
+4:15
 
 Week 3
 
@@ -66,6 +69,8 @@ Monday September 20
 8:00 - 8:45 PM
 Worked on GA design.
 
+8:40
+
 Week 4
 
 Tuesday September 21
@@ -89,6 +94,8 @@ Tuesday September 28
 5:30 - 9:00 AM
 11:00 - 11:30 AM
 Worked on Python coding.
+
+9:00
 
 Week 5
 Wednesday September 29
@@ -114,14 +121,16 @@ Tuesday October 5
 7:30 - 8:30
 Found more papers and read and documented "A Comparison of Ada and C++."
 
+6:25
+
+Week 6
+
 Wednesday October 6
 8:00 - 9:00 AM
 Literature search.
 
 2:00 - 3:30 PM
 Meeting with Nurkkala, good progress in Python code.
-
-Week 6
 
 8:00 - 9:00 PM
 Refactoring Python code.
@@ -145,6 +154,8 @@ Tuesday October 12
 10:00 - 11:00 AM
 The GA is now running.
 
+14:00
+
 Week 7
 
 Saturday October 16
@@ -163,6 +174,8 @@ Wednesday October 20
 2:00 - 3:30 PM
 Meeting with Dr. Nurkkala.  Decided to be done with Python for now and move to
 Clojure.  Began reading the Clojure book and finished the introduction.
+
+11:30
 
 Week 8
 
@@ -187,6 +200,8 @@ Monday October 25
 Finished chapter 4 and am reading chapter 5 of Programming Clojure.
 7:15 - 8:30
 Finished chapter 5 of Programming Clojure.
+
+10:15
 
 Week 9
 
@@ -215,6 +230,10 @@ Solved a project Euler problem.
 10:00-11:30 am
 Working on the Farkle implementation in Clojure.
 
+9:30
+
+Week 10
+
 Wednesday November 3
 7:15 - 8:15 am
 Working on the Farkle implementation in Clojure.  Unit testing is a lot easier in this language.
@@ -228,13 +247,18 @@ Monday November 8
 8:00 - 9:30
 Making great progress on the GA system.  The code looks like it will be a LOT shorter.
 
+4:00
+
+Week 11
+
 Wednesday November 10
-5:00 - 6:30
+5:00 - 6:30AM
 Finished the GA framework and test code in Farkle.
-6:30-7:30
+6:30-7:30AM
 Attempting to install VimClojure to speed development time.
-7:30-8:30
+7:30-8:30AM
 More wrestling with VimClojure.
+
 
 Tuesday November 16
 8:45-10:45
@@ -242,12 +266,16 @@ Installed Enclojure IDE
 Found that the format function RETURNS a string, not prints it out.
 Figuring out how to properly iterate over a sequence to print it out.
 
+5:30
+
+Week 12
+
 Thursday November 18
 12-1 PM
 Fought with the tools, couldn't get protocols to work.
 
 Saturday November 20
-10:30 12:45
+10:30 - 12:45
 Finally figured out that I had misnamed something which was causing the real problem before!  Psh.
 Protocols will work beautifully for the different players.
 Wow this code is short.  Things that would take several lines and many minutes to write are 3 function calls composed.
@@ -267,6 +295,10 @@ Making more progress in the GA.  Asked a question on stackoverflow, working on t
 Tuesday November 23
 7:45 - 10:00PM
 Almost have the human-controlled game working.
+
+8:00
+
+Week 13
 
 Wednesday November 24
 8:15 - 9:15
@@ -299,3 +331,19 @@ Wednesday December 1
 
 8:30 - 10:30AM
 Finishing up Clojure code.
+
+Week 14
+
+Sunday December 5
+9:00-9:30
+12:15 - 1:30
+Working on my paper.
+
+Monday December 6
+3:30 - 5:00
+More work on the paper.
+
+
+11:00
+
+109:30

@@ -1,11 +1,7 @@
-from farkle import Dice, DiceFactory
-from ga import SequenceProblem
+from all import Dice, DiceFactory, SequenceProblem
 import unittest
 
 class TestGame(unittest.TestCase):
-    def setUp(self):
-        pass
-
 
     def test_contains_three_of_a_kind_and_two_others(self):
         self.assertEquals(

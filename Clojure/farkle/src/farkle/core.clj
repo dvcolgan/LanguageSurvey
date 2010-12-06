@@ -4,19 +4,14 @@
   (:gen-class)
   )
 
-
-
-
 (defn third [x]
   (first (next (next x))))
-
 
 (deftest test-third
   (is (= 1 (third [3 2 1])))
   (is (= nil (third [3 2])))
   (is (= 1 (third [3 2 1 0])))
   )
-
 
 (defn sort-by-frequency [lst]
   (let [counts (seq (frequencies lst))]
@@ -63,7 +58,6 @@
   (is (= (value-of-extra-1s-and-5s [5 1 1 5 3]) 300))
   )
 
-
 (defn have-straight? [dice]
   (= (sort dice)
      (range 1 7)))
@@ -97,7 +91,6 @@
   (is (= (roll-has-nonscoring-dice [5 1 1 5]) false))
   )
 
-
 (defn get-score
   ([dice] (get-score dice false))
   ([dice zero-for-extra]
@@ -123,8 +116,6 @@
                             300
                             (* fst-die 100)))
          :else single-dice-value)))))
-
-
 
 (deftest get-score-test
   (is (= (get-score [1]) 100))
@@ -222,11 +213,8 @@
   (is (= (is-valid-set-aside [1 4 5 1 1 5] [4 5 1 1 5]) false))
   )
 
-
-
 (defn is-farkle [dice]
   (= (get-score dice) 0))
-
 
 (defn contains-one-scoring-die [dice]
   (let [freqs (frequencies dice)]
@@ -265,15 +253,12 @@
   ;;TODO
   )
   
-
 (defprotocol FarklePlayer
   (get-name [this])
   (query-set-aside [this remaining set-aside turn-score total-scores])
   (query-stop [this remaining set-aside turn-score total-scores])
   (warn-invalid-set-aside [this])
   (warn-farkle [this roll]))
-
-
 
 (deftype GAPlayer []
   FarklePlayer
@@ -292,9 +277,6 @@
   (warn-farkle [this roll]
     nil)
   )
-
-
-
 
 (deftype GreedyAIPlayer [name stop-threshold]
   FarklePlayer
@@ -335,7 +317,6 @@
 		   [2 3 4] [1 1 5] 250 [])
        false))
 )
-
 
 (deftype HumanPlayer [name]
   FarklePlayer
@@ -378,8 +359,10 @@
 
 (defn rand-int01 []
   (rand-int 2))
+
 (defn rand-int02 []
   (rand-int 3))
+
 (defn rand-range-50-3500 []
   (rand-nth (range 0 3501 50)))
 
@@ -433,7 +416,6 @@
 (defn create-random-gene []
   (for [chromosome-mutator gene-mutator]
     (chromosome-mutator)))
-
 
 (deftype GAPlayer [gene]
   FarklePlayer
@@ -593,25 +575,12 @@
     nil)
   )
 
-
-
-
-
-
-
-
-
 (defn roll-dice [num-to-roll]
   (for [die (range num-to-roll)]
     (inc (rand-int 6))))
 
-
 (deftest test-roll-dice
   (is (every? #(<= 1 % 6) (roll-dice 1000))))
-
-
-
-
 
 (defn get-validated-set-aside [player remaining set-aside turn-score total-scores]
   (loop [new-set-aside (query-set-aside player remaining set-aside turn-score total-scores)]
@@ -656,32 +625,16 @@
           (recur (rest rotation)
                  (assoc scores player updated-score)))))))
 
-
 (defn main []
   (let [winner (play-farkle [(HumanPlayer. "David")
                              (GreedyAIPlayer. "Samuel" 800)])]
     (println "The winner is" (str (get-name winner) "!"))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (defprotocol GAProblem
   (create-random-individual [this])
   (run-tournament [this individual1 individual2])
   (mate-individuals [this individual1 individual2])
   (mutate-individual [this individual]))
-
 
 (deftype FarkleProblem []
   GAProblem
@@ -704,9 +657,6 @@
       ;do something to mutate this individual
       individual))
 )
-
-
-
 		  
 (deftype SequenceProblem []
   GAProblem
@@ -734,11 +684,6 @@
       (assoc individual pivot (rand-int 10))))
   )
 
-
-
-
-
-
 (defn find-converging-individual [population]
   (let [[frequency individual]
 	(first
@@ -748,7 +693,6 @@
 	    (into (hash-map) (frequencies population))))))]
     [(/ frequency (count population))
      individual]))
-
 
 (defn run-ga [problem-manager population-size max-generations mutation-rate crossover-rate]
   (loop [generation 0
@@ -780,29 +724,9 @@
 	    (println (format "Generation %d" generation))
 	    (recur (inc generation) mutated-pool)))))))
 
-
-
-
-      
-
-
-
-
-
-  
-	
-
-;(run-tests)
-;(main)
-
-
 (defn -main [& args]
   (let [winner (play-farkle [(GreedyAIPlayer. "David" 600)
 			     (GreedyAIPlayer. "Samuel" 1000)])]
     (println "The winner is" (get-name winner) "!")))
 
-
 (run-tests)
-
-
-
