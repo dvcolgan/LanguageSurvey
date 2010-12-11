@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{url}
-\title{Literature Survey of Methods for Comparing Programming Languages}
+\title{An Investigation of Methods for Comparing Programming Languages}
 \author{David Colgan}
 \date{\today}
 \begin{document}
@@ -9,24 +9,24 @@
 \section{Introduction}
 
 Most computer science majors and software developers have used Java and C.
-According to the TIOBE Index
-(\url{http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html}), these
-two languages have consistently been among the most popular for general use.
-They are all established, well understood, and use the object oriented or
-imperative paradigm.
+According to the TIOBE Index~\cite{tiobe}, these two languages have
+consistently been among the most popular for general use.  They are both
+established, well understood, and use the object oriented or imperative
+paradigm.
 
 Most of the other top languages are fairly similar to Java and C.  Languages
 like C\#, PHP, Python, Perl, and Objective-C all use some combination of the
-procedural and object oriented paradigm.   But are procedural and object
-oriented languages the best computer science has to offer for creating reliable,
-high performing software on a budget?  Many lesser-known languages, a good
-number of which have heavy influence from the functional paradigm, claim
+procedural and object-oriented paradigm.   But are procedural and object
+oriented languages the best computer science has to offer for creating
+reliable, high performing software on a budget?
+
+Many lesser-known languages influenced by the functional paradigm claim
 increased programmer productivity, fewer errors, shorter programs, and greatly
 enhanced support for multicore processing.
 
 \section{Research Goals}
 
-This project seeks to determine if Clojure, Forth, Erlang, Haskell, or J are
+This project seeks to investigate languages that have the potential to be
 compelling alternatives to the common procedural and object oriented languages
 most often used today in commercial environments.
 
@@ -37,71 +37,65 @@ languages are:
 
 \begin{itemize}
 \item Clojure, a Lisp dialect on the Java Virtual Machine
-\url{clojure.org/}
 
 \item Forth, a stack-based language
-\url{www.forth.org/}
 
 \item Erlang, a concurrency-oriented language
-\url{www.erlang.org/}
 
 \item Haskell, a lazy, purely functional language
-\url{www.haskell.org/}
 
 \item J, an array language similar to APL
-\url{www.jsoftware.com/}
 \end{itemize}
 
-If I somehow get done with these languages and have more time, I could
-investigate OCaml, Scala, Lua, or Groovy.
+If I somehow get done with these languages and have more time, I will
+add additional languages such as OCaml, Scala, Lua, or Groovy.
 
 \section{Literature Survey of Previous Work}
+\label{sec:survey}
 
-At this time there appears to be two kinds of research available in the
-literature that compare programming languages: feature by feature comparisons
-and comparisons of small programs.
+Two kinds of research in the literature compare programming languages:
+feature-by-feature comparisons and comparisons of small programs.
 
 \subsection{Feature Comparisons}
 
-Feuer and Gehani take a conceptual approach when they compare C and
-Pascal.\cite{FeuerCVsPascal}  They begin with a history of the languages and
-discuss design decisions, followed by a step by step walk through each
+Feuer and Gehani~\cite{FeuerCVsPascal} take a conceptual approach when they compare C and
+Pascal.  They begin with a history of the languages and
+discuss design decisions, followed by a step-by-step walk through each
 language's major features.  They also evaluate C and Pascal for different
 problem domains.  This paper is more of an informative overview than a hard
 empirical evaluation.  The only actual code they show is a single function
-implementing a binary search.
+implementing binary search.
 
-In a comparison of Ada 95 and Java, Brosgol takes a similar
-approach,\cite{BrosgolCompOOAdaVsJava} going feature by feature through the two
-languages.  He provides sample code snippets throughout.  He arrives at a table
-of features, highlighting differences in syntax, program organization features,
-memory management, and OO features like inheritance, polymorphism, and
-encapsulation.
+In a comparison of Ada 95 and Java, Brosgol~\cite{BrosgolCompOOAdaVsJava} takes
+a similar approach, going feature by feature through the two languages.  He
+provides sample code snippets throughout.  He arrives at a table of features,
+highlighting differences in syntax, program organization features, memory
+management, and OO features like inheritance, polymorphism, and encapsulation.
 
-Nami presents a factual comparison of Eiffel, C++, Java, and
-Smalltalk\cite{NamiCompOOSoftEng}.  He gives a brief introduction to each
+Nami~\cite{NamiCompOOSoftEng} presents a factual comparison of Eiffel, C++, Java, and
+Smalltalk.  He gives a brief introduction to each
 language, describing design decisions and history.  He then classifies each
-language based on static vs dynamic typing, compiled vs interpreted build
+language based on static vs\. dynamic typing, compiled vs\. interpreted build
 methods, built-in quality assurance facilities, automatic documentation
-generators, multiple vs single inheritance, and concludes with a brief
+generators, multiple vs\. single inheritance, and concludes with a brief
 discussion on each language's efficacy for building infrastructures.
 
-Tang does a similar comparison of Ada and C++ using much of the same methods as
-the other studies.\cite{TangAdaVsCpp}
+Tang~\cite{TangAdaVsCpp} does a similar comparison of Ada and C++ using many of
+the same methods as the other studies.
 
 Many of these studies are a high level overview of various languages.  They
 compare features, but do not give in-depth examples.
 
-\subsection{Small Program Comparisons}
+\subsection{Program Comparisons}
 
 Perhaps more useful and interesting are those comparisons done by inspecting
 the same program written in different languages.  These give concrete examples
 of the differences.
 
 The method I follow for this project is closely related to the method used by
-Prechelt \cite{Prechelt7LangComp}.  He compares C, C++, Java, Perl, Python,
+Prechelt~\cite{Prechelt7LangComp}.  He compares C, C++, Java, Perl, Python,
 Rexx, and Tcl by having various computer science masters students and
-volunteers from newsgroups online write the same small program in one of the
+volunteers from newsgroups write the same small program in one of the
 languages.  He then compared the resulting programs based on program runtime,
 memory consumption, lines of code, program reliability (based on whether the
 program crashes or not), the amount of time it took each programmer to write
@@ -109,56 +103,96 @@ the program, and program structure.  The program he had the participants write
 was a simple string processing program that consisted of converting telephone
 numbers into sentences based on a large dictionary and mapping scheme.  Most of
 the programs he received were fairly small, taking a median of 3.1 hours to
-write, and averaging around 200-300 line of code.
+write, and averaging 200-300 line of code.
 
 Some of the more interesting results from Prechelt's study include the
-observation that in lower level languages, a lot of code is dedicated to
-writing the data structures, while in the higher level languages, the
-programmer usually takes advantage of the language's existing built-in
-capabilities.  He also found that scripts tend to require about twice as much
-memory as C and C++, with Java taking 3-4 times as much, and that C and C++ are
-about twice as fast as Java and several more times faster than scripting
-languages.
+observation that in lower-level languages, a lot of code is dedicated to
+writing the data structures, while the higher-level languages, the programmer
+usually takes advantage of the language's built-in capabilities.  He also found
+that the scripting languages (Perl, Python, Rexx, and Tcl) tend to require
+about twice as much memory as C and C++, with Java taking 3--4 times as much,
+and that C and C++ are about twice as fast as Java and several times faster
+still than scripting languages.
 
-Prechelt includes a discussion of the validity of his evaluations.  He
-acknowledges the potential problems of asking for self-reported data from the
-Internet, as well as potential differences in programmer ability and working
-conditions.  He suggests that the large number of people (80) who contributed
-programs balances out many of these problems, and that the results should not be
-trusted for small differences.  He does assert that large differences are more
-likely to be accurate.
+Prechelt discusses the validity of his evaluations.  He acknowledges the
+potential problems of asking for self-reported data from the Internet, as well
+as potential differences in programmer ability and working conditions.  He
+suggests that because 80 programmers contributed code, this large sample size
+balances out many of these problems.  Though the results should not be trusted
+for small differences, he asserts that large differences are likely to be
+accurate.
 
-Henderson and Zorn perform a similar study in \cite{Henderson4OOLangComp}.
-They compare C++, a well known language, with four lesser-known languages:
-Oberon-2, Modula-3, Sather, and Self.  They also write a short program in each
-of the languages, a simple database for university personnel information.
-These are all Object Oriented languages, and as such, the comparison is
-weighted specifically towards OO features.  They compare each language's
-methods of implementing and capabilities for inheritance, dynamic dispatch, code
-reuse, and information hiding.  In addition to OO features, they also compare
+Henderson and Zorn~\cite{Henderson4OOLangComp} perform a similar study.  They
+compare C++, a well known language, with four lesser-known languages: Oberon-2,
+Modula-3, Sather, and Self.  They also write a short program in each of the
+languages, a simple database for university personnel information.  These are
+all object-oriented languages, and as such, the comparison is weighted
+specifically towards OO features.  They compare each language's methods of
+implementing and capabilities for inheritance, dynamic dispatch, code reuse,
+and information hiding.  In addition to OO features, they also compare
 execution time, lines of code, and compile time.  Henderson and Zorn explicitly
 state that one of the goals of their survey is to increase programmer awareness
 of lesser-known languages.
 
-In a more informal study, Floyd compares C++, Smalltalk, Eiffel, Sather,
-Objective-C, Parasol, Beta, Turbo Pascal, C+@, Liana, Ada, and,
-Drool\cite{DDJFloydeCompOOLangs}.  He collects an implementation of a
-linked-list structure from various people and then summarizes the results in a
-table that compares garbage collection schemes, inheritance (single or
-multiple), binding time, compilation (compiled vs interpreted), exception
-handling features, and lines of code.  He simply enumerates the implementations
-and does not do further analysis.
-
-I will combine these two approaches.  The deliverables for my project will,
-like Prechelt, include implementations of the same program in several different
-languages, but I will also include high level feature comparisons between the
-languages as well.
-
-\section{Research Goals}
-
-This project seeks to determine if 
+In a less formal study, Floyd~\cite{DDJFloydeCompOOLangs} compares C++,
+Smalltalk, Eiffel, Sather, Objective-C, Parasol, Beta, Turbo Pascal, C+@,
+Liana, Ada, and, Drool.  He collects an implementation of a linked-list
+structure from various people and then summarizes the results in a table that
+compares garbage collection schemes, inheritance (single or multiple), binding
+time, compilation (compiled vs\. interpreted), exception handling features, and
+lines of code.  He simply enumerates the implementations and does not do
+further analysis.
 
 \section{My Work}
+
+I will combine these two approaches discussed in section~\ref{sec:survey}.  The
+deliverables for my project will, like Prechelt, include implementations of the
+same program in several different languages, but I will also include high level
+feature comparisons between the languages as well.
+
+The primary way I am comparing the languages is by writing the same nontrivial
+program in each language.  I want a system that is not too complicated, but also
+one that is not trivially simple.  One day at family game night we played a dice
+game called Farkle (\url{http://en.wikipedia.org/wiki/Farkle/}).  The game is
+simple but has a fair amount of decision making.  Therefore for each language I
+would like to implement a system that both plays this dice game through a command line
+interface, as well as evolve an optimal AI using a genetic algorithm system.
+Such a system would involve many different aspects that would explore each
+language's potential and features.
+
+Farkle requires six dice.  On each turn, the player rolls all six dice and
+removes combinations that are worth points.  The following combinations are
+worth points:
+
+\begin{itemize}
+\item One 5 - 50 points
+\item One 1 - 100 points
+\item Three 1s - 300 points
+\item Three 2s - 200 points
+\item Three 3s - 300 points
+\item Three 4s - 400 points
+\item Three 5s - 500 points
+\item Three 6s - 600 points
+\item Four of a kind - 1000 points
+\item 1-6 Straight   - 1500 points
+\item Three pairs    - 1500 points
+\item Five of a kind - 2000 points
+\item Two triples    - 2500 points
+\item Six of a kind  - 3000 points
+\end{itemize}
+
+To score, the combination must be removed all on the same turn.  As long as the
+player can remove at least one die that scores, they can then continue rolling.
+If the player ever cannot remove at least one die, they Farkle and lose all
+points for that turn.  Therefore the strategy in the game comes from knowing
+when to stop rolling and which dice to set aside.
+
+This game system includes a command line interface to the Farkle game.  Since
+GAs are well suited for concurrency, it will be implemented to use multiple
+processing cores.  The GA will therefore test the concurrency capabilities of
+the languages, as well as their symbolic manipulation power.
+
+\subsection{Methodology}
 
 I began the semester by implementing the Farkle and GA system in Python, the language I know best, so that I could figure out the general idea of how the program would be implemented.  I programmed in a mostly Object-Oriented manner, and came up with a pretty good implementation of the system.  
 
@@ -174,7 +208,7 @@ The Python code comes in at around 900 lines of code excluding tests, while the 
 
 \subsection{Ease of Learning}
 
-For those coming from a mostly procedural and object oriented background, Clojure will definitely be a stretch.  The most striking difference is the new paradigm.  Clojure is not purely functional, allowing side effects like printing to the screen anywhere in the code.  However, once a variable has been given a value, its value cannot be changed.  All procedural programming involves changing state, so those without a functional background will have to completely adjust their thinking.  Idiomatic Clojure makes heavy use of recursion and higher order functions.
+For those coming from a mostly procedural and object oriented background, Clojure will definitely be a stretch.  The most striking difference is the new paradigm.  Clojure is not purely functional, allowing side effects like printing to the screen anywhere in the code.  However, once a variable has been given a value, its value cannot be changed.  All procedural programming involves changing state, so those without a functional background will have to completely adjust their thinking.  Idiomatic Clojure makes heavy use of recursion and higher order functions.  It should be noted, though, that because Clojure discourages side effects, unit testing is much easier.
 
 Another major difference is Clojure's laziness.  It does not evaluate expressions unless it has to, causing great speedups in some cases, and allowing for infinite data structures.  This is a powerful feature, but it takes some getting used to.  
 
@@ -182,9 +216,11 @@ The syntax of Clojure is also very different than most other languages.  Its syn
 
 Therefore, Clojure has three new major concepts to learn: the functional paradigm, laziness, and the new style of syntax.
 
-\subsection{Miscellaneous Observations}
+\subsection{Support for Concurrency}
 
-One very cool side effect of rewriting the system in a second language is that I discovered better ways to write the Python code as I wrote the Clojure code.  Even though Python is predominantly a procedural and object oriented language, it has very powerful functional capabilities as well, and some of the ways that Clojure forced me to use a functional style could also be used in the Python code to make it more readable and shorter.
+Clojure has excellent support for parallel processing.  In the simplest case, a program can be made to perform parallel computations by replacing a call to map with a call to pmap.  The pmap function has a larger overhead than map, so it is not effective for simple calculations.  However, if processing one element of the list using pmap is free of side effects and computationally intensive, Clojure can utilize multiple cores automatically.  This is much simpler than using a manual thread-based approach that one would need in Python or Java or C.
+
+Note that this only works if the calculations pmap does are free from side effects and if each part of the calculation are independent.  If the program needs to share state between threads or cores, Clojure has an extensive system known as Software Transactional Memory.  Clojure implements a system similar to a database transaction that allows for easily sharing state in a thread-safe manner.  I did not have to use this more complicated system, though, because the major calculation I performed were in the GA system, and the process of evaluating and crossing over individuals is self contained and does not depend on any other individuals.  Therefore my program got free multicore support using pmap.
 
 \subsection{Disadvantages of Clojure}
 
@@ -205,15 +241,24 @@ There are also Eclipse and Netbeans plugins that I did not investigate.
                         & Python & Clojure \\
     \hline
     Ease of Learning    & Easy & Hard \\
+    Ease of Programming & Easy & Hard \\
     Line of Code        & ~900 & ~600 \\
-    Maturity            & Mature (nearly 20 years old) & Very young (around 3 years old) \\
-    Support for Concurrency &     & Software Transactional Memory \\
+    Support for Concurrency & 
     Purity              & Impure & Pure by default \\
     Supported Paradigms & Procedural, Object Oriented, Functional & Functional, Object Oriented \\
     Evaluation Strategy & Eager & Lazy \\
     Execution Method    & Interpreted & Byte-code Compiled \\
 \end{tabular}
 
+\section{Plans for Future Work}
+
+Since this is the midway point of a year-long project, I still have much more to do.  At first I thought it would be a good idea to implement the system quickly in Python as a prototype to aid in writing the system in other languages.  However, the Python implementation ended up taking half of the semester to finish, even though it was not one of the original seven languages.  The Clojure implementation has also taken another half of a semester.  Hopefully future languages will not take nearly so long to learn now that I have refined my technique.
+
+I still want to make sure that I at least get through learning Haskell and Erlang.  I also need write the C implementation.  C is a lot different than Clojure, and I will have more to talk about concerning the differences between those languages as opposed to Clojure and Python.  Hopefully I will get to Forth and J, though those may need to be dropped in the interest of time.
+
+The next language in the queue is Haskell.  When I start this language, I will try to read more than one complete book or tutorial if the first one that I read is not sufficient.  I think that may have slowed me down learning Clojure: the first book did not teach me all that I needed, but instead of reading another book, I went with a more ad-hoc approach.
+
+Another thing I still need to do is to evaluate the relative performances of the implementations.  Tentatively, the Clojure code should be a good deal faster than the Python code, but I do not know that yet at this time.
 
 \bibliographystyle{plain}
 \bibliography{languages}

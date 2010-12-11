@@ -343,7 +343,27 @@ Monday December 6
 3:30 - 5:00
 More work on the paper.
 
+Tuesday December 7
+11:30 - 12:30
+Finished the rough draft of the paper.
 
-11:00
+Wednesday December 8
+7:30 - 8:15am
+8:45 - 9:15am
+9:30 - 10:30am
+4:00 - 4:30pm
+Reading Learn You a Haskell for Great Good!
+
+2:00 - 2:45pm
+Meeting with Dr. Nurkkala.
+
+3:30 total
+
+Saturday December 11
+10:20 - 11:00am
+Read chapter 5 of learn you a Haskell
+
+11:15
+
 
 109:30

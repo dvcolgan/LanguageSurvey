@@ -1,0 +1,66 @@
+http://stackoverflow.com/questions/1012573/how-to-learn-haskell
+http://learnyouahaskell.com/chapters
+http://haskell.org/haskellwiki/H-99%3a_Ninety-Nine_Haskell_Problems
+http://www.haskell.org/haskellwiki/Tutorials#Using_monads
+http://www.haskell.org/all_about_monads/html/index.html
+http://channel9.msdn.com/shows/Going+Deep/Lecture-Series-Erik-Meijer-Functional-Programming-Fundamentals-Chapter-1/
+http://channel9vip.orcsweb.com/shows/Going+Deep/Brian-Beckman-Dont-fear-the-Monads/
+http://sigfpe.blogspot.com/2006/08/you-could-have-invented-monads-and.html
+http://stackoverflow.com/questions/44965/what-is-a-monad
+http://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours
+http://stackoverflow.com/questions/2488646/why-are-side-effects-modeled-as-monads-in-haskell
+http://www.haskell.org/tutorial/
+http://stackoverflow.com/questions/3063652/whats-the-status-of-multicore-programming-in-haskell
+http://stackoverflow.com/questions/3120796/haskell-testing-workflow
+freenode #haskell
+
+learn you a haskell for great good
+
+has referential transparency
+shorter programs have fewer bugs and are easier to maintain because there is less code
+precedence issues are fun, I think I get them now
+haskell is MUCH faster to startup than Clojure
+
+http://projects.haskell.org/haskellmode-vim/
+http://www.vim.org/scripts/script.php?script_id=3034
+
+if statement is an expression not a statement, and returns a value
+list processing similar to lisp - [], ++, : (cons operator) 1:2:3:[], !!
+head, tail, last, init, length, null, reverse, take, drop, maximum, minimum, sum, product, elem
+[1..20] [1,3..20] [20,19..1]
+laziness -> take 100 [10,20..]
+cycle, repeat, replicate
+[x*2 | x <- [1..10]]
+[x*2 | x <- [1..10], x*2 >= 12]
+boomBangs xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
+with multiple inputs, the first changes the least often
+use tuples when you know how many elements and need them to be different types
+fst, snd, zip
+
+Of all the triangles with sides <= 10 have a perimeter of 24?
+per24 = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2, a+b+c == 24]
+:t -> examine type in interactive mode
+
+types: Int, Integer, Float, Double, Bool, Char
+
+polymorphic functions - can operate on any type
+
+typeclasses - types that implement the typeclass supports the behavior described
+common typeclasses: Eq, Ord, Show, Read, Enum, Bounded, Integral, Floating
+
+show 3 returns "3"
+read "3" returns 3
+
+numbers are polymorphic constants, because they can be Int, Integer, Float, Double, etc
+
+pattern matching is awesome
+add a catchall pattern at the end
+
+as patterns - all@(x:xs)
+
+guards - like big if/else trees, use for GA
+
+let
+case
+
+"you do computation in Haskell by declaring what something is instead of declaring how you get it.
