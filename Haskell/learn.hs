@@ -30,3 +30,27 @@ bmiTell weight height
           skinny = 18.5
           normal = 25.0
           fat = 30.0
+
+maximum' :: (Ord a) => [a] -> a  
+maximum' [] = error "maximum of empty list"  
+maximum' [x] = x  
+maximum' (x:xs)   
+    | x > maxTail = x  
+    | otherwise = maxTail  
+    where maxTail = maximum' xs  
+
+maximum' :: (Ord a) => [a] -> a  
+maximum' [] = error "maximum of empty list"  
+maximum' [x] = x  
+maximum' (x:xs) = max x (maximum' xs)
+
+take' _ [] = []
+take' 0 _ = []
+take' n (x:xs) = x:take' (n-1) xs
+
+reverse' [] = []
+reverse' (x:xs) = reverse' xs ++ [x]
+
+zip' [] _ = []
+zip' _ [] = []
+zip' (x:xs) (y:ys) = (x, y):zip' xs ys

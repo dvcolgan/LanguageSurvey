@@ -332,6 +332,8 @@ Wednesday December 1
 8:30 - 10:30AM
 Finishing up Clojure code.
 
+8:00
+
 Week 14
 
 Sunday December 5
@@ -353,17 +355,29 @@ Wednesday December 8
 9:30 - 10:30am
 4:00 - 4:30pm
 Reading Learn You a Haskell for Great Good!
-
 2:00 - 2:45pm
 Meeting with Dr. Nurkkala.
 
-3:30 total
-
 Saturday December 11
 10:20 - 11:00am
-Read chapter 5 of learn you a Haskell
+11:15 - 12:15
+Read chapter 5 of learn you a Haskell and worked on the paper.
 
-11:15
+6:00 - 6:30
+Read chapter 6
 
+8:45 - 9:30
+11:15 - 11:45
+Doing haskell examples.
 
-109:30
+Sunday December 12
+5:45-6:00
+Reading.
+
+Tuesday December 14
+10:15 - 11:30
+Finished the final draft of my paper.
+
+12:30
+
+119 hours total

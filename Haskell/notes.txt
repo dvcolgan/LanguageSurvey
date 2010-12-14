@@ -64,3 +64,48 @@ let
 case
 
 "you do computation in Haskell by declaring what something is instead of declaring how you get it.
+
+error function to error out
+
+infinite recursion can be used to create infinite lists
+
+space is an operator (function application) and has highest precedence
+
+currying
+
+byTen = (* 10)
+
+zipWith, flip, map, takeWhile
+
+map and filter lists to do processing, using laziness to help
+
+lambdas: \x -> x*x
+can take any number of arguments, but can't have multiple pattern matching sections
+
+foldl takes a list and reduces it starting on the left side
+sum = foldl (+) 0
+
+$ - lowest precedence, applies the right side as an argument to the function on the left
+can map the concept of function application
+map ($ 3) [(4+), (10*), (^2), sqrt]
+
+. - function composition, can be used to must two functions together for map or folds
+
+point free style - don't pass parameters, just define a function
+fn x = ceiling (negate (tan (cos (max 50 x)))) 
+becomes
+fn = ceiling . negate . tan . cos . max 50
+point free style is discouraged because it can lead to code that is hard to read, similar to J code it seems
+
+
+99 haskell problems
+
+
+http://www.haskell.org/ghc/docs/latest/html/libraries/
+http://haskell.org/hoogle
+
+Data.List - prelude imports some by default
+
+intersperse, intercalate, transpose
+
+foldl', foldl1' - strict versions, don't overflow the stack as readily
