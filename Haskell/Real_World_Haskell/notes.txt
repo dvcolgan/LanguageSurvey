@@ -1,0 +1,383 @@
+Taking notes this time for the entirety of the book.  I think this will help me to learn it better.
+
+###Chapter 2 Types and Functions###
+
+#Why care about types?#
+every expression and function has a type
+the type system is an abstraction, allowing you to attach meaning to bytes
+
+#Haskell's type system#
+strong, static, inferred
+
+strong types - can't pass the wrong type of parameter, no type coercion (must do it explicitly)
+may have some performance penalties
+catches bugs at compile time
+
+static types - the compiler knows types at compile time
+typeclasses give most of the benefit of dynamic typing/duck typing but is more safe
+haskellers say that if you can compile the code, it is likely to be correct (more than other languages at least)
+haskell in a way has some kinds of unit testing built-in - some bugs are impossible
+
+type inference - the compiler can deduce the type of most expressions
+
+#What to expect from the type system#
+haskell claims more safety than other statically typed languages, and more expressiveness than other dynamically typed languages due to type inference
+there is no need for type declarations like in Java
+after you get used to coding inside the system haskell provides, it is a help not a hindrance
+
+#Some common basic types#
+Char, Bool, Int (limited precision), Integer (unlimited precision), Float, Double (preferred to float)
+type signature => expression :: Type
+
+#Function application#
+function name followed by space separated arguments
+function application has higher precedence than operators
+may need to use parens => compare (sqrt 3) (sqrt 6)
+
+#Useful composite data types: lists and tuples
+composite data structure is composed of other types
+list => [1,2,3,4]
+head, tail
+(!!!) lists are polymorphic types - can hold a list of any other type of value
+type variable => [a]
+lists are the most commonly used data type; instead of iteration, haskell often recurses over a list
+
+tuple - fixed size and can hold values of different types
+() -> pronounced 'unit', is similar to a void type
+no one-element tuples
+a tuple's type depends on the kind and order of its values
+can be used to return multiple values from a function
+
+#Functions over lists and tuples#
+take, drop - get the first n elements or all but the first n elements
+2-tuples have fst and snd
+tuples are not interchangeable with lists like in python
+
+#Passing an expression to a function#
+function application is left-associative, read left to right
+a b c d == (((a b) c) d)
+head drop 4 "a string" is an error because it is passing head 3 arguments, need parens
+
+#Function types and purity#
+the type of lines is lines :: String -> [String]
+-> is pronounced 'to'
+in haskell the default is to not allow side effects in functions, pure functions
+(!!!) the purity of functions is enforced by the type system in haskell, so what in other languages is simply a good idea, don't mix pure and impure code and have as little impure code as possible, it is enforced in haskell
+
+#Haskell source files, and writing simple functions#
+ghci works in the IO monad, which is why you can't just paste normal code into it
+.hs source file suffix
+function definition => add a b = a + b
+a function is a single expression, so there is no 'return'
+the '=' sign means 'meaning', not assignment
+(!!!) in haskell, variables are just an expression with a name; they cannot be changed once bound
+variables are not memory locations, like in C
+in haskell, a variable and its defining expression can always be interchanged
+
+#Conditional evaluation#
+null function checks if a list is empty
+uses significant whitespace, like python, though also has curly brace syntax
+'xs' == plural of x, multiple x's
+'--' == comment starter (also '{-' and '-}')
+(!!!) for the if, the then and else must be of the same type, and the else clause cannot be omitted, because if is an expression, not a statement
+
+#Understanding evaluation by example#
+(!!!)haskell does not evaluate all of its arguments like a strict evaluation language, instead, it is lazy
+it goes through each expression and creates a 'thunk', which will be evaluated later when needed
+(!!!) lazy evaluation gives short-circuiting for free, and users can define their own short-circuit operators
+(||) is a normal function, not a special operator
+we can have infinite lists as long as we do not require them to be evaluated completely
+
+#Polymorphism in Haskell#
+the last function is polymorphic - it returns the last element of a list of any type
+last :: [a] -> a ; a is a type variable
+a function is polymorphic if it has type variables in its type signature
+parametric polymorphism is similar to C# and Java's generics and C++ templates
+haskell does not support subtype (inheritance) or coercion polymorphism
+
+#The type of a function of more than one argument#
+take :: Int -> [a] -> [a]
+-> is right associative => take :: Int -> ([a] -> [a])
+
+lastButOne :: [a] -> a
+lastButOne (x:y:[]) = x
+lastButOne (x:y:xs) = lastButOne (y:xs)
+
+#Why the fuss over purity?#
+purity makes code easier to understand because there is no risk of unintentional side effects
+every function is self-contained
+impure code must be simplified and isolated, this creates fewer locations for errors
+
+
+
+
+
+###Chapter 3 Defining Types, Streamlining Functions###
+
+#Defining a new data type#
+Can define new data types and give different names to similar values to use the type system for added safety
+data BookInfo = Book Int String [String] deriving (Show)
+BookInfo is a type constructor, Book is a value constructor; both start with a capital letter, the other things are fields
+(!!!) this is similar to a 3-tuple (Int, String, [String]), but this has a different type, and the compiler can enforce the type
+value constructors act like functions
+:info tells everything ghci knows about an expression or type
+
+#Naming types and values#
+type constructors and value constructors are in different namespaces, so they can be the same in one type definition
+data BookReview = BookReview Int String
+
+#Type synonyms#
+type CustomerID = Int, type ReviewBody = String, can make type synonyms for more readability
+
+#Algerbraic data types#
+-those with more than one value constructor, like Bool - data Bool = False | True
+allow you to distinguish between two types that are structurally the same
+any time you have a compound piece of data in a large program, it is usually best to make a data declaration
+
+#Analogues to aalgebraic data types in other languages#
+Algebraic data types have aspects of C structs, enums, a C union but with safety
+
+#Pattern matching#
+a pattern match looks inside a value and binds variables to the parts
+can define a function as a series of definitions with different pattern matching
+sumList (x:xs) = x + sumList xs
+sumList [] = 0
+
+#Construction and deconstruction#
+value constructors construct values, while pattern matching deconstructs them, though the original value is never changed by this
+complicated (True, a, x:xs, 5) = (a, xs)
+literal values in a pattern must match exactly
+runtime error for not matching any pattern
+use _ to pattern match on values you won't use
+you should match on all of a type's value constructors, eg : and []
+
+#Record Syntax#
+You can define a data type using record syntax to automatically get accessor functions
+data Foo = Foo { f1::Int, f2::Int } deriving Show
+
+#Parameterized Types#
+use type variables in data definitions: data Maybe a = Just a | Nothing
+the maybe type represents a value that might be missing
+maybe is a polymorphic type
+like Java generics only more fundamental to the language
+
+#Recursive Types#
+data List a = Cons a (List a) | Nil deriving (Show)
+data Tree a = Node a (Tree a) (Tree a) | Empty deriving (Show)
+
+Exercises
+1. Write the converse of fromList for the List type: a function that takes a List a and generates a [a].
+toList :: List a -> [a]
+toList (Cons x xs) = x:toList xs
+toList Nil = []
+
+2. Define a tree type that has only one constructor, like our Java example. Instead of the Empty constructor, use the Maybe type to refer to a node's children.
+data Tree a = Node a (Maybe (Tree a)) (Maybe (Tree a)) deriving (Show)
+
+#Reporting Errors#
+error :: String -> a is a function that aborts execution and prints the string message
+this is weak because you can't recover from the error
+can use maybe instead:
+tidySecond (_:x:_) = Just x
+tidySecond _       = Nothing
+
+#Introducing Local Variables#
+let var = expr
+    var2 = expr2
+in body
+   body2
+because Haskell is lazy, the expression bound to the variable is not evaluated until needed
+let makes the variables in scope inside the 'in' section
+lets can be nested and shadow parameters and higher let variables, not a good idea generally
+can use where clauses as let block that comes after the things it defines
+let and where clauses allow you to define inner functions that can use local variables defined in the outer function
+
+#The offside rule and white space in an expression#
+Haskell has significant whitespace for blocks like Python
+always use spaces
+you can use {'s and ;'s, but nobody uses them in real code
+
+#The case expression#
+case is like case from other languages on steroids - takes an arbitrary expression and several patterns that try to match on the expression, and the first one that matches returns its -> expression
+match on _ or 'otherwise' for a default case
+all result expressions have to have the same type, like for the if/else because case is also an expression
+
+#Conditional evaluation with guards#
+Pattern matching checks if an expression is a certain shape, guards give finer control
+
+
+chapter 4 Functional Programming
+
+#Portably splitting lines of text#
+lines function split text on newlines
+example of portable splitLines
+functional programming recommends small and reusable functions that are easy to test and combine
+
+#Infix functions#
+infix functions take parameters on either side
+making functions infix can make them easier to read
+
+#Working with Lists#
+length lst = length of list
+null lst = is list empty
+head lst = first element of list
+tail lst = last element of list
+init lst = all but the last element of the list
+use null instead of length > 0 to check if a list is empty, because length must traverse the list to work
+partial functions only work on a subset of possible inputs, while total functions work on any input.  Head is a partial function and crashes on an empty list
+lst ++ lst = concatenate lists
+concat [list of lists] = join lists into one list/removes one level of nesting
+reverse lst = reverses the list elements
+&& = both arguments are true
+and = all arguments in a list are true
+all = all arguments in a list satisfy a predicate
+|| = either argument is true
+or = at least one argument in a list is true
+any = at least one argument in a list satisfys a predicate
+take n lst = take n from list
+drop n lst = take all but first n from list
+splitAt n lst = return tuple of first n and rest of list
+takeWhile pred lst = take elements until pred is false
+dropWhile pred lst = start taking elements when pred is false
+break pred lst = partition at first instance where pred is true
+span pred lst = partition at first instance where pred is false
+elem/notElem e lst = True/False if e is not in lst
+filter pred lst = return elements of the list that make pred true
+isPrefixOf/isInfixOf/isSuffixOf sublst lst = true if lst contains sublist
+zip lst1 lst2 = make one list of tuples of elements from the two source lists, stopping when one runs out
+zipWith fn lst1 lst2 = combine elements from lst1 and lst2 by passing elements into fn, stopping when one runs out
+lines/unlines = convert a single string of lines to lists of lines and back
+words/unwords = same but for spaces
+
+#Thinking about loops#
+haskell does loops using recursion
+you can do an iterative algorithm using tail recursion and an accumulator parameter
+' is a valid character in a haskell identifier
+(!!!)haskell does tail call optimization, so tail recursive functions run in constant space
+applying a function to every element is a common operation, and the map function is an abstraction of this
+map fn lst = apply fn to each element of lst
+a function that takes a function as a parameter is a higher-order function
+(me) - higher order functions let you abstract out things you couldn't in less powerful languages
+(me) - in some ways, this is like being able to define your own control structures at will - you have one for walking an array and applying a function, you have one for filtering out elements, accumulating, etc
+filter is an abstraction of taking elements if they fulfil some predicate
+folds are an abstraction of reducing a list to a certain value
+left folds go left to right, right folds right to left
+
+folding, mapping, and filtering often eliminate the need for explicit recursion, which makes code easier to understand
+me - hey, i finally understand folds now
+append [1,2,3] [4,5,6] = foldr (:) [4,5,6] [1,2,3]
+foldr works well with lists because it goes right to left, allowing you to use (:)
+
+#Left folds, laziness, and space leaks#
+foldl can cause space leaks because it does not update its accumulator variable, but rather stores thunks
+use foldl' from Data.List, a strict version
+
+#Anonymous (lambda) functions#
+\x -> x
+sometimes makes code harder to read
+
+#Partial function application and currying#
+(!!!)in haskell all functions take one parameter and return one value
+functions that take two parameters are actually functions that return a function that returns a value
+you can combine functions with partial application
+(dropWhile isSpace) is a function that removes leading whitespaces from a string
+partial application is called currying
+niceSum xs = foldl (+) 0 xs can be written as just niceSum = foldl (+) 0
+infix functions can be partially applied in parens by supplying either the left or right argument, this is called a section
+(3 /) 2 == 1.5, (/ 3) 2 == 0.667
+you can use this with normal functions by using backtick notation
+
+#As-patterns
+the left side of @ is bound to the right side
+xs@(_:xs') -- pattern match in one way, but use the bound value in a different way
+
+#Code reuse through composition#
+the (.) function takes two functions and glues them together, so that you can then apply an argument to the result and get the result of passing  that argument to the second function and then passing that result to the first function
+you can chain together compositions in a right-associative way
+capCount = length . filter (isUpper . head) . words -- find the number of capital words in a string
+
+#Tips for writing readable code#
+don't use anonymous functions/explicit recursion unless absolutely necessary
+prefer composing library functions, then folds
+use where clauses to make local functions with a name, this can add to readability
+
+
+###Chapter 5 Writing a library#
+a module must have the same name as its file name
+module ModuleName
+(UserType(..) --all values and constructors, can also not export value constructors so you can't pattern match on them, making the type abstract to using code
+, functionName
+, functionName2
+) where
+not putting in the parenthesized expression exports everything
+ghc -c Source.hs -- generates object code, an hi file and an o file
+in a file Main.hs, put
+
+ghc -o program Main.hs Source.o
+ghc starts execution in a main function in the Main module
+
+good Haskell style separates IO from pure code, leading to easy function composition
+instead of printing out the resultant string, just return the string, and then we can print it out if we want, or do something else with it
+
+#Type inference is a double edged sword#
+adding type signatures to all functions allows us to make sure that we and the compiler agree on the function's type
+it is a good idea to add a type signature to every top-level declaration of any substance
+this provides yet another bit of safety in haskell's large safety net
+
+it is a good idea to compile haskell code often - if you can successfully compile the code, it is probably mostly correct
+if you want to compile code that contains stub functions, you can give them the value undefined, whose type is a, so it always typechecks, but if you evaluate it, the program crashes
+
+point-free style removes all mention of points (values), and consists entirely of composing functions
+me - I wonder if J is going to be solely an exercise in point-free style
+
+replicate times val = return a list of times count vals
+
+come back to the end of chapter 5 on the section on cabal
+
+
+###Chapter 6 Using Typeclasses###
+"Typeclasses define a set of functions that can have different implementations depending on the type of data they are given."
+similar to interfaces
+the type of (==) :: (Eq a) => a -> a -> Bool, for all types a, if a is an instance of Eq, == takes an a and an a and returns a Bool
+can provide a default implementation of any function in a class declaration
+class  Eq a  where
+    (==), (/=) :: a -> a -> Bool
+
+    x /= y     =  not (x == y)
+    x == y     =  not (x /= y)
+
+#Declaring typeclass instances#
+data Color = Red | Green | Blue
+instance Eq Color where
+    (==) Red Red = True
+    (==) Green Green = True
+    (==) Blue Blue = True
+    (==) _ _ = False
+
+#Common type classes#
+Show - convert data into a string representation that is machine readable, suitable for use as a haskell literal, to be read back in with read
+Read - convert a string into a data value, opposite of show
+sometimes you must give an explicit type annotation for a call to read, because the system can't tell what type you want to read into if there is no context:
+read "5" :: Double == 5.0
+read "5" :: Integer == 5
+(!!!) the compiler calls the implementation needed for whatever type we want based on the context
+Read and Show can be used for serialization
+All the numeric operators can take different numeric types due to typeclasses, and you can use this to create your own first-class numeric types
+Haskell has more numeric types than your math teacher can handle
+Ord handles things that can be ordered, values of EQ, LT, GT
+haskell can automatically derive Read, Show, Bounded, Enum, Eq, and Ord for many simple user defined datatypes
+
+enable type synonyms with {-# LANGUAGE TypeSynonymInstances #-}
+
+#How to give a type a new identity#
+use newtype to rename a type already defined, so that it is distinct from the type checker's perspective
+type is similar, but the new type name generated is only a cosmetic addition, and both types are interchangeable
+
+we can hide implementation details by not exporting type constructors, so that we can change the underlying details without affecting how the type is used
+
+
+
+
+
+
+Hoogle - haskell function search engine by name and type

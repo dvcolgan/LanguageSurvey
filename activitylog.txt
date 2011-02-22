@@ -381,3 +381,79 @@ Finished the final draft of my paper.
 12:30
 
 119 hours total
+
+
+
+
+
+SEMESTER 2
+
+Week 1
+
+Friday February 04
+8-9am
+2:30-3:30pm
+Read chapter 8 of learn you a Haskell.  This chapter was about algebraic data types, and is very mind-stretching
+
+3:30-4:15
+Started chapter 9 about IO in haskell
+
+Saturday February 05
+8-9am
+Reading chapter 9
+2-3pm
+Finished reading chapter 9
+
+Sunday February 06
+11:30 - 12:00
+Reading chapter 11
+
+2:45-3:00
+found http://blog.codeslower.com/2008/10/The-Haskell-Cheatsheet
+
+5:00-6:00
+Still reading chapter 11, mindblowing stuff.  I'm barely still following, but I think that I am following.
+
+Monday February 07
+7:30 - 8:45
+Finished chapter 11.  This stuff is getting complicated, but it keeps building on itself to make new awesome combinations.
+Started chapter 12 - monads make sense now!
+
+7:15pm - 8:45pm
+Finished chapter 12, messing around with Haskell
+
+Saturday February 12
+
+11:30 - 12:30
+Starting Real World Haskell, found some good code examples
+
+Monday February 14
+3-4:15
+5:00 - 5:45
+Read chapter 2 of Real World Haskell
+
+Friday February 18
+6:30 - 8:30am
+Read chapter 3
+
+12:30 - 1:10
+1:55 - 2:50
+Reading chapter 4
+
+Saturday February 19
+11:15am - 12:00pm
+Reading chapter 4
+
+Sunday February 20
+10:00-10:30 am
+finished chapter 4
+
+4:00 - 5:30pm
+reading chapter 5
+
+Monday February 21
+7:20 - 8:55am
+read chapter 6
+
+7:45 - 8:45 pm
+writing functions, mostCommonInstance

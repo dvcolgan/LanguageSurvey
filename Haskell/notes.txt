@@ -109,3 +109,108 @@ Data.List - prelude imports some by default
 intersperse, intercalate, transpose
 
 foldl', foldl1' - strict versions, don't overflow the stack as readily
+
+Algebraic data types
+data Bool = False | True
+data Shape = Circle Float Float Float | Rectangle Float Float Float Float
+
+parts after = are value constructors - a function that returns a value of that type
+
+polymorphic typeclasses - similar to clojure's protocols
+
+can be used anywhere a function can map (Circle 10 20) [4,5,6]
+
+can not export value constructors to only allow importing modules to use auxiliary functions to manipulate the types
+
+record syntax lets you name type contructor parameters
+types can take parameters for more polymorphic fun
+
+make types as generic as they need to be, but no more
+
+type constructor is before =, value constructor is after
+
+type classes are more like interfaces in Java, and can derive the behavior of other classes
+
+Ord uses the order of the value constructors to determine order
+
+can make type synonyms with the 'type' keyword
+type PhoneBook = [(String,String)]
+
+can use the Either type, Left is an error and Right is a right value
+
+ recursive data structures
+
+ create your own operators with infixr|l, set their precedence, 
+ pattern matching matches on constructors
+
+binary search tree - insert returns a new tree with the element added, laziness and optimizations make this fast enough
+
+:info
+id function - takes a parameter and returns it
+
+Functor - type class of things that can be mapped over
+class Functor f where fmap :: (a -> b) -> f a -> f b
+f is a typeclass that takes a parameter
+can instance class Functor over any container - lists, Maybe, binary tree, and define how to iterate over it
+
+types have types called kinds, :k to look at the type, types can be curried and partially applied
+
+hello world does not come until chapter 9
+
+"printStrLn returns an IO action that has a result type of ()"
+
+name = getLine means assign name an IO action
+name <- getLine extracts the value from getLine
+IO actions are only performed inside main or an IO block
+
+conditional branches have to both have the same type
+
+return takes a value and makes it an IO value
+return is the opposite of <-
+
+lazy IO - getContents reads when it needs to, useful for piping
+
+interact - take user input and run it through a function and output result
+
+file IOMode - enumerations made easy
+lazy file IO - open the whole file with hGetContents, but it is not all loaded into memory
+
+dispatch association list - string -> function tuple list
+
+random numbers - give a seed and returns a value and a new random seed, so it is purely functional still
+
+take 10 $ randomRs ('a', 'z') (mkStdGen 3) :: [Char] - because of the amazing type system, you can do things like this - a range of characters for the random function to generate random strings - there are many more ways to combine things in Haskell
+
+bitestrings - less lazy for better performance with maybe higher memory usage
+
+exceptions can only be handled in pure code, because lazy code doesn't know when it will be evaluated
+don't use exceptions in pure code
+catch function is similar to try catch blocks
+
+fmap - apply a function to an IO action
+main = do line <- fmap (intersperse '-' . reverse . map toUpper) getLine
+          putStrLn line
+
+functions are functors ((->) r)
+
+fmap on a function is just function composition - doing fmap on a function takes that function out of the box and modifies it and puts it back into the box
+
+functor laws
+
+functor - fmap (*) Just 3 == Just ((*) 3)
+
+can use <$> and <*> to map a function over functors
+
+newtype - make a synonym for a type when you want to make it a part of different type classes
+
+"A monoid is when you have an associative binary function and a value which acts as an identity with respect to that function."
+
+monads take a function with a context, extract the value, and feed it into a function that takes a value and returns a value with a context
+
+do notation can be used for other things than IO
+
+list comprehensions are syntactic sugar for >>= and list monads
+
+
+
+http://upload.wikimedia.org/wikipedia/commons/a/aa/Write_Yourself_a_Scheme_in_48_Hours.pdf
