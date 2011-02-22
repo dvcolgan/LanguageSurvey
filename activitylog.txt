@@ -457,3 +457,8 @@ read chapter 6
 
 7:45 - 8:45 pm
 writing functions, mostCommonInstance
+
+Tuesday February 22
+3:00 - 3:30
+4:15 - 5:30
+Wrote the functions that score dice.  AWESOME language this is.

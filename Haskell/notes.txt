@@ -214,3 +214,8 @@ list comprehensions are syntactic sugar for >>= and list monads
 
 
 http://upload.wikimedia.org/wikipedia/commons/a/aa/Write_Yourself_a_Scheme_in_48_Hours.pdf
+
+
+
+the extreme power of haskell makes me strive to write the most compact code possible - other languages don't seem to do this for me
+haskell is very dense, I like that - no wasted space like in C languages
