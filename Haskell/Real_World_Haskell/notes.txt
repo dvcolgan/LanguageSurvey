@@ -381,3 +381,47 @@ we can hide implementation details by not exporting type constructors, so that w
 
 
 Hoogle - haskell function search engine by name and type
+
+
+###Chapter 7 I/O
+<- is extract value from IO action
+the IO () type is an IO action, which can be stored and manipulated without actually executing it
+() -- 'unit', a return value of nothing
+execution starts in the main function, of type IO (), and the impure code calls pure code
+use let without an 'in' to get values fromm pure code
+
+##skipped sections on file IO
+
+#The IO Monad
+every statement in a do block has to return an action except a let
+mapM_ = map an IO function over a list doing side effects
+mapM_ print ["Hello", "World", "There"]
+functions that end in _ usually get rid of their return values
+
+>> chains together actions and discards the result, similar to just executing a line in a do block
+>>= runs the first action and then passes that result to the next function that returns an action
+getLin >>= putStrLn (NICE)
+return wraps data in a monad -- turns Char into IO Char
+
+
+
+###Chapter 10 - Case Study that prepares for the monads chapter
+
+#Parsing a Raw PGM file
+A good approach to a Haskell program is to separate the reading of data from the code that operates on it
+An example of a parser, where we are consuming a stream of data and extracting data from it
+The naive approach uses a really long case staircase and pattern matching to remove values from a tuple that is returned, consisting of the most recently extracted value and the rest of the stream
+
+
+###Chapter 14 - Monads
+A monad has a type constructor m
+A function of type m a -> (a -> m b) -> m b that chains monads together
+A function of type a -> m a that lifts a normal value into the monad
+
+>>= is the generic function to bind the output of one function to the input of another
+>> does the same but ignores the value on the left
+print does not return a meaningful value, so we can do 
+print "hello" >> print "world"
+a monad is a type that is an intance of the monad typeclass that implements the above functions
+If we want to unwrap a monadic value, apply a function, and rewrap the value, we can use liftM:
+liftM length Just "hello" == Just 5

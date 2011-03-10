@@ -3,16 +3,121 @@ module Dice where
 import Data.List
 import Debug.Trace
 import Data.Monoid
+import Text.Printf
 
---data Die = One | Two | Three | Four | Five | Six
---data Score = SixOfAKind | FiveOfAKind | FourOfAKind | ThreeOnes | ThreeTwos | ThreeThrees
---type Roll = [Int]
+--the extreme power of haskell makes me strive to write the most compact code possible - other languages don't seem to do this for me
+--haskell is very dense, I like that - no wasted space like in C languages
+--I feel like I should know how to use monads, and that I should be using them to make this code even simpler than it is already
+--perhaps I can now understand the not at all gentle "A Gentle Introduction to Haskell"
+--hoogle is really helpful for looking up functions - I wish it was built in to Vim
+
+data Player = Player { name :: String
+                     , score :: Int
+                     , kind :: PlayerType
+                     } deriving (Show)
+
+data PlayerType = HumanPlayer | GreedyAIPlayer | GAPlayer deriving (Show)
+
+main :: IO ()
+main = do putStrLn "Purely functional Farkle in Haskell!"
+          let players = [Player {name = "David", score = 0, kind = HumanPlayer}
+                        ,Player {name = "AI Bob", score = 0, kind = GreedyAIPlayer}
+                        ]
+          
+          return ()
+
+
+(defn take-turn [player total-scores]
+  (loop [turn-score 0
+         set-aside []
+         remaining (roll-dice 6)]
+    (if (is-farkle remaining)
+      (do
+        (warn-farkle player remaining)
+        0)
+      (let [new-set-aside (get-validated-set-aside player remaining set-aside turn-score total-scores)
+            new-turn-score (+ turn-score (get-score new-set-aside))]
+        (if (query-stop player remaining set-aside new-turn-score total-scores)
+          new-turn-score
+          (recur new-turn-score
+                 (concat set-aside new-set-aside)
+                 (roll-dice (let [die-count (- (count remaining)
+                                               (count new-set-aside))]
+                              (if (> die-count 0)
+                                die-count
+                                6)))))))))
+
+(defn play-farkle [players]
+  (if (= (count players) 0)
+    (println "Not enough players!")
+    (loop [rotation (cycle players)
+	   scores (zipmap players (repeat 0))]
+      (let [player (first rotation)
+	    updated-score (+ (scores player)
+                         (take-turn player (take (count players)
+                                                 (vec
+                                                   (map val scores)))))]
+        (if (>= updated-score 10000)
+          player
+          (recur (rest rotation)
+                 (assoc scores player updated-score)))))))
+
+(defn main []
+  (let [winner (play-farkle [(HumanPlayer. "David")
+                             (GreedyAIPlayer. "Samuel" 800)])]
+    (println "The winner is" (str (get-name winner) "!"))))
+
+
+
+
+--queryHumanPlayer :: [Int] -> [Int] -> Int -> Int -> IO String
+--queryHumanPlayer remaining set_aside turn_score total_scores = do
+--    putStrLn "\n\nScores:\n"
+--    --uncurry: convert a two argument function to a one argument function that operates on a pair
+--    mapM_ (uncurry $ printf "Player %d: %d\n") (zip [1..] total_scores)
+--
+--    putStrLn "Turn score: " ++ show turn_score
+--    putStrLn "\nSet Aside:"
+--    putStrLn $ show set_aside
+--
+--    putStrLn "\nYou roll the dice:"
+--    putStrLn $ show remaining
+--    putStrLn "\nIndicate the dice you want to set aside by entering their numbers separated by spaces.\n"
+--    choice <- getLine
+--    return ()
+--
+--    --try:
+--        --return [int(choice) for choice in choices.split()]
+--    --except ValueError:
+--        --return ''
+--
+--parseChoice :: String -> Maybe [Int]
+--parseChoice choice =
+--    map read $ words choice
+    
+
+
+--query_stop remaining, set_aside, turn_score, total_scores = do
+--    choice = raw_input("You have {0} points.  Hit enter to continue rolling, or type 'stop' to end your turn.\n".format(turn_score))
+--    if choice == '':
+--       return False
+--       else:
+--       return True
+--
+--def warn_invalid_set_aside(self):
+--    print "That set aside is invalid!"
+--
+--warnFarkle :: [Int]
+--warnFarkle dice =
+--    "You got a farkle!\nDice: " + roll.get_values_as_string()
+
+
 
 sortByFrequency :: (Ord a, Eq a) => [a] -> [a]
 sortByFrequency lst = sortBy moreInList lst
-    where moreInList x y = ((numInList y) `compare` (numInList x)) `mappend` (x `compare` y)  --use the Ord monoid to sort by different criteria; if the first gives an EQ, the second applies
+    where moreInList x y = ((numInList y) `compare` (numInList x)) `mappend` (x `compare` y)
+          --use the Ord monoid to sort by different criteria; if the first gives an EQ, the second applies
           numInList e = length $ filter (== e) lst
-
 
 
 --broken - fails for the test case mostCommonElement [1,2,3,2,5], returns (1,5)
@@ -25,9 +130,12 @@ sortByFrequency lst = sortBy moreInList lst
 
 --not sure if I could use a monad here?  Chaining score and remaining dice filtering functions
               --
-score :: [Int] -> Int
-score dice =
+findScore :: [Int] -> Int
+findScore dice =
     fst $ remove1s5s . (removeNOfAKind 3) . (removeNOfAKind 4) . (removeNOfAKind 5) . remove222 . remove33 . remove42 . removeStraight . (removeNOfAKind 6) $ (0, sortByFrequency dice) 
+
+
+
 
 -- Expects the dice to be sorted by frequency
 
@@ -81,7 +189,7 @@ removeNOfAKind n (score, dice)
                    otherwise -> error "Should not try to take another n of a kind"
 
 
-    
+
 
 
 

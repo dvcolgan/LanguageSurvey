@@ -1,4 +1,4 @@
-Week 1
+Geek 1
 
 Got the Git repository set up
 Did some exploring in Emacs, got it installed, installed AucTex
@@ -414,6 +414,10 @@ found http://blog.codeslower.com/2008/10/The-Haskell-Cheatsheet
 5:00-6:00
 Still reading chapter 11, mindblowing stuff.  I'm barely still following, but I think that I am following.
 
+6.5 hours
+
+Week 2
+
 Monday February 07
 7:30 - 8:45
 Finished chapter 11.  This stuff is getting complicated, but it keeps building on itself to make new awesome combinations.
@@ -427,6 +431,10 @@ Saturday February 12
 11:30 - 12:30
 Starting Real World Haskell, found some good code examples
 
+3.75 hours
+
+Week 3
+
 Monday February 14
 3-4:15
 5:00 - 5:45
@@ -436,8 +444,8 @@ Friday February 18
 6:30 - 8:30am
 Read chapter 3
 
-12:30 - 1:10
-1:55 - 2:50
+12:30 - 1:00
+2:00 - 3:00
 Reading chapter 4
 
 Saturday February 19
@@ -451,8 +459,12 @@ finished chapter 4
 4:00 - 5:30pm
 reading chapter 5
 
+8.25 hours
+
+Week 4
+
 Monday February 21
-7:20 - 8:55am
+7:15 - 9:00am
 read chapter 6
 
 7:45 - 8:45 pm
@@ -462,3 +474,49 @@ Tuesday February 22
 3:00 - 3:30
 4:15 - 5:30
 Wrote the functions that score dice.  AWESOME language this is.
+
+Wednesday February 23
+7:30 - 8:30
+Reading about IO
+
+Thursday February 24
+9:00 - 9:45
+
+Friday February 25
+8:00 - 9:15
+Working on IO in the farkle interface.
+1:30 - 2:15
+Trying to figure out how to get command line arguments.  I'm starting to think I need to read more of the book.
+
+Sunday February 27
+5:30 - 6:30
+Reading chapter 10
+
+9.25 hours
+
+Week 5
+
+Monday February 28
+2:00 - 2:45
+Meeting with Dr. Nurkkala
+
+Thursday March 3
+4:00 - 5:00
+5:30 - 6:15
+Reading about monads
+
+Saturday March 5
+11:00am - 1:00 pm
+10:00pm - 10:30pm
+
+Sunday March 6
+3:40 - 5:40pm 
+
+7 hours
+
+Week 6
+
+Tuesday March 8
+7:15 - 8:00
+
+10.25 hours in the hole

@@ -216,6 +216,16 @@ list comprehensions are syntactic sugar for >>= and list monads
 http://upload.wikimedia.org/wikipedia/commons/a/aa/Write_Yourself_a_Scheme_in_48_Hours.pdf
 
 
+for a complicated language like haskell, reading different tutorials at different times and repeatedly helps a lot.  Forgetting and relearning a difficult topic makes it seem easier the second time
 
-the extreme power of haskell makes me strive to write the most compact code possible - other languages don't seem to do this for me
-haskell is very dense, I like that - no wasted space like in C languages
+also, these languages all have many things in common, and seeing it implemented in other languages is also helpful for learning
+
+I want to teach this language to other people by showing how we can take complicated code and make it increasingly shorter and more elegant.  (I love elegant things.)
+
+it does seem to be difficult to really write idiomatic code in an objective way when just learning the language, especially haskell
+
+!Taking notes as I do things is also very important I'm finding; otherwise I just forget things.
+
+I wonder how it would have been different had I done the project first in Haskell and then the other languages?  How much of the Python style is influencing how I do this?
+
+
