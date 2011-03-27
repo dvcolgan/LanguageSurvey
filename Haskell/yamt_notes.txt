@@ -1,0 +1,101 @@
+Yet another monad tutorial
+
+http://mvanier.livejournal.com/3917.html
+
+Monads allow us to use Haskell's type system to ensure the separation of pure and impure code
+
+"Monads are a generalization of functions, function application, and function composition to allow them to deal with richer notions of computation than standard functions."
+
+the purest form of function application is the normal simple mathy way: f x
+when composing functions f and g, you can only compose them - g (f x) if the types of the functions are composable
+f :: a -> b
+g :: b -> c
+
+composing these creates
+h :: a -> c
+
+(!!!) functional programming allows you to compose functions without naming the intermediate results:
+
+f11 x =
+     let
+       x2 = f1 x
+       x3 = f2 x2
+       x4 = f3 x3
+       x5 = f4 x4
+       x6 = f5 x5
+       x7 = f6 x6
+       x8 = f7 x7
+       x9 = f8 x8
+       x10 = f9 x9
+       x11 = f10 x10
+     in
+       x11
+^^would be very tedious to do^^
+
+instead:  f11 = f10 . f9 . f8 . f7 . f6 . f5 . f4 . f3 . f2 . f1
+
+a monadic function is a function of type 
+f :: a -> m b
+f is a pure function that takes values of type a and returns values of m b
+the m is a function on types with kind * -> *, a function on types that takes a type as an argument and returns another type
+Maybe is a type constructor, 
+
+chapter 2
+you can't use (.) to compose monadic functions because the types don't line up
+if we compose two monadic functions,
+f :: a -> IO b
+g :: b -> IO c
+we want to get h :: a -> IO c
+mcompose :: (a -> m b) -> (b -> m c) -> (a -> m c)
+for IO, we don't want to be able to extract a value from the monad, f :: IO b -> b, because that breaks the reason why we wanted monads to begin with - to be able to use the type system to make sure we are composing functions correctly
+
+an extract function would break purity, because, like in normal languages, you could compose two functions that do IO to potentially get one that appears to not perform IO.
+
+we can't make an extract operator, so we define bind such that it takes a monadic value and feeds it into another function that takes a normal value and returns a monadic value
+>>= - monadic bind
+>=> - monadic compose
+return - convert normal values into monadic values; we can't go from a monadic value to a non-monadic value, but we can go the other way around
+
+the >>= appears to be taking a monadic value, unpacking it, and then feeding it through a monadic function.  How this is accomplished is defined differently for each monad
+
+the Monad typeclass is actually a constructor class, because it prescribes a set of functions to be used for a monad of any type
+
+(?) so then, can we say that we can't write a generic extract operator, but we can and must write the >>= function which does a controlled unpacking, only unwrapping the value from the monad long enough to put it into another one?
+
+chapter 3
+(>>) :: m a -> m b -> m b
+use this when the return value of the first is ()
+(putStrLn "hello") >> (putStrLn "world")
+
+the nice version of the monad laws:
+1. return >=> f       ==    f
+2. f >=> return       ==    f
+3. (f >=> g) >=> h    ==    f >=> (g >=> h)
+
+return must be an identity function for monad function composition
+monadic function application must be associative
+
+this is similar to:
+1. id . f       ==  f
+2. f  . id      ==  f
+3. (f . g) . h  ==  f . (g . h)
+
+haskell can't enforce these laws because it is not a theorem prover
+
+do notation
+
+chapter 4
+the Maybe monad lets you chain together functions that may fail:
+f :: a -> Maybe b
+g :: a -> Maybe b
+h :: a -> Maybe b
+
+f >=> g >=> h
+
+The list monad is basically list comprehensions - feeding functions that return multiple values into each other
+
+
+
+
+Learn you a haskell on the state monad:
+

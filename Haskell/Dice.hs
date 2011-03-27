@@ -4,114 +4,178 @@ import Data.List
 import Debug.Trace
 import Data.Monoid
 import Text.Printf
+import System.Random
 
---the extreme power of haskell makes me strive to write the most compact code possible - other languages don't seem to do this for me
---haskell is very dense, I like that - no wasted space like in C languages
---I feel like I should know how to use monads, and that I should be using them to make this code even simpler than it is already
---perhaps I can now understand the not at all gentle "A Gentle Introduction to Haskell"
---hoogle is really helpful for looking up functions - I wish it was built in to Vim
+
+type Individual = [
+
+class GAProblem a where
+    createRandomIndividual :: IO Individual
+    runTournament :: Individual -> Individual -> Individual
+    mateIndividuals :: Individual -> Individual -> (Individual, Individual)
+    mutateIndividual :: Individual -> Individual
+
+instance GAProblem Sequence where
+    createRandomIndividual = sequence $ replicate 10 $ getStdRandom $ randomR (0,9)
+    runTournament individual1 individual2 =
+        where evaluate individual = zip individual
+
+              --WORKING HERE '#!^#%$*^%&($*&&#F%YIPUXQINTG<IPA
+
+  (run-tournament [this individual1 individual2]
+    (letfn [(evaluate-fn [individual] (reduce + (map #(if (= %1 %2) 1 0)
+                                                     individual
+                                                     (range 10))))]
+      (if (> (evaluate-fn individual1)
+	     (evaluate-fn individual2))
+	individual1
+	individual2)))
+
+  (mate-individuals [this individual1 individual2]
+    (let [pivot (rand-int 10)
+	  [fst-front fst-back] (split-at pivot individual1)
+	  [snd-front snd-back] (split-at pivot individual2)]
+      [(vec (concat fst-front snd-back))
+       (vec (concat snd-front fst-back))]))
+
+  (mutate-individual [this individual]
+    (let [pivot (rand-int 10)]
+      (assoc individual pivot (rand-int 10))))
+  )
 
 data Player = Player { name :: String
                      , score :: Int
                      , kind :: PlayerType
                      } deriving (Show)
 
+--maybe this should be in the state monad eh?
+data TurnState = TurnState { remaining :: [Int]
+                           , setAside :: [Int]
+                           , turnScore :: Int }
+
 data PlayerType = HumanPlayer | GreedyAIPlayer | GAPlayer deriving (Show)
 
 main :: IO ()
 main = do putStrLn "Purely functional Farkle in Haskell!"
+          --are the players something that could use the state monad?
           let players = [Player {name = "David", score = 0, kind = HumanPlayer}
                         ,Player {name = "AI Bob", score = 0, kind = GreedyAIPlayer}
                         ]
-          
-          return ()
+
+          winner <- playFarkle players
+          putStrLn $ "The winner is " ++ name winner ++ "!"
 
 
-(defn take-turn [player total-scores]
-  (loop [turn-score 0
-         set-aside []
-         remaining (roll-dice 6)]
-    (if (is-farkle remaining)
-      (do
-        (warn-farkle player remaining)
-        0)
-      (let [new-set-aside (get-validated-set-aside player remaining set-aside turn-score total-scores)
-            new-turn-score (+ turn-score (get-score new-set-aside))]
-        (if (query-stop player remaining set-aside new-turn-score total-scores)
-          new-turn-score
-          (recur new-turn-score
-                 (concat set-aside new-set-aside)
-                 (roll-dice (let [die-count (- (count remaining)
-                                               (count new-set-aside))]
-                              (if (> die-count 0)
-                                die-count
-                                6)))))))))
+playFarkle :: [Player] -> IO Player
+playFarkle players@(curPlayer:otherPlayers) = do
+    newCurPlayer <- takeTurn curPlayer (getScores players)
+    if score newCurPlayer >= 10000
+       then return newCurPlayer
+       else do
+           playFarkle $ otherPlayers ++ [newCurPlayer]
 
-(defn play-farkle [players]
-  (if (= (count players) 0)
-    (println "Not enough players!")
-    (loop [rotation (cycle players)
-	   scores (zipmap players (repeat 0))]
-      (let [player (first rotation)
-	    updated-score (+ (scores player)
-                         (take-turn player (take (count players)
-                                                 (vec
-                                                   (map val scores)))))]
-        (if (>= updated-score 10000)
-          player
-          (recur (rest rotation)
-                 (assoc scores player updated-score)))))))
-
-(defn main []
-  (let [winner (play-farkle [(HumanPlayer. "David")
-                             (GreedyAIPlayer. "Samuel" 800)])]
-    (println "The winner is" (str (get-name winner) "!"))))
+getScores :: [Player] -> [Int]
+getScores players =
+    map score players
 
 
+--It would appear that the game structure, being very procedural in nature, does not benefit from a purely functional model
+takeTurn :: Player -> [Int] -> IO Player
+takeTurn player totalScores = do
+    initialDice <- rollDice [0,0,0,0,0,0]
+    turnLoop TurnState {remaining = initialDice, setAside = [], turnScore = 0} 
+    where turnLoop turnState
+            | isFarkle $ remaining turnState = do
+                warnFarkle (kind player) (remaining turnState)
+                return player
+            | otherwise = do
+                newSetAside <- querySetAside (kind player) turnState totalScores
+                newRoll <- rollDice
+                            (if length (setAside turnState) + length newSetAside == 6
+                                then [0,0,0,0,0,0]
+                                else removeElems newSetAside (remaining turnState))
+                let newTurnState =
+                        TurnState { remaining = newRoll
+                                  , setAside = (if length newRoll == 6 then [] else setAside turnState ++ newSetAside)
+                                  , turnScore = turnScore turnState + fst (findScore newSetAside) }
+                choice <- queryStop (kind player) newTurnState totalScores
+                if choice == True
+                   then do return $ player { score = score player + turnScore newTurnState }
+                   else do turnLoop newTurnState
 
 
---queryHumanPlayer :: [Int] -> [Int] -> Int -> Int -> IO String
---queryHumanPlayer remaining set_aside turn_score total_scores = do
---    putStrLn "\n\nScores:\n"
---    --uncurry: convert a two argument function to a one argument function that operates on a pair
---    mapM_ (uncurry $ printf "Player %d: %d\n") (zip [1..] total_scores)
---
---    putStrLn "Turn score: " ++ show turn_score
---    putStrLn "\nSet Aside:"
---    putStrLn $ show set_aside
---
---    putStrLn "\nYou roll the dice:"
---    putStrLn $ show remaining
---    putStrLn "\nIndicate the dice you want to set aside by entering their numbers separated by spaces.\n"
---    choice <- getLine
---    return ()
---
---    --try:
---        --return [int(choice) for choice in choices.split()]
---    --except ValueError:
---        --return ''
---
---parseChoice :: String -> Maybe [Int]
---parseChoice choice =
---    map read $ words choice
+removeElems :: (Eq a) => [a] -> [a] -> [a]
+removeElems [] lst = lst
+removeElems (x:xs) lst = removeElems xs (delete x lst)
+
+
+rollDice :: [Int] -> IO [Int]
+rollDice dice = do
+    newDice <- sequence $ replicate (length dice) $ getStdRandom $ randomR (1,6)
+    return newDice
+
+isFarkle :: [Int] -> Bool
+isFarkle dice = fst (findScore dice) == 0
+
+querySetAside :: PlayerType -> TurnState -> [Int] -> IO [Int]
+querySetAside HumanPlayer turnState totalScores = do
+    putStrLn "\n\nScores:\n"
+    --uncurry: convert a two argument function to a one argument function that operates on a pair
+    mapM_ (uncurry $ printf "Player %d: %d\n") ((zip ([1..] :: [Int]) totalScores))
+
+    putStrLn $ "Turn score: " ++ show (turnScore turnState)
+    putStrLn "\nSet Aside:"
+    putStrLn $ show $ setAside turnState
+
+    putStrLn "\nYou roll the dice:"
+    putStrLn $ show $ remaining turnState
+    putStrLn "\nIndicate the dice you want to set aside by entering their numbers separated by spaces.\n"
+    choice <- getLine
+    let setAside = map read (words choice)
+    if (length setAside > 0) && containsValues setAside (remaining turnState) && length (snd (findScore setAside)) == 0
+       then return setAside
+       else do
+           putStrLn "That set aside is not valid!"
+           querySetAside HumanPlayer turnState totalScores
+
+querySetAside GreedyAIPlayer turnState totalScores = do
+    putStrLn $ "AI player rolled" ++ show (remaining turnState)
+    if length (remaining turnState) == 6 && fst (findScore (remaining turnState)) > 1000
+       then return $ remaining turnState
+       else do
+           let newSetAside = filter isScoringDie (remaining turnState)
+           putStrLn $ "AI player set aside" ++ show newSetAside
+           return newSetAside
+    where isScoringDie die =
+              die == 1 || die == 5 || (length (filter (== die) (remaining turnState)) == 3)
+
+
+containsValues :: (Eq a, Ord a) => [a] -> [a] -> Bool
+containsValues firstVals secondVals =
+    containsValues' (sort firstVals) (sort secondVals)
+    where containsValues' [] _ = True
+          containsValues' _ [] = False
+          containsValues' (x:xs) (y:ys)
+            | x == y = containsValues' xs ys
+            | otherwise = containsValues' (x:xs) ys
+
     
+queryStop :: PlayerType -> TurnState -> [Int] -> IO Bool
+queryStop HumanPlayer turnState totalScores = do
+    putStrLn $ "You have " ++ (show $ turnScore turnState) ++ ".  Hit enter to continue rolling, or type 'stop' to end your turn.\n"
+    choice <- getLine
+    if choice == "" then do return False else do return True
+
+queryStop GreedyAIPlayer turnState totalScores = do
+    return $ turnScore turnState > 700
 
 
---query_stop remaining, set_aside, turn_score, total_scores = do
---    choice = raw_input("You have {0} points.  Hit enter to continue rolling, or type 'stop' to end your turn.\n".format(turn_score))
---    if choice == '':
---       return False
---       else:
---       return True
---
---def warn_invalid_set_aside(self):
---    print "That set aside is invalid!"
---
---warnFarkle :: [Int]
---warnFarkle dice =
---    "You got a farkle!\nDice: " + roll.get_values_as_string()
+warnFarkle :: PlayerType -> [Int] -> IO ()
+warnFarkle HumanPlayer dice = do
+    putStrLn $ "You got a farkle!\nDice: " ++ show dice
 
-
+warnFarkle GreedyAIPlayer dice = do
+    putStrLn $ "AI player got a farkle!\nDice: " ++ show dice
 
 sortByFrequency :: (Ord a, Eq a) => [a] -> [a]
 sortByFrequency lst = sortBy moreInList lst
@@ -120,25 +184,12 @@ sortByFrequency lst = sortBy moreInList lst
           numInList e = length $ filter (== e) lst
 
 
---broken - fails for the test case mostCommonElement [1,2,3,2,5], returns (1,5)
---mostCommonElement ::  [Int] -> (Int, Int)
---mostCommonElement lst = foldl majorityVote (0, head lst) lst
---    where majorityVote :: (Int, Int) -> Int -> (Int, Int)
---          majorityVote (cnt, val) x =
---              let newCnt = if val == x then cnt+1 else cnt-1
---              in if newCnt == 0 then trace (show (1, x)) (1, x) else trace (show (newCnt, val)) (newCnt, val)
-
 --not sure if I could use a monad here?  Chaining score and remaining dice filtering functions
-              --
-findScore :: [Int] -> Int
+findScore :: [Int] -> (Int, [Int])
 findScore dice =
-    fst $ remove1s5s . (removeNOfAKind 3) . (removeNOfAKind 4) . (removeNOfAKind 5) . remove222 . remove33 . remove42 . removeStraight . (removeNOfAKind 6) $ (0, sortByFrequency dice) 
-
-
-
+    remove1s5s . (removeNOfAKind 3) . (removeNOfAKind 4) . (removeNOfAKind 5) . remove222 . remove33 . remove42 . removeStraight . (removeNOfAKind 6) $ (0, sortByFrequency dice) 
 
 -- Expects the dice to be sorted by frequency
-
 remove42 :: (Int, [Int]) -> (Int, [Int])
 remove42 (score, dice)
     | length dice /= 6 = (score, dice)
@@ -188,20 +239,3 @@ removeNOfAKind n (score, dice)
                    3 -> if head dice == 1 then 300 else (head dice) * 100
                    otherwise -> error "Should not try to take another n of a kind"
 
-
-
-
-
-
---          score6 (score, (x:xs)) = all
---removeSixOfAKind :: (Int, [Int]) -> (Int, [Int])
---removeSixOfAKind (score, dice)
-----    | all (== (head dice)) dice = (score + 3000, [])
---removeFiveOfAKind :: [Int] -> Bool
---removeFourOfAKind :: [Int] -> Bool
---removeThreeOfAKind :: [Int] -> Bool
---haveSixOfAKind :: [Int] -> Bool
---haveSixOfAKind :: [Int] -> Bool
---haveSixOfAKind :: [Int] -> Bool
---haveSixOfAKind :: [Int] -> Bool
---haveSixOfAKind :: [Int] -> Bool

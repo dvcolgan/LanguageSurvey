@@ -519,4 +519,49 @@ Week 6
 Tuesday March 8
 7:15 - 8:00
 
+Thursday March 10
+8:15 - 9:00am
+Reading YAMT
+
+Friday March 11
+2:00 - 3:00
+Making progress, using the Maybe monad for calculations!
+
+Saturday March 12
+2:00 - 4:15
+Finished YAMT and reading the section on the state monad in learn you a haskell
+Also working on the code - it seems like I should use the state monad in my code to make the game flow logic simpler.  The Yahtzee game implementation I found uses it too.  I'd like to learn about monad transformers as well, as the Yahtzee game uses them too, something about StateT and the liftIO function.
+
+Sunday March 13
+2:45 - 4:30
+I need to use a monad transformer combining the state monad and the io monad to model the game state like the yahtzee game uses
+
+lightsys is looking for a summer person
+
+
 10.25 hours in the hole
+
+Week 7
+Monday March 14
+2:00 - 3:00
+Meeting with Nurkkala
+
+Monday March 21
+4:30 - 5:00
+found a good tutorial about the state monad and a cowbow tutorial(?)
+
+Friday March 25
+4:20 - 4:50
+Reading about monads.
+
+Saturday March 26
+7:35 - 10:35
+5:05 - 6:05
+8:00 - 8:30
+Writing Haskell code
+
+Sunday March 27
+8:30 - 9:00
+10:00 - 10:30
+Writing Haskell code
+

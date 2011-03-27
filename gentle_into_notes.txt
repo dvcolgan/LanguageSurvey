@@ -1,0 +1,21 @@
+Chapter 7 I/O
+
+Haskell IO is in a monad - IO is just one of the things that fit into monads
+
+#Basic I/O Operations
+getChar :: IO Char -- returns a char, but is marked as an IO action
+putChar :: Char -> IO ()
+() is the null value (and empty tuple)
+do notation is sugar for >>=
+main has a type of
+main :: IO ()
+main = do c <- getChar
+          putChar c
+(!!!) if a function returns a value that it gets from IO, you must call return on it, to lift it from a normal value to an IO tagged value
+me - this finally makes sense now
+
+you cannot sneak IO code into pure code without corrupting it
+a function of type Int -> Int cannot do any IO, and would have to be changed to Int -> IO Int or something
+side effects are a deadly poison that must be quarantined!
+
+I am on the cusp of reeally understandng monads and I'm starting to see some awesome pattern emerging that are highly abstract

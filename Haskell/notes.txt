@@ -229,3 +229,41 @@ it does seem to be difficult to really write idiomatic code in an objective way 
 I wonder how it would have been different had I done the project first in Haskell and then the other languages?  How much of the Python style is influencing how I do this?
 
 
+What does a monad actually buy you?  Are they just something that you have to have for Haskell by definition?
+Is it worth it to go so far to the extreme
+maybe we should teach functional programming
+how would it be different if we taught functional programming first and then imperative
+talk to someone who taught fp first and see how the students fared
+look into the ghc parallel abilities
+
+elements of style to remember how to write
+SICP to remember how to program
+
+
+
+nice tutorial of the state monad
+http://coder.bsimmons.name/blog/2009/10/the-state-monad-a-tutorial-for-the-confused/
+
+cowboy monad tutorial:
+http://www.muitovar.com/monad/moncow.xhtml
+flop x f = f x
+
+
+
+
+
+--the extreme power of haskell makes me strive to write the most compact code possible - other languages don't seem to do this for me
+--haskell is very dense, I like that - no wasted space like in C languages
+--I feel like I should know how to use monads, and that I should be using them to make this code even simpler than it is already
+--perhaps I can now understand the not at all gentle "A Gentle Introduction to Haskell"
+--hoogle is really helpful for looking up functions - I wish it was built in to Vim
+
+-- I'm not exactly sure if a toy problem like this is effective in determining if these languages are good choices for determining the relative merits of these languages.  What if I would have selected two languages and then compared how hard it was to write wordsurv in it.
+-- It would also have been better perhaps to have a guru in both languages advise me in how I write each program.  That is something I think is severly lacking.  Some of this Haskell code is looking not good, but I'm not sure how to make it better at this point.
+
+-- It is also possible that the problem I chose to implement isn't all that great of a toy problem.  Maybe this is something that Haskell (or for that matter any of these languages) just would not be the best at, or the code would not look awesome or something.
+
+-- At least at first, I am encountering a lot of compiler errors upfront.  They say that once you can get your haskell program to compile, it is probably correct.  It feels like a fair amount of that is fighting with the compiler, and being confused by the very uniform syntax - I feel like if I had the OO dot notation, it would be easier to read.  remaining turnState is harder to parse and get right than turnState.remaining, but that might just be because I am used to the dot syntax.  I have noticed this in natural languages too.  Hebrew is harder to parse because all of the letters are the same height, are all squarish, and the words are mostly 3-5 letters long.  Greek is easier to parse because the letters look different, are different heights, and are different lengths.  Cyrillic is mostly the same height too.
+    -- So then, what if we compared these regular languages like lisp, haskell, to something like perl, which has a lot of different operators, is it easier to read?  Actually, Rich Hickey said I think that one of the reasons for the square brackets in clojure was to make it easier to read.
+        -- Of course, this could be because I don't know Haskell well enough and am not using the language to its fullest.  Well, I know that for sure because I am not using monads.
+--We see that the functional style encourages writing lots of small functions because it is so easy to write functions.  In C there is a lot of overhead when writing functions.
