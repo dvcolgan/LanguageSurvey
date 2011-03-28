@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Dice where
 
 import Data.List
@@ -7,41 +8,107 @@ import Text.Printf
 import System.Random
 
 
-type Individual = [
+data IndividualType = SequenceType | FarkleType
+type Individual = [Int]
 
-class GAProblem a where
-    createRandomIndividual :: IO Individual
-    runTournament :: Individual -> Individual -> Individual
-    mateIndividuals :: Individual -> Individual -> (Individual, Individual)
-    mutateIndividual :: Individual -> Individual
 
-instance GAProblem Sequence where
-    createRandomIndividual = sequence $ replicate 10 $ getStdRandom $ randomR (0,9)
-    runTournament individual1 individual2 =
-        where evaluate individual = zip individual
+--class GAProblem a where
+    --createRandomIndividual :: IO a
+    --runTournament :: a -> a -> IO a
+    --mateIndividuals :: a -> a -> IO (a, a)
+    --mutateIndividual :: a -> IO a
 
-              --WORKING HERE '#!^#%$*^%&($*&&#F%YIPUXQINTG<IPA
+--instance GAProblem SequenceIndividual where
 
-  (run-tournament [this individual1 individual2]
-    (letfn [(evaluate-fn [individual] (reduce + (map #(if (= %1 %2) 1 0)
-                                                     individual
-                                                     (range 10))))]
-      (if (> (evaluate-fn individual1)
-	     (evaluate-fn individual2))
-	individual1
-	individual2)))
+createRandomIndividual :: IndividualType -> IO Individual
+createRandomIndividual SequenceType = sequence $ replicate 10 $ getStdRandom $ randomR (0,9)
 
-  (mate-individuals [this individual1 individual2]
-    (let [pivot (rand-int 10)
-	  [fst-front fst-back] (split-at pivot individual1)
-	  [snd-front snd-back] (split-at pivot individual2)]
-      [(vec (concat fst-front snd-back))
-       (vec (concat snd-front fst-back))]))
+runTournament :: IndividualType -> Individual -> Individual -> IO Individual
+runTournament SequenceType gene1 gene2 = do
+    if evaluate gene1 > evaluate gene2 then return gene1 else return gene2
+    where evaluate gene = length $ filter (\(x, y) -> x == y) $ zip gene [0..9]
 
-  (mutate-individual [this individual]
-    (let [pivot (rand-int 10)]
-      (assoc individual pivot (rand-int 10))))
-  )
+mateIndividuals :: IndividualType -> Individual -> Individual -> IO [Individual]
+mateIndividuals SequenceType gene1 gene2 = do
+    pivot <- getStdRandom $ randomR (0,9)
+    let (fstFront, fstBack) = splitAt pivot gene1
+        (sndFront, sndBack) = splitAt pivot gene2
+    return [fstFront ++ sndBack, sndFront ++ fstBack]
+
+
+mutateIndividual :: IndividualType -> Float -> Individual -> IO Individual
+mutateIndividual SequenceType mutationRate gene = do
+    pivot <- getStdRandom $ randomR (0,9)
+    newVal <- getStdRandom $ randomR (0,9)
+    prob <- getStdRandom $ randomR(0.0, 1.0)
+    if m --ADD mutation rate and also crossover rate to that function, this should probably not go into this function
+    return $ (take pivot gene) ++ [newVal] ++ (drop (pivot+1) gene)
+
+
+runGA :: IndividualType -> Int -> Int -> Float -> Float -> IO ()
+runGA problemType populationSize maxGenerations mutationRate crossoverRate = do
+    initialPopulation <- sequence $ replicate populationSize $ createRandomIndividual problemType 
+    recurse 0 initialPopulation
+    where recurse generation population = do
+              putStrLn "Current Population:"
+              putStrLn $ show population
+              matingPosLst1 <- getRandPosLst populationSize populationSize
+              matingPosLst2 <- getRandPosLst populationSize populationSize
+              matingPool <- mapM (\(g1, g2) -> runTournament problemType g1 g2)
+                                  (zip (map (population !!) matingPosLst1) (map (population !!) matingPosLst2))
+              putStrLn "Mating Pool:"
+              putStrLn $ show matingPool
+              
+              crossPosLst1 <- getRandPosLst (populationSize `div` 2) populationSize
+              crossPosLst2 <- getRandPosLst (populationSize `div` 2) populationSize
+              crossedPool <- mapM (\(g1, g2) -> mateIndividuals problemType g1 g2) 
+                                  (zip (map (matingPool !!) crossPosLst1) (map (matingPool !!) crossPosLst2))
+
+              putStrLn "Crossed Pool:"
+              putStrLn $ show $ concat crossedPool
+              
+
+              mutPosLst <- getRandPosLst populationSize populationSize
+              mutatedPool <- mapM (mutateIndividual problemType mutationRate) (map ((concat crossedPool) !!) mutPosLst)
+
+              putStrLn "Mutated Pool:"
+              putStrLn $ show $ mutatedPool
+
+              return ()
+
+          getRandPosLst count upperbound = sequence $ replicate count $ getStdRandom $ randomR (0, upperbound-1) :: IO [Int]
+
+
+{-
+  (loop [generation 0
+	 population (repeatedly population-size #(create-random-individual problem-manager))]
+    (let [mating-pool (map (fn [i1 i2] (run-tournament problem-manager i1 i2))
+			    (repeatedly population-size #(rand-nth population))
+			    (repeatedly population-size #(rand-nth population)))
+
+	  crossed-pool (mapcat identity (map (fn [i1 i2]
+						(if (< (rand) crossover-rate)
+						  (mate-individuals problem-manager i1 i2)
+						  [i1 i2]))
+					      (repeatedly population-size #(rand-nth mating-pool))
+					      (repeatedly population-size #(rand-nth mating-pool))))
+	  mutated-pool (map (fn [i]
+			       (if (< (rand) mutation-rate)
+				 (mutate-individual problem-manager i)
+				 i))
+			     (repeatedly population-size #(rand-nth crossed-pool)))]
+      (let [[convergence most-common-individual] (find-converging-individual mutated-pool)]
+	(if (or (> convergence 0.95)
+		(> generation max-generations))
+	  (str "Most common individual: "
+	       most-common-individual ", "
+	       convergence ", "
+	       generation ", "
+	       (str (vec mutated-pool)))
+	  (do
+	    (println (format "Generation %d" generation))
+	    (recur (inc generation) mutated-pool)))))))
+-}
 
 data Player = Player { name :: String
                      , score :: Int

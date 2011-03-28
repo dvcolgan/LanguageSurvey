@@ -563,5 +563,10 @@ Writing Haskell code
 Sunday March 27
 8:30 - 9:00
 10:00 - 10:30
+9:30 - 10:30
 Writing Haskell code
 
+Monday March 28
+6:45 - 7:45
+8:30 - 9:45
+Writing Haskell code

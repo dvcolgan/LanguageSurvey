@@ -267,3 +267,8 @@ flop x f = f x
     -- So then, what if we compared these regular languages like lisp, haskell, to something like perl, which has a lot of different operators, is it easier to read?  Actually, Rich Hickey said I think that one of the reasons for the square brackets in clojure was to make it easier to read.
         -- Of course, this could be because I don't know Haskell well enough and am not using the language to its fullest.  Well, I know that for sure because I am not using monads.
 --We see that the functional style encourages writing lots of small functions because it is so easy to write functions.  In C there is a lot of overhead when writing functions.
+
+
+It doesn't feel like I'm every outside of the IO monad.  Is that because of the nature of the problem, or because I don't understand what I am doing very well?
+
+I find that I am using the last implementation as a template for the next - Clojure for the Haskell, etc.  I'm guessing this may be causing some bias in the implementations?
