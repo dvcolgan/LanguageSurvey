@@ -1,0 +1,16 @@
+lots of overhead managing memory
+dealing with pointers is tricky sometimes
+you have to write your own control structures in C - all of those edge cases are abstracted away, the same thing happened a lot in VB
+
+so, i want the power of haskell with the easy object orientedness of python and not purely functional - what about scala?
+returning multiple values - it is easier in C to just use globals
+in python it is so easy to return two values, here i have to build up a complicated array
+string handling is hard so i avoid it if possible
+C is not DRY, have to declare and define functions in two different locations
+
+C is optimized for the computer to be happy, other languages are to make the programmer happy?
+
+we need complicated looping constructs just to do simple things
+one of the most repeated pieces of code through the c program is for (i=0; i<6; i++){
+
+in C it is not immediately obvious what you are doing just based on the code - you have to comment more?

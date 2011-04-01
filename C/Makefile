@@ -1,9 +1,6 @@
 CC=gcc
-DEBUG=-g
-CFLAGS=-Wall -O2
-LDFLAGS=-lSDL
-INCLUDES=-I/usr/include/SDL
-EXE_NAME=-o pong
+CFLAGS=-Wall -O2 -g
+EXE_NAME=-o farkle
 
 all:
-	$(CC) $(CFLAGS) $(INCLUDES) $(EXE_NAME) pong.c
+	$(CC) $(CFLAGS) $(INCLUDES) $(EXE_NAME) farkle.c
