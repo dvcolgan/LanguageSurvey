@@ -1,0 +1,96 @@
+Factor has a much simpler syntax than these other languages: words and literals evaluated left to right.
+Yay it has a repl, and it even has its own built in IDE
+hypertext documentation lookup
+: sq ( x -- y ) dup * ;
+colon definition, stack effect declaration, body
+good style is many small colon definitions
+many shuffle words for modifying the stack
+f is false, everything else is true
+things in [] are quotations, code that can be executed later, used for flow control
+if - takes a boolean, true quotations, and false
+10 [ "Factor rocks!" print ] times
+{ 1 2 3 } == array
+{ 1 2 3 } [ . ] each - loop over the array, pushing each element onto the stack and running the quotation
+
+forth has currying built in automatically
+has map and filter, take a sequence and applies the quotation
+
+importing vocabularies (other files of words)
+USE: io
+USING: arrays kernel math ;
+
+default vocabulary is scratchpad
+IN: new-module
+
+can deploy stand alone executables with no dependencies!
+
+factor philosophy:
+make very short words, usually one liners
+factor things a lot, hence the name
+
+scaffold system for setting up a new project
+
+Factor has a way of doing things and it tells you what that way is, which I really like - there is no guessing here.  Excellent documentation so far.
+
+it even comes with a bunch of vim files in the distribution!
+
+ctrl-h in the listener brings up documentation
+
+built in unit tests, creates a file with scaffold-tests
+
+factor doesn't have complicated presidence rules like haskell
+
+has tail-call optimization
+
+a fairly loose type system, though stack effect declarations are checked
+
+branches have to leave the stack at the same height for all branches
+
+
+http://concatenative.org/wiki/view/Concatenative%20language/Name%20code%20not%20values
+the nature of concatenative languages allows you to abstract out any repetition at all
+even abstract out things like
+[C]
+var x = 4;
+foo(x);
+bar(x);
+baz(x);
+
+[Factor]
+4 [ 4 + ] [ 2 * ] bi
+4
+[ 4 + ]
+[ 2 * ]
+bi
+
+bi, tri, cleave
+
+and 
+
+has closures 
+
+fried quotations - like lisp macro substitutions, almost exactly
+'[ _ @ ] _ is substitute a 
+
+
+
+<class> is the contructor
+
+like lisp, factor has access to the parse tree
+
+factor is like haskell in point free style all the time
+
+currying and composing are very natural in factor, and the syntax lets you be very elegant:
+5 [ + ] curry . => [ 5 + ]
+[ 2 + ] [4 * ] compose . => [ 2 + 4 * ]
+
+!!! factor has time travel debugging for pure code - HOT
+this ide is very nice, and everything is built in
+it feels like this language has everything i've ever wanted
+
+evaluation rules are very simple - left to right always, descending into words if you come to them
+
+composition is in the right order!
+Lisp (D (C (B (A x))))
+Haskell D . C . B . A
+Forth A B C D

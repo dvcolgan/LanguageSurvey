@@ -14,3 +14,55 @@ we need complicated looping constructs just to do simple things
 one of the most repeated pieces of code through the c program is for (i=0; i<6; i++){
 
 in C it is not immediately obvious what you are doing just based on the code - you have to comment more?
+
+C's curly braces really do add up to a lot of wasted screen space
+the problem with using meaningful whitespace is that the code is fragile - if you paste it around or lose the whitespace, your code breaks
+clojure is the only lanugage that has the compactness of python with the durability of C, syntax-wise
+
+it does appear that the languages that are not object-oriented have less code to do the dice - there is a function to roll the dice and a function to score them, but there is much less abstraction
+
+also learned from the project the difference between strait and straight
+a strait is a path between two bodies of water, a straight is not curved, so the dice score is a straight
+
+
+definitely put in presentation:
+can you spot the bug?
+
+void sort_by_frequency(int* dice)
+{
+    int i;
+    /* find the counts of each die, referencing a global so we can use them
+     * in the comparison function */
+    for (i=1; i<=6; i++){
+        die_counts[i] = 0;
+    }
+    for (i=0; i<6; i++){
+        die_counts[dice[i]]++;
+    }
+
+    qsort(dice, 6, sizeof(int), compare_dice_freqs);
+}
+die_counts[dice[i]]++; if dice[i] == -1 it will overwrite the value of another variable! HA
+I remember this bug from COS120 and they are very hard to track down
+
+
+make a joke about for(c=0; c<n; c++) <- HA c++
+
+array literals are very nice to have as arguments to functions when testing things
+
+C leaky abstraction - it was counting {1,-1,-1,-1,-1,-1} as a five of a kind; I used the -1s because array resizing is more complicated in C
+was also sorting by frequency including -1s in the counts
+
+C ending brackets waste vertical whitespace
+        }
+    }
+}
+lisp just puts them all together - why don't we do this:
+
+for(int i=0; i<6; i++){
+    for(int j=0; j<6; j++){
+        for(int k=0; k<6; k++){
+            for(int c=0; c<6; c++){
+                arr[i][j][k][c] = i*j*k*c;}}}}
+
+haskell and python use significant whitespace
