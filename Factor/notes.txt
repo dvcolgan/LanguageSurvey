@@ -94,3 +94,181 @@ composition is in the right order!
 Lisp (D (C (B (A x))))
 Haskell D . C . B . A
 Forth A B C D
+
+ERROR: exception-name val val2
+
+
+google tech talk by Slava Pestov
+http://www.youtube.com/watch?v=f_0QlhYlS8g
+
+a lot of factor is written in factor because it is so powerful - the object system is just 3000 lines of factor code
+
+functional programming and object oriented programming combined - if you implement the interface, you can use generic functional combinators
+
+does away with all iteration - use combinators for all control flow
+supports unicode very well
+
+if your data type conforms to the protocol, you get all the methods of that protocol
+
+multiple return values are straightforward - just push more values onto the stack
+
+you can use factor source files as config files and then just read it in
+
+built in profiler!
+
+i should use factor for my presentation
+
+all syntax are just parsing words, including [, ', "
+
+factor is written in factor - you have to have an existing factor to compile it, similar to how gcc is written in c
+the first implementation was written in java
+
+slava pestov is a friggin genious i must say
+write your own grammars and parsers easily EBNF
+
+it can expand macros at run time if needed, so you can pass around macros as first class functions
+
+implements cross-platform file system io
+
+built-in http server
+built-in web framework
+xml
+
+very small binaries created with the deploy tool
+
+12000 lines of C
+9000 lines of Factor in the core
+basis library 80,000 lines of Factor
+
+very stable crash-wise
+
+wanting to write a language that lets you write a lot of code quickly and doesn't get in your way
+meant to be a general-purpose language
+
+very nice for writing parsers
+almost as fast as C in some things
+
+learn the code browsing features
+
+
+Factor Paper
+most code is written in point-free style
+the stack is how you pass parameters
+a single token is a function call, hence words - no special symbols are needed - you can use  ()*&)@)({#*)( in identifiers
+words are like functions that are passed a stack and return a stack
+higher order functions are combinators and anonymous functions are quotations
+all control flow happens with combinators - if is a combinator and not special
+function composition is left to right and requires no special syntax:
+a b c VS c . b . a VS c(b(a(x)))
+
+three common patterns of combinators:
+cleave - apply an array of quotations to the same stack value
+5 [ 1 + ] [ 2 - ] cleave -> 6 3
+
+spread - apply an array of quotations to the same number of corresponding stack values
+5 4 [ 1 + ] [ 2 - ] spread -> 6 2
+
+napply - apply one quotation to integer number of stack elements
+3 4 5 [ 1 + ] 3 napply -> 4 5 6
+
+2 and 3 special cases of the three are bi and tri for cleave, bi* and tri* for spread, and bi@ and tri@ for napply
+
+5 '[ _ + ] === [ 5 + ]
+
+CLOS-like OO system wherein methods are separate from objects - you make generic methods, one for each object they implement
+
+
+
+
+
+
+I feel like I am more inclined to use fewer side effects now
+
+I wonder if factor suffers from the same things as haskell - it just isn't that readable.  You have to train yourself to read it.  A language like Ruby prides itself on its readability to the mere mortal.
+
+Are these languages worth the cost of learning them?  I could learn Factor if I spent a ton of time learning concatenative languages as a whole and such, but I am first a procedural programmer, so is the mind reordering worth it?
+
+I feel like Factor is like learning a completely new paradigm.  It is not like learning Ruby after learning Python.  The ideas of mainstream languages are all mostly the same.  Clojure is different, Haskell is very different, and Factor is very very different.  But it is worthwhile to see the possibilities that exist.
+
+I think Factor and Haskell both could be really useful if you got to know them really well.
+
+Another research project would have been to just stick to one or two languages and really learn them well.
+
+Factor is sort of its own little world.  It has its own environment and libraries and website, and basically nothing exists outside of that.
+
+things are constantly using up the values on the stack, so it feels like you are always having to  pin up stuff on the board to keep it from falling off
+
+I learned how to spell the word straight
+
+factor programs are so short that recommends line length of 64 instead of 80
+
+factoring in progress:
+
+: (score-6) ( seq score -- seq score ) over 
+    all-eq? [ 3000 ] [ 0 ] if + [ 6 tail ] dip ;
+
+: (score-42) ( seq score -- seq score ) over
+    [ 4 head all-eq? ] [ 4 tail all-eq? ] bi and
+    [ 1500 ] [ 0 ] if + [ 6 tail ] dip ;
+
+: (score-33) ( seq score -- seq score ) over
+    [ 3 head all-eq? ] [ 3 tail all-eq? ] bi and
+    [ 2500 ] [ 0 ] if + [ 6 tail ] dip ;
+
+: (score-222) ( seq score -- seq score ) over
+    [ 2 head all-eq? ] [ 2 4 rot subseq all-eq? ] [ 4 tail all-eq? ] tri and and
+    [ 1500 ] [ 0 ] if + [ 6 tail ] dip ;
+
+: (score-straight) ( seq score -- seq score ) over
+    { 1 2 3 4 5 6 } = [ 1500 ] [ 0 ] if + [ 6 tail ] dip ;
+
+: (score-5) ( seq score -- seq score ) over
+    all-eq? [ 2000 ] [ 0 ] if + [ 5 tail ] dip ;
+
+: (score-4) ( seq score -- seq score ) over
+    all-eq? [ 1000 ] [ 0 ] if + [ 4 tail ] dip ;
+
+: (3s-score) ( seq -- score ) first dup 1 =
+    [ drop 300 ] [ 100 * ] if ; 
+
+: (score-3) ( seq score -- seq score ) over
+    all-eq? [ over (3s-score) ] [ 0 ] if + [ 3 tail ] dip ;
+
+: (score-1s5s) ( seq score -- seq score ) swap
+    [ [ [ 1 = not ] [ 5 = not ] bi and ] filter ]
+    [ [ 1 = ] filter length 100 * ] 
+    [ [ 5 = ] filter length 50 * ] tri + swap [ + ] dip swap ;
+    
+
+
+I think that Python is in many ways a good balance between understandability and power.
+I find myself trying to code golf to get as few characters as possible in these weird languages
+
+When you _can_ add to the language, you will often have to learn how to use other peoples' language extensions.  Is this a good thing?
+
+[ score-dice nip 1000 > ] [ length 6 = ] bi and this line is confusing - there are no visual cues as to what data is being passed around, perhaps this gets easier after reading factor code for a while
+
+point-free style can be hairy
+but why is haskell's point-free style easier to understand?  is it because it is not backwards?
+
+in normal languages you have a call stack that you pass named variables onto as parameters, factor has a global stack that you can manipulate at will
+
+I think my python program would be a lot better if i rewrote it now
+
+yeah, i think factor is too terse for its own good
+could you guess what this does
+readln string>array score-dice
+0 > swap length 0 = and
+[ nip ] [ drop query-set-aside ] if ;
+
+I don't want imperative programming, I want a language that tells you what it is doing without it being verbose.  I want the  language that requires me to think the least and keep the least in my head, because programming is hard enough as it is.
+
+Go through an execution of one of the functions.
+Maybe I'm just not understanding how to write idiomatic code though.  That's the thing with some of these weird languages is that they promise awesome code if you understand how to use them.  So maybe I don't understand how to use them just yet.
+
+These languages let you do everything, but perhaps mainstream languages are optimized for the common case?  I don't really want to write a whole new language when I write code?
+
+fewer lines of factor code, but more mental gymnastics required?
+
+
+Learning a new language is easy, learning a new paradigm is hard.  So to get real work done, choose the language with the most power in a paradigm that you know!

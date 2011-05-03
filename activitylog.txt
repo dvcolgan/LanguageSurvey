@@ -570,3 +570,100 @@ Monday March 28
 6:45 - 7:45
 8:30 - 9:45
 Writing Haskell code
+
+10.25 hours 
+
+Week 8
+Monday March 28
+2:00 - 3:00
+Meeting with Nurkkala, Haskell is close enough
+
+Wednesday March 30
+2:30 - 3:00
+4:45 - 6:30
+8:00 - 9:00
+Writing C code
+
+Friday April 1
+4:30 - 6:30
+Writing C code
+
+Saturday April 2
+8:15 - 10:45
+Writing C code
+
+Monday April 4
+8:00 - 9:00
+Writing C code
+
+Week 9
+Monday April 4
+2:00 - 2:45
+Meeting with Nurkkala
+
+Wednesday April 6
+8:00 - 9:45
+1:45 - 2:15
+8:30 - 10:30
+Researching Factor and following the tutorial.
+
+Thursday April 7
+3:30 - 4:15
+9:15 - 9:50
+Researching Factor
+
+Friday April 8
+8:30 - 9:45
+Watching Factor presentation
+
+Week 10
+
+Monday April 11
+7:40 - 8:06
+
+Tuesday April 12
+4:30 - 5:15
+5:30 - 6:15
+
+Wednesday April 13
+11:45 - 12:30
+
+Thursday April 14
+7:45 - 9:45
+
+Saturday April 16
+3:45 - 5:30
+
+Week 11
+
+Monday April 18
+8:55 - 9:10
+
+12:30 - 12:45
+2:00 - 3:30
+
+Monday May 2
+8:30 - 11:00
+Working on Factor
+
+12:30 - 2:00
+All tests pass for the scoring function!
+
+3:15  - 4:15
+Generic words and polymorphism oh my!
+
+4:30 - 6:00
+Moar funkchuns.
+
+2.5 + 1.5 + 1 + 1.5 = 6.5
+
+9:00 - 10:30
+Finished array contains.
+
+Tuesday May 3
+8:00 - 9:30
+
+Week 12
+
+2:15 - 
+

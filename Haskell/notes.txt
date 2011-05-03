@@ -272,3 +272,16 @@ flop x f = f x
 It doesn't feel like I'm every outside of the IO monad.  Is that because of the nature of the problem, or because I don't understand what I am doing very well?
 
 I find that I am using the last implementation as a template for the next - Clojure for the Haskell, etc.  I'm guessing this may be causing some bias in the implementations?
+
+
+other metrics for comparison:
+total tokens
+how many forms evaluated
+run a profiler, how many times things were evaluated
+computational density
+
+what does power mean?
+error-freeness?
+solve in fewer lines?
+speed of programming?
+
