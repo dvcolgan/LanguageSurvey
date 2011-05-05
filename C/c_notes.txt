@@ -1,7 +1,0 @@
-# Introduction #
-
-C is small and almost nothing is built in to the language.  The ANSI
-standard does not specify any IO or dynamic memory ability, these are
-all done through libraries.
-
-

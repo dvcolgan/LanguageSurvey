@@ -1,0 +1,97 @@
+10000 games with 4 greedy AIs set to 300, 500, 800, and 1000 respectively:
+
+C
+---------
+
+Run 1:
+
+Player 0 had 4609 wins.
+Player 1 had 2311 wins.
+Player 2 had 1757 wins.
+Player 3 had 1323 wins.
+
+real	0m13.453s
+user	0m13.437s
+sys	0m0.000s
+
+
+Run 2:
+
+Player 0 had 4631 wins.
+Player 1 had 2307 wins.
+Player 2 had 1714 wins.
+Player 3 had 1348 wins.
+
+real	0m13.584s
+user	0m13.549s
+sys	0m0.008s
+
+
+Run 3:
+
+Player 0 had 4540 wins.
+Player 1 had 2399 wins.
+Player 2 had 1726 wins.
+Player 3 had 1335 wins.
+
+real	0m13.489s
+user	0m13.421s
+sys	0m0.044s
+
+
+
+Python
+-----------
+
+Run 1:
+Player 0 had 4759 wins.
+Player 1 had 2280 wins.
+Player 2 had 1663 wins.
+Player 3 had 1298 wins.
+
+real	10m17.685s
+user	10m10.462s
+sys	0m0.304s
+
+
+Run 2:
+Player 0 had 4704 wins.
+Player 1 had 2256 wins.
+Player 2 had 1750 wins.
+Player 3 had 1290 wins.
+
+real	10m8.731s
+user	10m3.478s
+sys	0m0.312s
+
+
+Haskell
+-------------
+
+Run 1:
+real	3m15.858s
+user	3m14.852s
+sys	0m0.424s
+
+Run 2:
+real	3m15.936s
+user	3m14.308s
+sys	0m0.360s
+
+
+Clojure
+------------
+
+Run 1:
+real    3m52.225s
+user    3m53.167s
+sys 0m1.552s
+
+
+Factor
+-------------
+
+Run 1:
+Running time : 5 min and 19.454492414 seconds
+
+

@@ -1,4 +1,8 @@
-Geek 1
+David Colgan
+Research Log
+
+SEMESTER 1
+Week 1
 
 Got the Git repository set up
 Did some exploring in Emacs, got it installed, installed AucTex
@@ -538,8 +542,7 @@ I need to use a monad transformer combining the state monad and the io monad to 
 
 lightsys is looking for a summer person
 
-
-10.25 hours in the hole
+6.5 hours
 
 Week 7
 Monday March 14
@@ -596,6 +599,8 @@ Monday April 4
 8:00 - 9:00
 Writing C code
 
+9.75 hours
+
 Week 9
 Monday April 4
 2:00 - 2:45
@@ -609,17 +614,19 @@ Researching Factor and following the tutorial.
 
 Thursday April 7
 3:30 - 4:15
-9:15 - 9:50
+9:15 - 9:45
 Researching Factor
 
 Friday April 8
 8:30 - 9:45
 Watching Factor presentation
 
+7.5 hours
+
 Week 10
 
 Monday April 11
-7:40 - 8:06
+7:30 - 8:00
 
 Tuesday April 12
 4:30 - 5:15
@@ -634,13 +641,19 @@ Thursday April 14
 Saturday April 16
 3:45 - 5:30
 
+6.5 hours
+
 Week 11
 
 Monday April 18
-8:55 - 9:10
+9:00 - 9:15
 
 12:30 - 12:45
 2:00 - 3:30
+
+2 hours
+
+Week 12
 
 Monday May 2
 8:30 - 11:00
@@ -655,15 +668,52 @@ Generic words and polymorphism oh my!
 4:30 - 6:00
 Moar funkchuns.
 
-2.5 + 1.5 + 1 + 1.5 = 6.5
-
 9:00 - 10:30
 Finished array contains.
 
 Tuesday May 3
 8:00 - 9:30
 
-Week 12
+9.5 hours
 
-2:15 - 
+Week 13
+
+Tuesday May 3
+2:15 - 5:15
+Finished Factor!
+
+Wednesday May 4
+7:15 - 9:30
+Finished C and organizing things, starting analysis.
+9:15 - 10:00
+
+Thursday May 5
+7:00 - 8:45
+9:45 - 11:15
+
+9.25 hours
+
+Week 14
+
+
+
+
+91 hours
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

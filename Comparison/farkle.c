@@ -2,11 +2,45 @@
 #include <stdlib.h>
 #include <time.h>
 #include <assert.h>
-#include "farkle.h"
 
-int num_players = 2;
+#define HUMAN_PLAYER 0
+#define GREEDY_AI_PLAYER 1
+
+#define E -1 //for empty
+
+typedef struct {
+    int type;
+    int turn_score;
+    int id;
+    int threshold;
+    int win_count;
+} player;
+
+player* create_player(int type, int id, int threshold);
+void take_turn(player* p);
+void query_human_set_aside(player* p, int* remaining, int* set_aside, int* proposed_set_aside);
+int query_human_stop(player* p, int* remaining, int* set_aside);
+
+void query_greedy_player_set_aside(player* p, int* remaining, int* set_aside, int* proposed_set_aside);
+int query_greedy_player_stop(player* p, int* remaining, int* set_aside);
+
+int have_farkle(int* dice);
+void roll_dice(int* dice);
+int score_dice(int* dice);
+void drop_n_dice(int* dice, int count);
+void copy_dice(int* dice, int* copy);
+int compare_dice_freqs(const void *a, const void *b);
+void sort_by_frequency(int* dice);
+int dice_contains(int* container, int* containee);
+int remove_die(int* dice, int die);
+int num_active_dice(int* dice);
+void print_dice(char* msg, int* dice);
+
+void run_tests();
+
+int num_players = 4;
 int cur_player = 0;
-int total_scores[2] = {0, 0};
+int total_scores[4] = {0, 0, 0, 0};
 int die_counts[7] = {E, 0, 0, 0, 0, 0, 0};
 int have_leftovers = 0;
 
@@ -14,25 +48,35 @@ int main()
 {
     srand(time(0));
     //run_tests();
-    player* players[2];
-    int i;
+    player* players[4];
+    int i, c;
 
-    players[0] = create_player(GREEDY_AI_PLAYER, 0, 800);
+    players[0] = create_player(GREEDY_AI_PLAYER, 0, 300);
     players[1] = create_player(GREEDY_AI_PLAYER, 1, 500);
+    players[2] = create_player(GREEDY_AI_PLAYER, 2, 800);
+    players[3] = create_player(GREEDY_AI_PLAYER, 3, 1000);
 
-    while(1){
-        take_turn(players[cur_player]);
-        if(total_scores[players[cur_player]->id] >= 10000){
-            break;
+    for (i=0; i<10000; i++){
+        for (c=0; c<num_players; c++){
+            total_scores[c] = 0;
         }
-        cur_player += 1;
-        if(cur_player == num_players){
-            cur_player = 0;
+        while(1){
+            take_turn(players[cur_player]);
+            if(total_scores[players[cur_player]->id] >= 10000){
+                break;
+            }
+            cur_player += 1;
+            if(cur_player == num_players){
+                cur_player = 0;
+            }
         }
+        //printf("The winner is player %d!\n", cur_player);
+        if (i%1000==0) printf("Done with game %d\n", i);
+        players[cur_player]->win_count++;
     }
-    printf("The winner is player %d!\n", cur_player);
 
     for(i=0; i<num_players; i++){
+        printf("Player %d had %d wins.\n", players[i]->id, players[i]->win_count);
         free(players[i]);
     }
 
@@ -52,7 +96,7 @@ void take_turn(player* p)
         remaining[i] = 0;
         set_aside[i] = E;
     }
-    printf("\n\nPlayer %d's turn\n\n", p->id);
+    //printf("\n\nPlayer %d's turn\n\n", p->id);
     while(1){
         roll_dice(remaining);
 
@@ -116,12 +160,12 @@ retry:
 
     for (i=0; i<6; i++) proposed_set_aside[i] = E;
     
-    printf("Scores:\n");
+    //printf("Scores:\n");
     for(i=0; i<num_players; i++){
-        printf("Player %d: %d\n", i, total_scores[i]);
+        //printf("Player %d: %d\n", i, total_scores[i]);
     }
 
-    printf("Turn score: %d\n", p->turn_score);
+    //printf("Turn score: %d\n", p->turn_score);
 
     print_dice("\nSet Aside: ", set_aside);
 
@@ -133,7 +177,7 @@ retry:
     for (i=0; i<num_active_dice(remaining); i++){
         choice = getc(stdin);
         if(!(choice >= 49 && choice <= 54)){
-            printf("That set aside is not valid! not real number\n");
+            //printf("That set aside is not valid! not real number\n");
             goto retry;
         }
         proposed_set_aside[i] = choice-48;
@@ -142,25 +186,25 @@ retry:
             break;
         }
         if(choice != ' ') {
-            printf("That set aside is not valid! not a space\n");
-            printf("%d", choice);
+            //printf("That set aside is not valid! not a space\n");
+            //printf("%d", choice);
             goto retry;
         }
     }
     if(num_active_dice(proposed_set_aside) == 0 ||
         num_active_dice(proposed_set_aside) > num_active_dice(remaining)){
-        printf("That set aside is not valid! too many dice or zero\n");
+        //printf("That set aside is not valid! too many dice or zero\n");
         goto retry;
     }
 
     if(!dice_contains(remaining, proposed_set_aside)){
-        printf("That set aside is not valid! dice not in set aside\n");
+        //printf("That set aside is not valid! dice not in set aside\n");
         goto retry;
     }
 
     int score = score_dice(proposed_set_aside);
     if(have_leftovers || score == 0){
-        printf("That set aside is not valid! has leftovers or score is 0\n");
+        //printf("That set aside is not valid! has leftovers or score is 0\n");
         goto retry;
     }
 }
@@ -168,7 +212,7 @@ retry:
 int query_human_stop(player* p, int* remaining, int* set_aside)
 {
     char choice;
-    printf("You have %d points.  Hit enter to continue rolling, or type 's' to end your turn.\n", p->turn_score);
+    //printf("You have %d points.  Hit enter to continue rolling, or type 's' to end your turn.\n", p->turn_score);
 
     choice = getc(stdin);
     if (choice == '\n'){
@@ -331,9 +375,7 @@ int compare_dice_freqs(const void *a, const void *b)
 {
     int die1 = *(const int *)a;
     int die2 = *(const int *)b;
-    /* if we hit an E, the other is larger,
-     * if there is a tie, sort by dot number,
-     * otherwise sort of die count */
+    /* if we hit an E, the other is larger, if there is a tie, sort by dot number, otherwise sort of die count */
     if(die1 == E) return 1;
     else if(die2 == E) return E;
     else if(die_counts[die1] == die_counts[die2]) return die2 - die1;
@@ -344,8 +386,7 @@ int compare_dice_freqs(const void *a, const void *b)
 void sort_by_frequency(int* dice)
 {
     int i;
-    /* find the counts of each die, referencing a global so we can use them
-     * in the comparison function */
+    /* find the counts of each die, referencing a global so we can use them in the comparison function */
     for (i=1; i<=6; i++){
         die_counts[i] = 0;
     }
@@ -409,14 +450,14 @@ int num_active_dice(int* dice)
 
 void print_dice(char* msg, int* dice)
 {
-    printf("%s", msg);
+    //printf("%s", msg);
     int i;
     for(i=0; i<6; i++){
         if(dice[i] != E){ /* don't print out the die if it is inactive */
-            printf("%d ", dice[i]);
+            //printf("%d ", dice[i]);
         }
     }
-    printf("\n");
+    //printf("\n");
     
 }
 
