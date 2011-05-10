@@ -1,0 +1,41 @@
+returning multiple values - it is easier in C to just use globals
+string handling is hard so i avoid it if possible
+C is not DRY, have to declare and define functions in two different locations
+C is optimized for the computer to be happy, other languages are to make the programmer happy?
+lots of overhead managing memory
+dealing with pointers is tricky sometimes
+you have to write your own control structures in C - all of those edge cases are abstracted away, the same thing happened a lot in VB
+
+one of the most repeated pieces of code through the c program is for (i=0; i<6; i++){
+make a joke about for(c=0; c<n; c++) <- HA c++
+
+in C it is not immediately obvious what you are doing just based on the code - a lot of looping - not very high level at all
+curly braces waste spaces, though significant whitespace makes code brittle if you are copying and pasting around, clojure is the only one that doesn't waste space but is not brittle, though editing parenthesis is hard outside of emacs sometimes
+
+for(int i=0; i<6; i++){
+    for(int j=0; j<6; j++){
+        for(int k=0; k<6; k++){
+            for(int c=0; c<6; c++){
+                arr[i][j][k][c] = i*j*k*c;}}}}
+                eh?  most C programmers i think would probably puke over this, but lispers wouldn't
+
+
+can you spot the bug?
+
+void sort_by_frequency(int* dice)
+{
+    int i;
+    /* find the counts of each die, referencing a global so we can use them
+     * in the comparison function */
+    for (i=1; i<=6; i++){
+        die_counts[i] = 0;
+    }
+    for (i=0; i<6; i++){
+        die_counts[dice[i]]++;
+    }
+
+    qsort(dice, 6, sizeof(int), compare_dice_freqs);
+}
+die_counts[dice[i]]++; if dice[i] == -1 it will overwrite the value of another variable! HA
+I remember this bug from COS120 and they are very hard to track down
+This sort of bug is not possible in the other languages

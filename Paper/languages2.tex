@@ -324,7 +324,7 @@ you must understand almost all of these concepts well.  Otherwise, the
 language seems cumbersome and unnecessarily complex.
 
 The syntax of the language takes a while to get used to.  Precedence issues came
-up fairly often, and 
+up fairly often as I was learning it, though I got used to them after a while.
 
 One of the greatest challenges is managing side effects.  Most languages are
 impure by default, but Haskell is pure by default, and in order to do IO, you
@@ -663,6 +663,36 @@ like Python.  Since a language like Clojure can automatically parallelize my
 programs, if I ever need multicore support, I will be much more inclined to
 switch languages for that project.
 
+If nothing else, I have learned a lot about different programming languages by
+doing this project.  It is an exercise that I would recommend to an serious
+computer scientist.  The more languages that I am exposed to, the more concepts
+that I see being repeated.
+
+I have also come to see that learning a new language in a paradigm I already
+know is easy.  Once you know C++ you can then learn Java and C and PHP easily.
+But it is difficult to learn a new language in a paradigm you do not have
+experience with.  \textsc{Lisp}-style languages and Haskell have taken me the
+most time to learn of any other language simply because of the number of unique
+features that they have and the different way of doing almost everything.  Some
+of these concepts, like Haskell's monads and \textsc{Lisp's} macros seem to
+simply take time to absorb.  I spent 10 weeks on Haskell and I still don't
+understand everything there is to know about it.
+
+Therefore, if I was going to choose a language for my next project, it would
+probably be Clojure.  Of the languages I surveyed, it has the most expressive
+power for the least amount negative.  I was very impressed by Clojure's low
+total token count, and it is concise, but not so concise that it is unreadable
+(like Factor).  It also is not so idealistic that it is hard to use (like
+Haskell).
+
+However, if a team of programmers are going to start a new project and they
+don't know the functional paradigm, I would be reluctant to recommend Clojure.
+Because learning a new paradigm is hard, I would recommend using the most
+powerful language in the paradigms you know.  For this, I would recommend
+Python.  It is still procedural/object oriented, but it is much more powerful
+than C in terms of expressiveness, and makes many kinds of bugs harder to make,
+like off-by-one errors in loops.
+
 \begin{table}[h]
     \caption{Summary of Language Features}
     \begin{tabular}{|p{0.7in}|p{0.7in}|p{0.7in}|p{0.7in}|p{0.7in}|p{0.7in}|}
@@ -714,7 +744,7 @@ nowhere near fluent.  As I said above, learning a new language is easy, but
 learning a new paradigm is hard.
 
 \bibliographystyle{plain}
-\bibliography{languages}
+\bibliography{languages2}
 
 \appendix
 \section{Farkle Rules}

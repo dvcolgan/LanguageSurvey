@@ -1,5 +1,11 @@
 10000 games with 4 greedy AIs set to 300, 500, 800, and 1000 respectively:
 
+C: 0:13
+Python: 10:10
+Clojure: 3:50
+Haskell: 3:15
+Factor: 5:30
+
 C
 ---------
 
@@ -64,6 +70,17 @@ real	10m8.731s
 user	10m3.478s
 sys	0m0.312s
 
+Run 3:
+Player 0 had 4658 wins.
+Player 1 had 2245 wins.
+Player 2 had 1730 wins.
+Player 3 had 1367 wins.
+
+real    11m57.259s
+user    11m18.258s
+sys 0m1.408s
+
+
 
 Haskell
 -------------
@@ -87,11 +104,36 @@ real    3m52.225s
 user    3m53.167s
 sys 0m1.552s
 
+Run 2:
+real	4m1.276s
+user	3m56.627s
+sys	0m1.328s
+
+Run 3:
+real    3m35.924s
+user    3m43.334s
+sys 0m1.268s
+
+
 
 Factor
 -------------
 
 Run 1:
-Running time : 5 min and 19.454492414 seconds
+Running time: 5 min and 19 seconds
 
+Run 2:
+Concatenative Farkle in Factor!
+Greedy Player 300 had 656 wins.
+Greedy Player 500 had 1670 wins.
+Greedy Player 800 had 3558 wins.
+Greedy Player 1000 had 4116 wins.
+Running time: 338.783722172 seconds
 
+Run 3:
+Concatenative Farkle in Factor!
+Greedy Player 300 had 636 wins.
+Greedy Player 500 had 1737 wins.
+Greedy Player 800 had 3614 wins.
+Greedy Player 1000 had 4013 wins.
+Running time: 335.254420408 seconds

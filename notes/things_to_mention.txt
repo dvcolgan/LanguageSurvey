@@ -1,0 +1,120 @@
+Learning Haskell
+many tutorials on the internet
+learn you a haskell
+stackoverflow
+
+# advantages of haskell
+has referential transparency
+shorter programs have fewer bugs and are easier to maintain because there is less code
+laziness lets you do fun things, performance wins sometimes
+currying is very powerful, has a very concise syntax for it
+allows for point-free style
+the compiler can catch a lot more errors at compile time because of the type system
+
+haskell has more abstractions than any other language i've ever seen
+the type system is an abstraction, allowing you to attach meaning to bytes
+strong, static, inferred catches bugs at compile time
+typeclasses give most of the benefit of dynamic typing/duck typing but is more safe
+haskellers say that if you can compile the code, it is likely to be correct (more than other languages at least)
+polymorphic types
+(!!!) the purity of functions is enforced by the type system in haskell, so what in other languages is simply a good idea, don't mix pure and impure code and have as little impure code as possible, it is enforced in haskell
+(!!!) in haskell, variables are just an expression with a name; they cannot be changed once bound
+purity makes code easier to understand because there is no risk of unintentional side effects
+every function is self-contained
+impure code must be simplified and isolated, this creates fewer locations for errors
+
+# performance
+much faster to startup
+
+# learning
+absolutely no variable updates, everything happens through recursion, this can be limiting
+while clojure is pure by default but can be made to not be, haskell is pure no matter what, this prevents the urge to cheat, but it can also be really hard to get around at times
+type system is complicated and hard at first to know how to use it
+concepts of functors and monoids and monads, i still don't fully understand them
+have to have a complicated thing for random numbers, whereas in clojure or python you'd just have an impure function - is purity theatre worth it?
+monads are sort of the thing everyone is afraid of when learning haskell, and they are very abstract and not concrete at all, and there are all manner of tutorials on the web, and i've read a lot of them.  I've felt like i understood them at one point, but i think i lost it.
+
+must learn to corral side effects - you can have side effects in the IO monad,  but you still can't have destructive variable updates, and good style says to keep side effects limited to as small amount of code as possible - in some ways this is one of the big ideas from haskell that can be transferred to other languages - minimize side effects as much as possible.  maybe you don't need them in your day to day language, but this experience was good
+
+learning it was much easier the second time - i made a further push into this time than i did last time, but there is still aspects i don't understand - monads are abstractions that are general cases of function application, arrows are a general case of monads?  AH
+
+for a complicated language like haskell, reading different tutorials at different times and repeatedly helps a lot.  Forgetting and relearning a difficult topic makes it seem easier the second time
+
+haskell has given me more OMG moments, but also more WTF moments as well
+
+in order to write idiomatic haskell code, you have to know EVERYTHING, and until then, it appears that you will write bad code
+
+i felt like i should be using monads and such, but i didn't see where to use them.  i felt the same way with clojures macros
+
+(!!!)in haskell all functions take one parameter and return one value
+
+typeclasses allow you to call different code for different values
+(!!!) the compiler calls the implementation needed for whatever type we want based on the context
+class  Eq a  where
+    (==), (/=) :: a -> a -> Bool
+
+    x /= y     =  not (x == y)
+    x == y     =  not (x /= y)
+
+
+
+# difficult concepts in learning:
+    precedence issues are fun, I think I get them now
+point-free style removes all mention of points (values), and consists entirely of composing functions
+any time you do io the value must be tagged with the IO type, this isolates impure code
+
+# disadvantages of haskell
+i realized that haskell at least in the way i wrote it is hard to parse because everything is a function that i string together and it all looks the same - syntax is all uniform.  having different syntax helps readability
+
+
+
+
+
+When writing haskell and other werid language code, i always tried to make the code as short as possible, because i sort of assumed that it was possible to write it better
+
+A monad is "a strategy for combining computations into more complex computations." all about monads
+it is like 
+def do_some_chaining(a):
+    b = f1(a)
+    c = f2(b)
+    d = f3(c)
+    return d
+
+do_some_chaining a = return a >>= f1 >>= f2 >>= f3
+
+def do_some_chaining_with_failing(a):
+    b = f1(a)
+    if b == None:
+        return None
+    else:
+        c = f2(b)
+        if c == None:
+            return None
+        else:
+            d = f3(c)
+            return d
+
+do_some_chaining_with_failing a = return a >>= f1 >>= f2 >>= f3
+
+def do_some_chaining_with_state(a):
+    state1 = Object()
+    value1 = 0
+    (state2, value2) = f1((state1, value1))
+    (state3, value3) = f2((state2, value2))
+    (state4, value4) = f3((state3, value3))
+    return value4
+
+do_some_chaining_with_state a = return a >>= f1 >>= f2 >>= f3
+
+
+building on that monad transformers - having two different monads (state and also failure? AH)
+
+arrows - an abstraction of monads?  how much farther can you go?  I feel like Haskell could go quite a bit further actually
+
+those things can be more than just taking the value and passing it to the next function - the maybe monad describes a strategy for combining computations that can fail
+
+these languages are really trying to remove ALL duplication in code - now we don't have to have syntax for composing functions
+
+After all of this I sort of just want to use my happy easy languages!
+
+if it takes a phd to code well in haskell, is there any hope for getting it into the mainstream?  would it work if we taught haskell as the first language in cos120?  maybe?

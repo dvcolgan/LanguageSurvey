@@ -1,0 +1,34 @@
+very simple syntax, you can learn it shortly: made up of words, evaluate them left to right, if a literal, push on the stack, otherwise go into definition
+stack effect declarations
+encourages many small words
+
+comes with its own ide, has a repl, documentation system
+
+has currying automatically because it gets parameters from the stack
+
+has all sorts of stuff - built in unit testing, profiler, debugger, time traveling debugger (can step backwards) deploys stand alone binaries that are very small, extremely simple, has macros sort of like lisp, great unicode support
+
+your identifiers can be ANYTHING, (@#*Y is perfectly valid
+
+at first i thought this was the perfect language
+is basically haskell point-free style all the time, or at least by default
+all control flow happens with combinators - if is a combinator and not special
+CLOS-like OO system wherein methods are separate from objects - you make generic methods, one for each object they implement
+
+Factor is sort of its own little world.  It has its own environment and libraries and website, and basically nothing exists outside of that.
+things are constantly using up the values on the stack, so it feels like you are always having to  pin up stuff on the board to keep it from falling off
+
+When you _can_ add to the language, you will often have to learn how to use other peoples' language extensions.  Is this a good thing?
+
+you can pass things through bi and tri calls because they run one after the other
+
+[ score-dice nip 1000 > ] [ length 6 = ] bi and this line is confusing - there are no visual cues as to what data is being passed around, perhaps this gets easier after reading factor code for a while
+
+I don't want imperative programming, I want a language that tells you what it is doing without it being verbose.  I want the  language that requires me to think the least and keep the least in my head, because programming is hard enough as it is.
+
+fewer lines of factor code, but more mental gymnastics required?
+
+It sort of feels like mainstream languages are optimized syntactically for the common case, at least for some cases, while the more idealistic languages are trying to be idealistic, giving things like 
+object '[ _ + ] change-property
+vs
+object.property += 1

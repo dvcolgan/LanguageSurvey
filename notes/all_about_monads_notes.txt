@@ -1,0 +1,136 @@
+A monad is "a strategy for combining computations into more complex computations."
+"The monad determines how combined computations form a new computation and frees the programmer from having to code the combination manually each time it is required."
+The Maybe type represents a computation that may fail, and can be used to combine computations that may fail such that if any one fails, they all fail
+Monads can be used for many different kinds of computations
+Three useful properties of monads:
+    -make code more modular by separating the the combination method from the actual computations
+    -make code more flexible by reducing the amount of duplication of code
+    -isolate dangerous side-effect style code from the rest of the pure code
+
+Type constructors:
+data Maybe a = Nothing | Just a
+Maybe is the type constructor and Nothing and Just are the data constructors
+(!!) Make a data value using the value constructor and make a type by using the type constructor
+Maybe Int is a type, Just Int is a value
+the type 'm a' is a container of some type to hold a container of another type
+
+A monad is
+a type constructor m
+a function a -> m a (called return) that takes a value a and wraps it in the monad type
+a function (m a -> (a -> m b) -> m b) called bind or >>=
+
+Maybe acts like a monad because you can use >>= to chain together computations that can fail and write the logic that combines them in one place
+
+Lists can act like monads to represent computations that can return any number of values
+The bind function applies all of the arguments to the next function
+
+To define a monad, instance the monad type class:
+
+instance Monad Maybe where
+    Nothing >>= f = Nothing
+    (Just x) >>= f = f x
+
+any type that is a member of the Monad class can use do notation
+
+all monads must satisfy the monad laws which the compiler does not enforce
+1. (return x) >>= f == f x
+2. m >>= return == m
+3. (m >>= f) >>= g == m >>= (\x -> f x >>= g)
+
+some monads are one-way in that they only allow values in, but do not allow values out, like the IO monad, while Maybe and List do allow values out
+
+
+
+
+
+
+
+
+
+
+
+learning monads take three passes:
+1st pass - monads are scary!
+2nd pass - i kind see what they are doing
+3rd pass - can use them creatively
+
+
+functional programming - programming with functions
+
+in functionary programming we treat functions as data
+a function can be thought of as a lookup table, which is data
+
+Functions
+Monoids
+Functions
+Monads
+
+a type is a set of values
+A monoid is a way of taking two things of the same type and creating something else of the same type, like function composition
+
+to control complexity, we combine small things into larger things
+create a generic composition operator to combine things
+abstract out the composition of functions
+you constrain yourself to only having functions of the type of your 
+
+a monoid is a collection of things plus a rule for combining the things, and the rule obeys some rules
+in a clock, the numbers are a monoid
+the rule for combining is (x + y) % 12
+clock arithmetic is a monoid
+the rule is the addition and modulus, the rules that it obeys are:
+if @ is the combining rule:
+x @ (y @ z)
+(x @ y) @ z
+it must be associative
+
+the monoid must contain a special member (in a clock it is 12) such that
+x @ 12 == x
+12 @ x == x
+
+it doesn't have to be commutitive
+x @ y doesn't have to equal y @ x
+
+must be associative and have a zero value
+
+functions under composition form a monoid
+if you nest function calls, they all have to have the same types
+
+function composition is associative:
+(f . g) . h == f . (g . h)
+f(g(h a))
+f(g(h a))
+
+the zero value is id:
+id a = a
+f (id a) == f a
+f . id == f
+
+monads:
+functions that take a's and return some transform of a's
+every function is not a -> a but a -> M a
+as long as M a is the same type for all functions
+we bring the world of side effects into compositionality
+
+monads makes it such that you can't make mistakes
+how do we compose functions in a monad?
+
+\a -> (f a) >>= \a -> (g a)
+      \   /           \   /
+       Ma              Ma
+
+>>= is 'shove'
+
+you have to design the behavior of >>=, to make sure that you can properly compose functions
+
+use small libraries of functions that can be combined in arbitrary ways so that users of the functions can create their own functions that can be combined in arbitrary ways
+
+unit has type a -> M a
+
+make the identity monad
+
+Linq is a set of query operators that work over many different data types
+
+bind takes a Mb and a function that takes a b and returns an Mb, and returns an Mc
+
+put in associativity and units and you can not worry at all about how to combine things
+monads and monoids are a theory of combining things

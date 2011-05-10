@@ -272,3 +272,27 @@ fewer lines of factor code, but more mental gymnastics required?
 
 
 Learning a new language is easy, learning a new paradigm is hard.  So to get real work done, choose the language with the most power in a paradigm that you know!
+
+I am not yet a zen functional master but I have become more enlightened.  Learning these languages has caused me to try to code with fewer side effects and to consider higher order functions if necessary.
+
+Object oriented programming is an exceptionally bad idea that could only have originated in California.
+
+Show a selection of code side by side by side by side, maybe sort by frequency
+
+You update a field by calling change-fieldname, it pushes the current value on the stack, and after the block is done takes whatever value is there and replaces it in the object
+
+Duplicating and shuffling things on the stack is fast because you are just moving around pointers.
+
+Rainbow parentheses
+
+What really is the best way to learn a programming language?  Does it change if you are learning in a group or on your own?  My normal approach is reading.  Does that work as well as it could?
+
+I'm starting to love simplicity even more than I did before.  I love beauty in a language.  OO languages are often not beautiful if they over-engineer the solution.  The Python code is way over-engineered.
+
+Instant startup time is a very helpful thing.  Python starts up instantly, Clojure takes 10 seconds, Factor takes forever to load, Haskell is fairly fast but has a bit of a delay, C has to compile
+
+Python is probably the easiest to get working.
+
+"Leiningen!" he shouted. "You're insane! They're not creatures you can fight--they're an elemental--an 'act of God!' Ten miles long, two miles wide--ants, nothing but ants! And every single one of them a fiend from hell..." -- from Leiningen Versus the Ants by Carl Stephenson
+
+
