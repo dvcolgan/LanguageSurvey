@@ -188,68 +188,71 @@ Appendix~\ref{sec:farklerules}.
 
 \subsection{Methodology}
 
-I first implemented the Farkle system in Python, the language I know
-best, to serve as a basis for comparison.  I then rewrote the system in Clojure.
-Clojure is a language I have not had experience with, although I have used other
-\textsc{Lisp} dialects.  In my past experience with other \textsc{Lisp}s, I did not
-fully understand or apply the functional style.  Next I wrote the system in
-Haskell, a purely functional language that is even more so than Clojure.  I
-then took a respite and wrote the system in C, another language I know well, to
-give another standard of comparison.  I finished out with an implementation in
-Factor, a relatively unknown language with a very different way of doing things.
+I first implemented the Farkle system in Python, the language I know best, to
+serve as a basis for comparison.  I then rewrote the system in Clojure.  Clojure
+is a language I have not had experience with, although I have used other
+\textsc{Lisp} dialects.  In my past experience with other \textsc{Lisp}s, I did
+not fully understand or apply the functional style.  Next, I wrote the system in
+Haskell, a purely functional language.  I then took a respite and wrote the
+system in C, another language I know well, to give another standard of
+comparison.  I finished out with an implementation in Factor, a relatively
+unknown stack-based language.
 
 Having completed the system in all five of these languages, I ran performance
 tests by timing how long each language takes to have four simplistic AI players
-compete 10000 games.
+compete in 10,000 games.
 
 I also wrote a short Python script to compare the number of lines, number of
-tokens, average line length, and average tokens per line of each program, where
-a token is any whitespace-separated block of characters.
+tokens, average line length, and average tokens per line of each program.
 
 I also recorded observations made as I programmed each system.  In the following
-sections, I will outline my findings for each.
+sections, I outline my findings for each.
 
 \subsection{Python}
 
 Since I already knew Python, there was no major learning involved in its
 implementation.  As I implement the system in other languages, I have noticed
 instances where I could have made the Python implementation shorter.  Python had
-the disadvantage of going first.
+the disadvantage of going first.  If I were to rewrite the Python system after
+having finished the others, I would do it differently, using fewer
+object-oriented features and more functional features.
 
 I consider the Python implementation to be the standard for comparison.  I give
 it a ``normal'' difficulty in terms of learning, shortness of programs, and
-concurrency.  Note too that I tried to use a more object-oriented structure to
-my program.  Python can support procedural, object-oriented, and functional
+concurrency.  Python can support procedural, object-oriented, and functional
 styles, and programming in a different style might have made the program longer
 or shorter.
 
 \subsection{Clojure}
 
-Clojure is the youngest of the languages I considered
+Clojure is the youngest of the languages I considered in this project, but it
+has grown rapidly since its conception.  Its combines the expressiveness of
+\textsc{Lisp} with the ubiquity of the Java Virtual Machine, making it a unique
+choice for software development.
 
 \subsection{Learning Clojure}
 
 To begin the process of learning Clojure, I read the book \emph{Programming
 Clojure} by Stuart Halloway~\cite{clojurebook}.  After going through this book,
-I was a bit underwhelmed by my level of understanding.  I got the basics, but I
-still didn't feel ready to begin implementing the Farkle system.  A few of the
-other resources I used included a very well-written Clojure tutorial by R\. Mark
+I also utilized a very well-written Clojure tutorial by R.~Mark
 Volkmann~\cite{clojuretutorial}, the official Clojure
 website~\cite{clojuredotorg}, the PeepCode screencast on
-Clojure~\cite{peepcodeclojure}, the very helpful community question and answer
-site Stack Overflow~\cite{stackoverflow}, and other pages found through Google.
+Clojure~\cite{peepcodeclojure}, and the very helpful community question and answer
+site \emph{Stack Overflow}~\cite{stackoverflow}.
 
 \subsection{Ease of Learning}
 
-For those coming from a mostly procedural and object-oriented background,
-Clojure will definitely be a stretch.  The most striking difference is the new
-functional paradigm.  Clojure is not purely functional like Haskell in that it
-allows side effects like printing to the screen anywhere in the code.  However,
-local variables cannot be changed once they have been given a value.  All
-procedural programming involves changing state, so those without a functional
-background will have to completely adjust their thinking.  Idiomatic Clojure
-makes heavy use of recursion and higher order functions.  It should be noted,
-though, that because Clojure discourages side effects, unit testing is much
+Clojure has three new major concepts to learn: the functional paradigm,
+laziness, and the \textsc{Lisp} style of syntax. For those coming from a mostly
+procedural and object-oriented background, Clojure will definitely be a stretch.
+
+The most striking difference is the functional paradigm.  Clojure is not purely
+functional like Haskell in that it allows side effects like printing to the
+screen anywhere in the code.  However, local variables cannot be changed once
+they have been given a value.  All procedural programming involves changing
+state, so those without a functional background will have to completely adjust
+their thinking.  Idiomatic Clojure makes heavy use of recursion and higher-order
+functions.  Because Clojure discourages side effects, unit testing is much
 easier.
 
 Another major difference is Clojure's laziness.  It does not evaluate
@@ -257,99 +260,99 @@ expressions unless it has to, causing great speedups in some cases, and allowing
 for infinite data structures.  This is a powerful feature, but it takes some
 getting used to.  
 
-The syntax of Clojure is also very different than most other languages.  Its
+The syntax of Clojure is also very different from most other languages.  Its
 syntax of parentheses and brackets allows for powerful macros, but it is
 definitely not C-like, so programmers who have never seen syntax like this will
 have to make an adjustment.
 
-Therefore, Clojure has three new major concepts to learn: the functional
-paradigm, laziness, and the new style of syntax.
+\subsection{Advantages of Clojure}
 
-\subsection{Advantages  of Clojure}
+Clojure's lack of mutable variables might seem like a hindrance, but after
+using the language for a while, this becomes a powerful feature.  Immutable
+variables make a whole host of bugs caused by accidentally modifying a variable
+impossible.  Recursion, higher-order functions, and laziness prove to be even
+more expressive and powerful than iteration in other languages.
 
-Clojure has excellent support for parallel processing.  In the simplest case, a
-program can be made to perform parallel computations by replacing a call to
-\texttt{map} with a call to \texttt{pmap}.  The \texttt{pmap} function has a
-larger overhead than \texttt{map}, so it is not effective for simple
-calculations.  However, if processing one element of the list using
-\texttt{pmap} is free of side effects and computationally intensive, Clojure can
-utilize multiple cores automatically.  This is much simpler than using a manual
-thread-based approach that one would need in Python, Java, C.
+Being a \textsc{Lisp}, Clojure inherits all of \textsc{Lisp}'s advantages,
+including the ability to treat code as data and powerful compile-time macros.
 
-Note that this only works if the calculations pmap does are free from side
-effects and if each part of the calculation are independent.  If the program
+Clojure also has excellent support for parallel processing.  In the simplest
+case, a program can be made to perform parallel computations by replacing a call
+to \texttt{map} (a function that calls a function on each element of a list)
+with a call to \texttt{pmap} (a parallel version of \texttt{map}).  The
+\texttt{pmap} function has a larger overhead than \texttt{map}, so it is not
+effective for simple calculations.  However, if processing one element of the
+list using \texttt{pmap} is free of side effects and computationally intensive,
+Clojure can use multiple cores automatically.  This is much simpler than the
+manual, thread-based approach using in Python, Java, and C.
+
+Note that \texttt{pmap} is only effective if the calculations are free from side
+effects and if each part of the calculation is independent.  If the program
 needs to share state between threads or cores, Clojure has an extensive system
-known as Software Transactional Memory.  Clojure implements a system similar to
+known as \emph{Software Transactional Memory}.  Clojure implements a system similar to
 a database transaction that allows for easily sharing state in a thread-safe
-manner.  I did not have to use this more complicated system, though, because
-the major calculation I performed were in the GA system, and the process of
-evaluating and crossing over individuals is self contained and does not depend
-on any other individuals.  Therefore my program got free multicore support
-using \texttt{pmap}.
+manner.  
 
 \subsection{Disadvantages of Clojure}
 
-Clojure is plagued by a few problems.  One of the aspects of the language that
-is both a blessing and a curse is its close integration with Java.  While this
-is good in that it can use Java libraries, it also inherits many of Java's
-problems.  Clojure is not a very good language for scripts or anything that
-requires fast startup.  Starting any Clojure program cold takes on the order of
-10 seconds.  For this reason, the developers recommend starting one running
-Clojure repl and continuously send commands to it.  This mostly works, but I
-found myself having to start new instances more than was comfortable through the
-process of programming.
+Clojure has a small number of disadvantages.  One of the aspects of the language
+that is both a blessing and a curse is its close integration with Java.  While
+its seamless Java interoperation allows the use of any Java library in Clojure
+code, it also inherits some of Java's problems.  Clojure is not a very good
+language for scripts or anything that requires fast startup: a cold start takes
+on the order of 10 seconds.  For this reason, the developers recommend starting
+one running Clojure instance and continuously sending commands to it.  This
+works well for the most part, but I found myself having to start new instances
+more than was comfortable through the process of programming.
 
 The second major problem with Clojure is its youth.  The language is only
 a few years old, and it is rapidly evolving and getting better.  However, even
-some core features of the language have been implemented just this year, such as
-protocols.
+some core features of the language have been implemented just this year.
 
-A bigger problem is that because the language is so young, the tools are not
-very mature either.  Slime, the flagship editing environment for all kinds of
-\textsc{Lisp}s built on Emacs does not support Clojure nearly as well as the more mature
-\textsc{Lisp}s.  A case in point is that the \texttt{read-line} function, the primary way of
-getting command line input, simply doesn't work in Slime.  This created a
-problem for my command line program.  The Slime debugger is also not very
-helpful when working with Clojure.  Stack traces show 100 levels of Java
-method calls and a single location in my code where the error occured.
+Because the language is so young, the development tools available are not very
+mature.  Slime, the flagship \textsc{Lisp} editing environment for Emacs does
+not support Clojure nearly as well as the more mature \textsc{Lisp}s.  A case in
+point is that the \texttt{read-line} function, the primary way to get command
+line input, simply doesn't work in Slime.  This created a problem for my
+command-line program.  The Slime debugger is also not very helpful when working
+with Clojure.  Stack traces show 100 levels of Java method calls and a single
+location in code where the error occured.
 
-There is a system developed to write Clojure in Vim called VimClojure, but I
-could not figure out how to install it completely.  After spending multiple
-hours on it, I eventually went back to Emacs.
-
-There are also Eclipse and Netbeans plugins that I did not investigate.
+There is a system being developed to write Clojure in Vim called VimClojure, but
+I could not figure out how to install it completely.  After spending multiple
+hours on it, I eventually went back to Emacs.  There are also Eclipse and
+Netbeans plugins that I did not investigate.
 
 \section{Haskell}
 
-\subsection{Learning Haskell}
+From what I have gathered on the Internet, Haskell is considered by those who
+fully understand it to be the Zen of programming languages.  Many claim learning
+it to be an enlightening experience, and once you understand the Haskell way,
+you can rapidly write amazingly beautiful, bug-free code.
 
-From what I have gathered on the Internet, Haskell is considered by many people
-to be the Holy Grail of programming languages.  Many claim it to be an
-enlightening experience, and once you understand what it is doing, you will
-write amazingly beautiful code rapidly that is bug-free.  Once you grok it, you
-will be forever changed as a programmer.  Until you understand it, though,
-Haskell is a mystery.  I have had some experience with Haskell in the past, but
-I definitely did not grok it.  Haskell has more new and difficult concepts to
-master than any languages I have considered.
-
-There are a number of excellent online resources for learning Haskell, and
-because this language is so complicated, it was helpful to read a variety of
-different explanations of important concepts.  The two major resources I used
-were the books \emph{Learn You A Haskell For Great
-Good!}~\cite{learnyouahaskell} and \emph{Real World
-Haskell}~\cite{realworldhaskell}.  I also read A Gentle Introduction to
-Haskell~\cite{gentleintroduction}.  Haskell makes heavy use of a hard to
-understand concept called Monads, and so I also read several of the many Monad
-tutorials on the web, including All About Monads~\cite{allaboutmonads} and Yet
-Another Monad Tutorial~\cite{yamt}.  Stack Overflow~\cite{stackoverflow}
-answered many questions as well.
+Until you understand it, though, Haskell can be a mystery.  I have had some
+experience with this language in the past, but I definitely did not grok it.
+Haskell has more new and difficult concepts to master than any of languages I
+have considered.
 
 \subsection{Ease of Learning}
 
-Learning Haskell is difficult.  I made more progress this time than before,
+There are a number of excellent online resources for learning Haskell, and
+because the language is so complicated, it was helpful to read a variety of
+explanations of important concepts.  The two major resources I used were the
+books \emph{Learn You A Haskell For Great Good!}~\cite{learnyouahaskell} and
+\emph{Real World Haskell}~\cite{realworldhaskell}, both available for free
+online.  I also read \emph{A Gentle Introduction to
+Haskell}~\cite{gentleintroduction}.  Haskell makes heavy use of a difficult
+concept called monads, so I also read several of the many monad tutorials on the
+web, including \emph{All About Monads}~\cite{allaboutmonads} and \emph{Yet
+Another Monad Tutorial}~\cite{yamt}.  \emph{Stack Overflow}~\cite{stackoverflow}
+again proved very helpful as well.
+
+Learning Haskell is difficult.  I made more progress than in a previous attempt,
 but I still did not learn or use everything Haskell has to offer.  Whereas
 Clojure presented a few challenges, Haskell requires learning the functional
-paradigm, a new syntax, laziness, the type classes, immutability of variables,
+paradigm, a new syntax, laziness, type classes, immutability of variables,
 monads, monad transformers, arrows, currying, and probably other things I don't
 even know about.
 
@@ -357,36 +360,43 @@ What makes writing idiomatic Haskell code difficult is that in order to do so,
 you must understand almost all of these concepts well.  Otherwise, the
 language seems cumbersome and unnecessarily complex.
 
-The syntax of the language takes a while to get used to.  Precedence issues came
-up fairly often as I was learning it, though I got used to them after a while.
+The syntax of the language takes a while to get used to.  For those coming from
+languages of a C-like syntax, operator precedence issues pose a particular
+challenge.  This is a specific instance of a common theme in Haskell: almost
+everything is done in a different way.
 
-One of the greatest challenges is managing side effects.  Most languages are
-impure by default, but Haskell is pure by default, and in order to do IO, you
-must tag values with the IO type.  Pure code cannot call impure code without
-being ``polluted'' by the impure code.  Sometimes this leads to awkward code
-gymnastics as I tried to isolate the impure code, but this is one of the
-important skills that Haskell teaches.  In other languages it is not necessary,
-but now I had to learn how to do it.
+One of the greatest challenges in Haskell is managing side effects.  Most
+languages are impure by default, but Haskell is pure by default.  In order to
+perform IO (an impure operation), you must tag values with the \texttt{IO} type.
+Pure code cannot call impure code without being ``polluted'' by the impure code.
+Sometimes this leads to awkward code gymnastics to isolate the impure code, but
+this is one of the important skills that Haskell teaches.
 
 The other thing that throws most people for a loop is the lack of variable
-updates.  As such, there can be no loops because your iteration variable can't
+updates.  As such, there can be no loops because an iteration variable can't
 be changed.  Instead, everything is done with recursion and higher-order
-functions.  This takes some getting used to, though it does open your eyes to
+functions.  This takes some getting used to, although it does open your eyes to
 new solutions.
 
 \subsection{Advantages of Haskell}
 
-If the brave learner can overcome its challenges, Haskell offers many unique
-features that could potentially be very useful.  
-
-Functions without side effects exhibit referential transparency, meaning given
-the same inputs, the function will always return the same outputs.  This allows 
+If the brave learner can overcome its challenges, Haskell offers many powerful
+features.  Like Clojure, functions without side effects exhibit referential
+transparency; given the same inputs, the function will always return the same
+outputs.  This allows for easy unit testing and fewer bugs.
 
 Learning Haskell definitely changed my outlook outlook on programming and gave
-me new ways of approaching problems.  I notice that my programming style has
+me new ways of approaching problems.  I noticed that my programming style has
 tended to favor returning new values from pure functions over mutating existing
-variables.  Haskell gave me more AHA moments than any of the other languages in
+variables.  Haskell gave me more ``a ha!'' moments than any of the other languages in
 this project.
+
+Haskell's strict type system promises increased safety in writing code.
+Functions and expressions have specific types that go beyond the simple
+\texttt{int} and \texttt{string} of many languages.  Monads even allow the
+compiler to type check the combination of code.  This is one of the parts of
+Haskell I understand the least, and proponents of Haskell agree that monads are
+one of the most difficult aspects of the language to learn.
 
 Perhaps one of the reasons Haskell is so enlightening is precisely because it
 forces the programmer to do things its own way.  If you really want to write
@@ -400,34 +410,38 @@ However, the goal of this investigation was to determine if Haskell would be
 suitable for real-world projects.  Many seem to think so, including the authors
 of \emph{Real World Haskell}, but I am not so sure.  Haskell seems to have
 a proportionately higher number of PhD's in its community as compared to other
-fields, and makes much more use of complex mathmatical theory (especially
+languages, and makes much more use of complex mathematical theory (especially
 category theory).  If it requires a PhD to learn the language, a large company
 may not be able to effectively train its employees.  A company may have to pay
 more for Haskell programmers because it is such a difficult skill to learn.
 But, if Haskell really does offer the benefits its proponents claim, it may be
-worth it.
+worth it.  The strict type system promises a great benefit for programming in
+the large of the programmers can fully utilize it.
 
 \section{C}
 
-After Haskell I turned back to C to serve as another standard of comparison.
-I already knew C, and I cranked it out fairly quickly.  As I coded the C
-implemented, I began to miss many of the features I had in the other languages.
-Returning multiple values is difficult in C, so I used global variables instead.
-String handling in C is incredibly annoying, so I avoided doing it as much as
-possible.
+After Haskell, I turned to C to serve as another standard of comparison.  I
+already knew C, and so I was able to write the program fairly quickly.  As I
+coded the C implementation, I began to miss many of the features I had in the
+other languages.  Returning multiple values is difficult in C, so I used global
+variables instead.  String handling in C is also difficult, so I avoided doing
+it as much as possible.
 
-For loops have all of their details oozing out all over the place.  The most
-common line that I wrote was \texttt{for(i=0; i<6; i++)\{} for iterating over
-the six dice.  Other languages could use \texttt{map} or some other abstraction
-and not have to worry about off-by-one errors.
+C's \texttt{for} loops have their details oozing out all over the place.  The
+most common line that I wrote was \texttt{for(i=0; i<6; i++)} for iterating over
+the six dice used in Farkle.  Python has \texttt{for/in} loops and the other
+languages have \texttt{map} or some other abstraction and do not have to worry
+about off-by-one errors.
 
 Not only that, but there are many nasty bugs you can create in C that are
-impossible in the other languages because of their type safety.  
+impossible in the other languages.  Things like dereferencing a null pointer,
+going out of the bounds of an array, or corrupting allocated memory cannot
+happen in any of the other languages considered.
 
-Once as I was coding the C implementation, I made an unrelated change and
-noticed that the number of player was changing.  None of my code after the
-beginning of the program changes the number of players.  I finally tracked the
-bug down to this for loop:
+As an illustration, as I was coding the C implementation I made an unrelated
+change and noticed that the number of players was then changing.  None of my
+code after the beginning of the program changes the number of players.  I
+finally tracked the bug down to this for loop:
 
 \begin{verbatim}
 for (i=0; i<6; i++){
@@ -435,77 +449,71 @@ die_counts[dice[i]]++;
 }
 \end{verbatim}
 
-Here I count how many of each die in a roll and store the results in the
-\texttt{die\_counts} array.  Because there are at most six dice in a roll, and because
-arrays are hard to resize in C, I just always used an array of length six to
-represent a collection of dice, and if there were fewer than six dice, I put a
+Here I count how many of each die are in a roll and store the results in the
+\texttt{die\_counts} array.  Because there are at most six dice in a roll, and
+because arrays are hard to resize in C, I always use an array of length six to
+represent a collection of dice.  If there are fewer than six dice, I put a
 \texttt{-1} in the unused slots.  I had forgotten to check for dice with values
 of \texttt{-1}, so this code was overwriting the value at
-\texttt{die\_counts[-1]}, which happened to be where the number of players was
-stored.  This sort of bug would not happen in Haskell or even Python.
+\texttt{die\_counts[-1]}, which happened to be the location in memory where the
+number of players was stored.  This sort of bug would not happen in Haskell or
+even Python.
 
-If performance is not of utmost importance, I suggest not using C.  Programmer
-speed is often more important than program speed and fast enough is usually good
-enough.
+If performance is not of utmost importance, avoid C.  Programmer speed is often
+more valuable than program speed and fast enough is usually good enough for any
+non-CPU bound program.
 
 \section{Factor}
 
-\subsection{Learning Factor}
-
-For my last language, I wanted to try a language of a completely different
-paradigm and found Factor.  Like almost all the others, proponents of Factor say
-you can use it to write shorter programs more quickly with fewer bugs.
-
-Factor lives in its own little world.  The only real resources for learning are
-the official wiki and documentation.  Even still, the Factor distribution is
-fairly comprehensive.  It comes with its own environment that includes an
-interactive prompt, hypertext documentation browser, profiler, and debugger.
-The distribution includes editor support for Vim, Emacs, and Textmate.  
-
-The only real way to learn Factor is to read the included tutorial and
-documentation, and to read some of the plethora of code that comes with the
-distribution.  This made it easy to know what to do, but when the included
-documentation was not helping me understand something, there was not really
-anywhere else to look.
+For my last language, I wanted to try one of a completely different paradigm and
+found Factor.  Like almost all the others languages I have considered,
+proponents of Factor say you can use it to write shorter programs more quickly
+with fewer bugs.
 
 \subsection{Ease of Learning}
 
-I was pleased to see that Factor is a very simple language, at least on the
-outside.  It is a concatenative or stack-based language.  All programs consist
-of whitespace separated words (or functions) and literal values.  Programs are
-read left to right and one value at a time.  If the value is a literal, that
-value is pushed on a global stack.  If it is a word, execution continues in its
-definition.  Words can manipulate values on the stack.
+Factor lives in its own little world.  The only real resources for learning it
+are the official wiki at Concatenative.org wiki~\cite{factorwiki} and the
+included documentation.  Nevertheless, the Factor distribution is fairly
+comprehensive.  It comes with its own environment that includes a REPL,
+hypertext documentation browser, profiler, and debugger.  The distribution
+includes editor support for Vim, Emacs, and Textmate.  
 
-Programming around this stack is the hard and interesting part about the
-language.  It has currying 
+The best way I found to learn Factor is to read the included tutorial and
+documentation, and the plethora of code that comes with the distribution.  These
+few resources are thorough, but when they are inadequate for understanding
+something there is currently nowhere else to look.
+
+I was pleased to see that Factor is a very simple language, at least on the
+outside.  It is a \emph{concatenative} or \emph{stack-based} language.  All
+programs consist of whitespace separated words (the Factor name for functions)
+and literal values.  Programs are read left-to-right and one token at a time.
+If the token is a literal, that value is pushed onto a global stack.  If it is a
+word, execution continues in its definition.  Words can manipulate values on the
+stack.  Programming around this stack is the hard and interesting part about the
+language.
 
 \subsection{Advantages of Factor}
 
-Factor brings a lot to the table.  It has more interesting language features
-than perhaps any of the other languages I considered.  It supports the
-functional style, it has \textsc{Lisp}-style macros (a feature I have never seen
-in a language outside of \textsc{Lisp}), it lets you modify the parser so that
-you can add new syntax to the language, and much more.
+Factor brings a lot to the table.  It supports the functional style, it has
+\textsc{Lisp}-style macros (a feature I have never seen in a language outside of
+\textsc{Lisp}), it lets you modify the parser so that you can add new syntax to
+the language, and much more.
 
-A side effect of its very simple execution model and lack of syntax is that
-literally any printable character can be used in identifiers.  You can put
-question marks on predicates (\texttt{even?}), put parentheses around private functions
-not for use outside the current module [\texttt{(recurse-further)}], and put
-exclamation marks at the end of words that mutate their argument
-(\texttt{sort!}).  Many built-in words make use of the at-sign, asterisk, and
-ampersand.
+A side effect of its very simple execution model and simple, postfix syntax is
+that any printable character can be used in identifiers.  You can put question
+marks on predicates (\texttt{even?}) and put exclamation marks at the end of
+words that mutate their argument (\texttt{sort!}).  Many built-in words also
+make use of the at-sign, asterisk, and ampersand.
 
 Because words get their parameters off of the stack, there are no named
-parameters at all, and every word is able to be curried like Haskell
-functions.
-
-Blocks of code can be passed around as arguments and stored for later execution
-by surrounding it in square brackets.  Control flow is handled not by special
+parameters at all, and every word is able to be curried like Haskell functions.
+Blocks of code can be passed as arguments and stored for later execution
+by surrounding them in square brackets.  Control flow is handled not by special
 syntax like in most other languages, but by combinator words.  These are normal
 words that take blocks of code as arguments.  For example, \texttt{if} is simply
-a combinator that takes a boolean value and two code blocks, executing the first
-if the boolean is true and the second if it is false.
+a combinator that takes a Boolean value and two code blocks, executing the first
+if the Boolean is true and the second if it is false.
 
 Factor claims to be able to remove all duplication from code.  This is a tall
 order, and in some senses one of the Holy Grails of programming.  The often
@@ -513,7 +521,7 @@ repeated mantra of DRY (Don't Repeat Yourself) is attainable to some degree in
 mainstream languages like C and Python, but Factor's unique abilities to use
 higher-order functions and metaprogramming take refactoring to the next level.
 
-For example, on the Concatenative.org wiki~\cite{factorwiki}, the following code
+For example, on the Concatenative.org wiki, the following code
 is said to be a ``pattern:''
 
 \begin{verbatim}
@@ -530,51 +538,52 @@ different values.  The Factor solution to this redundancy is to use the
 0 [ foo ] [ bar ] bi
 \end{verbatim}
 
-We push the initial value and two code blocks on the stack, and then the bi
-combinator calls both code blocks and preserves the value for both of them.
+We push the initial value and two code blocks on the stack, and then the
+\texttt{bi} combinator calls both code blocks and preserves the value for both
+of them.
 
 \subsection{Disadvantages of Factor}
 
 There are several reasons that Factor is not used more than it is.  Perhaps the
-biggest difference is simply that it is so very different than any language most
-programmers have experienced.  All of the code is written backwards compared to
-other languages.  Users of Factor's predecessor, Forth, even coined the phrase
-``FORTH LOVE? IF HONK THEN''.
+key reason is simply that it is so different from any language most programmers
+have experienced.  All of the code is written ``backwards'' compared to other
+languages.  Users of Factor's predecessor, Forth, even coined the phrase ``FORTH
+LOVE? IF HONK THEN''.
 
-Not only is the code often ``backwards,'' it is also terse to the point of
-unreadability.  The DRY principle is a good one, but completely DRY code to the
-point of not repeating language syntax removes clues as to what the program is
-doing.
+Not only is the code often ``backwards,'' but it can also be terse to the point
+of unreadability.  The DRY principle is a good one, but pushing it to the point
+of not repeating language syntax removes clues as to what the program is doing.
 
 For example, consider the this code sample:
 
 \begin{verbatim}
-[ score-dice nip 1000 > ] [ length 6 = ] bi and
+[ score-dice 1000 > ] [ length 6 = ] bi and
 \end{verbatim}
 
-This is the test in an \texttt{if} conditional.  If we were to write it in C, it
-would look like this:
+This code is the test in a conditional for the \texttt{if} combinator.
+Rewritten in C, it might look like this:
 
 \begin{verbatim}
 score_dice(dice) > 1000 && length(dice) == 6
 \end{verbatim}
 
 In the Factor code, there are no visual cues or named variables to tell us what
-data is being operated on, and we have to look ahead after the operands to see
-the next operation.  Perhaps this gets easier to read with practice, but the C
-code reads like English, and the redundancy of repeating the variable name adds
-readability.
+data is being operated on, and we have to look ahead \emph{after} the operands to see
+the next operation.  Perhaps reading Factor code gets easier with practice, but
+C code reads more like English, and the redundancy of repeating the variable name
+adds readability.
 
 Another aspect of Factor that is both an advantage and a disadvantage is the
-ability to extend the language syntax.  This gives the programmer great
-flexibility, but it also requires anyone reading your code to then understand
-your new syntax.  This works well for the language implementors, but could be a
-problem for people building their own projects off the core language that others
-will have to maintain.  Any version of \textsc{Lisp} will have this same problem
-with macros.
+ability to extend the language syntax.  This feature gives the programmer great
+flexibility, but it also requires anyone reading your code to understand your
+new syntax.  This ability to create new syntax is of great benefit for the
+language implementors.  However when a normal program is written in Factor that
+changes the syntax, maintainers will have to learn both Factor and the new
+syntax specific to that program.  Any version of \textsc{Lisp} can have this
+same problem with macros.
 
 As I wrote Factor code, it always seemed hard to understand what code did, even
-code that I had just written a few hours ago.  The code also was hard to change
+code that I had just written a few hours ago.  The code was also hard to change
 for this reason.  I would make a change and then the compiler would complain
 that I was now pushing the wrong number of elements onto the stack, so I would
 have to go back and trace through the code to see what I had done.  Perhaps this
@@ -589,7 +598,7 @@ figures~\ref{fig:totallines}, \ref{fig:totaltokens}, \ref{fig:averagetokens},
 and came up with the following numbers:
 
 \begin{table}[h]
-    \caption{Source File Descriptive Statistics \label{tab:programcomparison}}
+    \caption{Source File Descriptive Statistics, ordered by total lines of code. \label{tab:programcomparison}}
     \begin{tabular}{|p{1.7in}|p{0.3in}|p{0.5in}|p{0.5in}|p{0.5in}|p{0.5in}|}
         \hline
         {\bf Aspect} & {\bf C} & {\bf Python} & {\bf Clojure} & {\bf Haskell} & {\bf Factor} \\
@@ -605,8 +614,9 @@ and came up with the following numbers:
 
 How did the lesser-known languages do in terms of producing shorter programs?
 Looking at total lines of code, C is the longest at over 500 lines.  Reading
-Table 1 left-to-right, each language after improves on the previous.  Note that
+Table~\ref{tab:programcomparison} left-to-right, each language after improves on the previous.  Note that
 these numbers were generated after removing all blank and comment lines.
+Figure~\ref{fig:totallines} shows total lines of code graphically.
 
 \begin{figure}[h]
     \centering
@@ -617,12 +627,9 @@ these numbers were generated after removing all blank and comment lines.
 Some languages pack more onto one line of source code than others.  In addition
 to total lines, I calculated the number of tokens of each program, where a token
 is any whitespace-separated string of characters (See
-Table~\ref{tab:programcomparison} and Figure~\ref{fig:totaltokens}).  This is, in
-a way, a measure of how dense the programs are. 
-
-I was surprised to see that Clojure, though 3rd in line count, was first by a
-lot in token count.  This makes me think that perhaps Clojure is the real winner
-in terms of expressiveness.
+Table~\ref{tab:programcomparison} and Figure~\ref{fig:totaltokens}).  This gives
+a measure of the program's ``density,'' that is, how much syntax is required to
+express the total program.
 
 \begin{figure}[h]
     \centering
@@ -630,10 +637,14 @@ in terms of expressiveness.
     \caption{Total Tokens \label{fig:totaltokens}}
 \end{figure}
 
-Average tokens per line is very telling as well.  Factor, though having the
-fewest lines, is by far the densest program.  I'll take a few more lines of code
-for more readability.  Clojure manages to be tied for first in token density and
-still have the fewest tokens overall.
+I was surprised to see that Clojure, though 3rd in line count, had the fewest
+tokens.  Perhaps Clojure is the real winner in terms of expressiveness.
+
+Average tokens per line, seen in Figure~\ref{fig:averagetokens}, is very telling
+as well.  Factor, though having the fewest lines, is by far the densest program.
+It sacrifices readability in some cases for compactness of code.  Clojure
+manages to be tied for first in token density and still have the fewest tokens
+overall.
 
 \begin{figure}[h]
     \centering
