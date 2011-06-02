@@ -1,8 +1,14 @@
-My name is David Colgan and I like programming languages.
+Hello.  My name is David Colgan and I like programming languages.
 
-The reason I like programming languages is because I have observed an unfortunate fact about computer science: programming is hard.
+The reason I like programming languages is because after 5 years at Taylor I have observed an unfortunate fact about computer science:
 
-Like, really really hard.  Programmers have the potential to create some of the most complicated structures humanity has ever attempted.  I  had the privilege to work on WordSurv for the past three years, a program that ended up at around 8000 lines of code.  The program is more complicated than anything I have ever finished and yet it pales in comparison to enterprise code bases that have hundreds of thousands of lines or even millions.
+Programming is HARD.
+
+Like really hard.
+
+Might I suggest that software systems are some of the most complicated things humans have ever created.  
+
+Like, really really hard.  Programmers create some of the most complicated structures humanity has ever attempted.  I had the privilege to work on WordSurv for the past three years, a program that ended up at around 8000 lines of code.  The program is more complicated than anything I have ever finished and yet it pales in comparison to enterprise code bases that have hundreds of thousands of lines or even millions.
 
 That is a lot of complexity!  And it is all abstract, and the different parts have to interact with each other just right or else you get the dreaded software bug!
 
@@ -132,7 +138,14 @@ And so I have a farkle simulator in C, Python, Clojure, Haskell, and Factor.
 I would now like to go through and describe some of the OMG moments that I had when using these languages.
 
 
+
+
 Factor is hard to read, maybe lisp is too, but that is because you have not programmed in it before/very much.  I feel like this is sort of the same idea that we have in User interface design.  Just because the interface is not immediately intuitive, if it lets you do work quickly, does it matter if you have to consult a manual first?  The command line is not a pretty or "easy to use" interface per se, but now that I have been using for a lot, it is very powerful.
+
+And this brings up a very important point.  Most of my time this semester was spent learning the languages.  And these functional languages are difficult to learn.  It takes time for the ideas to sink in.  I had tried to learn Haskell about two years prior, and I ultimately gave up for a while because I was overwhelmed by it.  And it was much easier learning it this second time, and I got further in my understanding, but there are still concepts I do not fully understand.  I think I explained monads correctly, but a more important result of the research than what a monad is is that monads are hard to learn.
+
+So I would very much like to continue learning these three new languages.  I am confident that Clojure is a solid language, and I am still holding out that Haskell and Factor are as well, I am just not as good at them.
+
 
 If I had to program a very large program, I think I might want to most powerful tool, and that might be Factor, unless the power is unweildable, and then maybe I'll do a bit less that is more managable.  Is Factor so powerful that it is harder to use?  I'm not sure, I need more experience.
 

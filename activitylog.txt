@@ -540,8 +540,6 @@ Sunday March 13
 2:45 - 4:30
 I need to use a monad transformer combining the state monad and the io monad to model the game state like the yahtzee game uses
 
-lightsys is looking for a summer person
-
 6.5 hours
 
 Week 7
@@ -727,3 +725,23 @@ Tuesday May 10
 1:50 - 4:30
 5:00 - 6:30
 Working on presentation
+
+Wednesday May 11
+12:00 - 2:00
+
+Sunday May 15
+11:15 - 12:45
+2:00-3:00
+Editing paper
+
+Monday May 16
+7:20 - 8:30
+12:30 - 3:30
+6:00 - 9:00
+Finishing Paper
+
+32.75 hours
+
+130 total hours this semester
+
+249 hours total
